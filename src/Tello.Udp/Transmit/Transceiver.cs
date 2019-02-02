@@ -1,5 +1,4 @@
-﻿using Sumo.Retry;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -25,12 +24,6 @@ namespace Tello.Udp
             _responseTimeout = responseTimeout;
         }
 
-        private readonly FilterRetryPolicy _connectionRetryPolicy = new FilterRetryPolicy(
-            120,
-            TimeSpan.FromSeconds(60),
-            TimeSpan.FromSeconds(1),
-            new Type[] { typeof(NetworkUnavailableException) });
-
         private readonly IPEndPoint _endPoint;
         private readonly TimeSpan _responseTimeout;
         private UdpClient _client = null;
@@ -39,25 +32,23 @@ namespace Tello.Udp
         public event EventHandler Disconnected;
         public string Destination { get; }
 
-        public async void Connect()
+        public void Connect()
         {
             if (!IsConnected)
             {
                 IsConnected = true;
                 try
                 {
-                    await WithRetry.InvokeAsync(_connectionRetryPolicy, () =>
+                    if (!IsNetworkAvailable)
                     {
-                        if (!IsNetworkAvailable)
-                        {
-                            Debug.WriteLine("NetworkUnavailableException");
-                            throw new NetworkUnavailableException();
-                        }
+                        Debug.WriteLine("NetworkUnavailableException");
+                        throw new NetworkUnavailableException("Device must be connected to Tello's WIFI.");
+                    }
 
-                        _client?.Dispose();
-                        _client = new UdpClient();
-                        _client.Connect(_endPoint);
-                    });
+                    _client?.Dispose();
+                    _client = new UdpClient();
+                    _client.Connect(_endPoint);
+
                     Connected?.Invoke(this, EventArgs.Empty);
                 }
                 catch (Exception ex)
