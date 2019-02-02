@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="AppData\tello.samples.json" />
+    <None Remove="AppData\tello.video" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="AppData\tello.samples.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AppData\tello.video">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Tello.Emulator.SDKV2\Tello.Emulator.SDKV2.csproj" />
+    <ProjectReference Include="..\Tello.Udp\Tello.Udp.csproj" />
+  </ItemGroup>
+
+</Project>
