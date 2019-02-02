@@ -13,7 +13,7 @@
         <iconUrl>http://sumosoftware.com/media/nuget-sumo.png</iconUrl>
         <description>Tello Flight Controller API for Tello SDK 2.0</description>
         <releaseNotes></releaseNotes>
-        <tags>Tello Drone API</tags>
+        <tags>Tello Drone API Ryze</tags>
         <repository type="git" url="https://github.com/marklauter/TelloAPI.git" />
 
         <dependencies>
