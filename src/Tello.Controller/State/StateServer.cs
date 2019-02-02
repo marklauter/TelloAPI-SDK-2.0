@@ -2,16 +2,16 @@
 using System.Diagnostics;
 using Tello.Udp;
 
-namespace Tello.Controller
+namespace Tello.Controller.State
 {
-    internal sealed class StateListener
+    internal sealed class StateServer
     {
-        public StateListener(int port = 8890)
+        public StateServer(int port = 8890)
         {
             _listener = new Listener(port);
             _listener.DatagramReceived += _listener_DatagramReceived;
             _listener.Start();
-            Debug.WriteLine($"{nameof(StateListener)} receiving on port {8890}");
+            Debug.WriteLine($"{nameof(StateServer)} receiving on port {8890}");
         }
 
         public event EventHandler<DroneStateReceivedArgs> DroneStateReceived;

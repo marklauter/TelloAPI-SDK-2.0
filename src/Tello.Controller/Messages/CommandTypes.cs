@@ -1,6 +1,6 @@
-﻿namespace Tello.Controller
+﻿namespace Tello.Controller.Messages
 {
-    public enum ValueResponseTypes
+    public enum Responses
     {
         Ok,
         Speed,
@@ -9,6 +9,14 @@
         WiFiSnr,
         SdkVersion,
         SerialNumber
+    }
+
+    public enum FlipDirections
+    {
+        Left,
+        Right,
+        Front,
+        Back
     }
 
     internal enum Commands

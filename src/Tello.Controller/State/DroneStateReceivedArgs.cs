@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tello.Controller
+namespace Tello.Controller.State
 {
     public sealed class DroneStateReceivedArgs : EventArgs
     {

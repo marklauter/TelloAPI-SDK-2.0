@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tello.Controller
+namespace Tello.Controller.Messages
 {
     /// <summary>
     /// https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf
@@ -39,6 +39,23 @@ namespace Tello.Controller
                     return true;
                 default:
                     return false;
+            }
+        }
+
+        internal static char ToChar(this FlipDirections direction)
+        {
+            switch (direction)
+            {
+                case FlipDirections.Left:
+                    return 'l';
+                case FlipDirections.Right:
+                    return 'r';
+                case FlipDirections.Front:
+                    return 'f';
+                case FlipDirections.Back:
+                    return 'b';
+                default:
+                    throw new NotSupportedException(direction.ToString());
             }
         }
 
@@ -348,24 +365,24 @@ namespace Tello.Controller
             }
         }
 
-        internal static ValueResponseTypes ToValueReponseType(this Commands command)
+        internal static Responses ToReponse(this Commands command)
         {
             switch (command)
             {
                 case Commands.GetSpeed:
-                    return ValueResponseTypes.Speed;
+                    return Responses.Speed;
                 case Commands.GetBattery:
-                    return ValueResponseTypes.Battery;
+                    return Responses.Battery;
                 case Commands.GetTime:
-                    return ValueResponseTypes.Time;
+                    return Responses.Time;
                 case Commands.GetWiFiSnr:
-                    return ValueResponseTypes.WiFiSnr;
+                    return Responses.WiFiSnr;
                 case Commands.GetSdkVersion:
-                    return ValueResponseTypes.SdkVersion;
+                    return Responses.SdkVersion;
                 case Commands.GetSerialNumber:
-                    return ValueResponseTypes.SerialNumber;
+                    return Responses.SerialNumber;
                 default:
-                    return ValueResponseTypes.Ok;
+                    return Responses.Ok;
             }
         }
     }
