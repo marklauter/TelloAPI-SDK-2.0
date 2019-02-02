@@ -19,7 +19,7 @@
         Back
     }
 
-    internal enum Commands
+    public enum Commands
     {
         // ------------------------
         // control commands
