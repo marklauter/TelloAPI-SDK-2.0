@@ -41,7 +41,42 @@ namespace Tello.Controller
         }
         #endregion
 
-        #region drone state
+        #region flight controller and drone state
+
+        public int ReportedSpeed { get; private set; }
+        public int ReportedBattery { get; private set; }
+        public int ReportedTime { get; private set; }
+        public string ReportedWiFiSnr { get; private set; }
+        public string ReportedSdkVersion { get; private set; }
+        public string ReportedSerialNumber { get; private set; }
+
+        public enum ConnectionStates
+        {
+            Connecting,
+            Connected,
+            CommandLinkEstablished,
+            Disconnected
+        }
+        public ConnectionStates ConnectionState = ConnectionStates.Disconnected;
+
+        public enum FlightStates
+        {
+            StandingBy,
+            Takingoff,
+            InFlight,
+            Landing,
+            EmergencyStop
+        }
+        public FlightStates FlightState { get; private set; } = FlightStates.StandingBy;
+
+        public enum VideoStates
+        {
+            Stopped,
+            Connecting,
+            Streaming,
+        }
+        public VideoStates VideoState { get; private set; } = VideoStates.Stopped;
+
         private readonly StateServer _stateServer;
 
         private void _stateServer_DroneStateReceived(object sender, DroneStateReceivedArgs e)
@@ -117,6 +152,65 @@ namespace Tello.Controller
             }
         }
 
+        private void HandleResponse(Commands command, Transceiver.Response response)
+        {
+            try
+            {
+                switch (command)
+                {
+                    case Commands.EstablishLink:
+                        ConnectionState = ConnectionStates.CommandLinkEstablished;
+                        ProcessMessageQueue();
+                        RunKeepAlive();
+                        break;
+                    case Commands.Takeoff:
+                        FlightState = FlightStates.InFlight;
+                        break;
+                    case Commands.EmergencyStop:
+                    case Commands.Land:
+                        FlightState = FlightStates.StandingBy;
+                        break;
+                    case Commands.Stop:
+                        // hovers in air - no state change
+                        break;
+                    case Commands.StartVideo:
+                        VideoState = VideoStates.Streaming;
+                        break;
+                    case Commands.StopVideo:
+                        VideoState = VideoStates.Stopped;
+                        break;
+                    case Commands.GetSpeed:
+                        ReportedSpeed = Int32.Parse(response.Value);
+                        break;
+                    case Commands.GetBattery:
+                        ReportedBattery = Int32.Parse(response.Value);
+                        break;
+                    case Commands.GetTime:
+                        ReportedTime = Int32.Parse(response.Value);
+                        break;
+                    case Commands.GetWiFiSnr:
+                        ReportedWiFiSnr = response.Value;
+                        break;
+                    case Commands.GetSdkVersion:
+                        ReportedSdkVersion = response.Value;
+                        break;
+                    case Commands.GetSerialNumber:
+                        ReportedSerialNumber = response.Value;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new FlightControllerException($"Handle response failed with message '{ex.Message}'", ex);
+            }
+        }
+
+        /// <summary>
+        /// don't use this directly. call TrySendMessage instead.
+        /// sends a message to Tello and awaits a response, checks the response, throws on bad responses, which are caught by queue processor and raised through the FlightControllerExceptionThrown event
+        /// </summary>
+        /// <param name="commandTuple"></param>
+        /// <returns></returns>
         private async Task SendMessage(Tuple<Commands, string> commandTuple)
         {
             if (commandTuple == null)
@@ -125,7 +219,7 @@ namespace Tello.Controller
             }
 
             var command = commandTuple.Item1;
-            var message = commandTuple.Item2;
+            var message = commandTuple.Item2 ?? throw new ArgumentNullException(nameof(commandTuple.Item2));
 
             Transceiver.Response response = null;
             try
@@ -141,6 +235,8 @@ namespace Tello.Controller
             if (response.IsSuccess && IsResponseOk(command, response.Value))
             {
                 Debug.WriteLine($"{DateTime.Now.ToString("o")} - response received for '{message}' - '{response.Value}'");
+
+                HandleResponse(command, response);
 
                 FlightControllerResponseReceived?.Invoke(this, new FlightControllerResponseReceivedArgs(response.Value));
                 if (IsValueCommand(command))
@@ -162,25 +258,45 @@ namespace Tello.Controller
             }
         }
 
+        /// <summary>
+        /// wraps SendMessage calls in safe try/catch with event handlers
+        /// </summary>
+        /// <param name="commandTuple"></param>
+        /// <returns>true if no exceptions were encountered, else false</returns>
+        private async Task<bool> TrySendMessage(Tuple<Commands, string> commandTuple)
+        {
+            var result = false;
+            try
+            {
+                await SendMessage(commandTuple);
+                result = true;
+            }
+            catch (FlightControllerException ex)
+            {
+                FlightControllerExceptionThrown?.Invoke(this, new FlightControllerExceptionThrownArgs(ex));
+            }
+            catch (Exception ex)
+            {
+                FlightControllerExceptionThrown?.Invoke(this, new FlightControllerExceptionThrownArgs(new FlightControllerException($"SendMessage failed with message '{ex.Message}'", ex)));
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// process items in the queue such that Tello doesn't get overwhelmed with messages. Each message must be accepted, processed and ACK'd by Tello before the next command can be sent. This prevents the "no joystick" error message.
+        /// </summary>
         private async void ProcessMessageQueue()
         {
             await Task.Run(async () =>
             {
                 var spinWait = new SpinWait();
-                while (_connectionState != ConnectionStates.Disconnected)
+                while (ConnectionState != ConnectionStates.CommandLinkEstablished)
                 {
                     if (!_messageQueue.IsEmpty)
                     {
                         if (_messageQueue.TryDequeue(out var tuple))
                         {
-                            try
-                            {
-                                await SendMessage(tuple);
-                            }
-                            catch (FlightControllerException ex)
-                            {
-                                FlightControllerExceptionThrown?.Invoke(this, new FlightControllerExceptionThrownArgs(ex));
-                            }
+                            await TrySendMessage(tuple);
                         }
                     }
                     else
@@ -191,6 +307,30 @@ namespace Tello.Controller
             });
         }
 
+        /// <summary>
+        /// Tello auto lands after 15 seconds without commands as a safety mesasure, so we're going to send a keep alive message every 5 seconds
+        /// </summary>
+        private async void RunKeepAlive()
+        {
+            await Task.Run(async () =>
+            {
+                while (ConnectionState == ConnectionStates.CommandLinkEstablished)
+                {
+                    await Task.Delay(1000 * 10);
+                    if (_messageQueue.IsEmpty)
+                    {
+                        EnqueueCommand(Commands.GetBattery);
+                    }
+                }
+            });
+        }
+
+        /// <summary>
+        /// creates a command tuple for processing by the message queue and the SendMessage method
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
         private Tuple<Commands, string> CreateCommand(Commands command, params object[] args)
         {
             return new Tuple<Commands, string>(command, command.ToMessage(args));
@@ -198,7 +338,7 @@ namespace Tello.Controller
 
         private void EnqueueCommand(Commands command, params object[] args)
         {
-            if (_connectionState != ConnectionStates.Disconnected)
+            if (ConnectionState != ConnectionStates.Disconnected)
             {
                 try
                 {
@@ -215,18 +355,10 @@ namespace Tello.Controller
         #region transceiver
         private readonly Transceiver _transceiver;
 
-        private enum ConnectionStates
+        private async void _transceiver_Connected(object sender, EventArgs e)
         {
-            Connecting,
-            Connected,
-            Disconnected
-        }
-        private ConnectionStates _connectionState = ConnectionStates.Disconnected;
-
-        private void _transceiver_Connected(object sender, EventArgs e)
-        {
-            _connectionState = ConnectionStates.Connected;
-            ProcessMessageQueue();
+            ConnectionState = ConnectionStates.Connected;
+            await TrySendMessage(CreateCommand(Commands.EstablishLink));
         }
         #endregion
 
@@ -235,12 +367,19 @@ namespace Tello.Controller
         /// <summary>
         /// establish a command link with Tello - validates network connection, connects to UDP, sends "command" to Tello
         /// </summary>
-        public void EstablishCommandLink()
+        public void InitiateCommandLink()
         {
-            _connectionState = ConnectionStates.Connecting;
-            _transceiver.Connect();
-
-            EnqueueCommand(Commands.EstablishLink);
+            ConnectionState = ConnectionStates.Connecting;
+            try
+            {
+                _transceiver.Connect();
+                // Tello command link is initiated later in the transceiver's OnConnected event handler
+            }
+            catch (Exception ex)
+            {
+                ConnectionState = ConnectionStates.Disconnected;
+                throw new FlightControllerException($"Connection failed with message '{ex.Message}'", ex);
+            }
         }
 
         /// <summary>
@@ -248,6 +387,7 @@ namespace Tello.Controller
         /// </summary>
         public void TakeOff()
         {
+            FlightState = FlightStates.Takingoff;
             EnqueueCommand(Commands.Takeoff);
         }
 
@@ -256,6 +396,7 @@ namespace Tello.Controller
         /// </summary>
         public void Land()
         {
+            FlightState = FlightStates.Landing;
             EnqueueCommand(Commands.Land);
         }
 
@@ -265,7 +406,7 @@ namespace Tello.Controller
         public async void Stop()
         {
             // stop and emergency can be sent immediately - no need to wait
-            await SendMessage(CreateCommand(Commands.Land));
+            await TrySendMessage(CreateCommand(Commands.Land));
         }
 
         /// <summary>
@@ -274,7 +415,8 @@ namespace Tello.Controller
         public async void EmergencyStop()
         {
             // stop and emergency can be sent immediately - no need to wait
-            await SendMessage(CreateCommand(Commands.EmergencyStop));
+            FlightState = FlightStates.EmergencyStop;
+            await TrySendMessage(CreateCommand(Commands.EmergencyStop));
         }
 
         /// <summary>
@@ -282,7 +424,14 @@ namespace Tello.Controller
         /// </summary>
         public async void StartVideo()
         {
-            await SendMessage(CreateCommand(Commands.StartVideo));
+            if (VideoState == VideoStates.Stopped)
+            {
+                VideoState = VideoStates.Connecting;
+                if (!await TrySendMessage(CreateCommand(Commands.StartVideo)))
+                {
+                    VideoState = VideoStates.Stopped;
+                }
+            }
         }
 
         /// <summary>
@@ -290,59 +439,106 @@ namespace Tello.Controller
         /// </summary>
         public async void StopVideo()
         {
-            await SendMessage(CreateCommand(Commands.StopVideo));
+            if (VideoState != VideoStates.Stopped)
+            {
+                await TrySendMessage(CreateCommand(Commands.StopVideo));
+            }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cm">20 to 500</param>
         public void GoUp(int cm)
         {
             EnqueueCommand(Commands.Up, cm);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cm">20 to 500</param>
         public void GoDown(int cm)
         {
             EnqueueCommand(Commands.Down, cm);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cm">20 to 500</param>
         public void GoLeft(int cm)
         {
             EnqueueCommand(Commands.Left, cm);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cm">20 to 500</param>
         public void GoRight(int cm)
         {
             EnqueueCommand(Commands.Right, cm);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cm">20 to 500</param>
         public void GoForward(int cm)
         {
             EnqueueCommand(Commands.Forward, cm);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cm">20 to 500</param>
         public void GoBackward(int cm)
         {
             EnqueueCommand(Commands.Back, cm);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="degrees">1 to 360</param>
         public void TurnClockwise(int degress)
         {
             EnqueueCommand(Commands.ClockwiseTurn, degress);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="degrees">1 to 360</param>
         public void TurnRight(int degress)
         {
             TurnClockwise(degress);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="degrees">1 to 360</param>
         public void TurnCounterClockwise(int degress)
         {
             EnqueueCommand(Commands.CounterClockwiseTurn, degress);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="degrees">1 to 360</param>
         public void TurnLeft(int degress)
         {
             TurnCounterClockwise(degress);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="FlipDirections">FlipDirections.Left, FlipDirections.Right, FlipDirections.Front, FlipDirections.Back</param>
         public void Flip(FlipDirections direction)
         {
             EnqueueCommand(Commands.Flip, direction.ToChar());
@@ -373,6 +569,60 @@ namespace Tello.Controller
         public void Curve(int x1, int y1, int z1, int x2, int y2, int z2, int speed)
         {
             EnqueueCommand(Commands.Curve, x1, y1, z1, x2, y2, z2, speed);
+        }
+
+        public enum ClockDirections
+        {
+            Clockwise,
+            CounterClockwise
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sides">3 to 15</param>
+        /// <param name="length">length of each side. 20 to 500 in cm</param>
+        /// <param name="speed">cm/s 10 to 100</param>
+        public void FlyPolygon(int sides, int length, int speed, ClockDirections clockDirection)
+        {
+            if (sides < 3 || sides > 15)
+            {
+                throw new ArgumentOutOfRangeException($"{nameof(sides)} allowed values: 3 to 15");
+            }
+
+            if (length < 20 || length > 500)
+            {
+                throw new ArgumentOutOfRangeException($"{nameof(length)} allowed values: 20 to 500");
+            }
+
+            if (speed < 10 || speed > 100)
+            {
+                throw new ArgumentOutOfRangeException($"{nameof(speed)} allowed values: 10 to 100");
+            }
+
+            if (FlightState == FlightStates.StandingBy)
+            {
+                TakeOff();
+            }
+
+            SetSpeed(speed);
+
+            var angle = (int)Math.Round(360.0 / sides);
+            for (var i = 0; i < sides; ++i)
+            {
+                GoForward(length);
+                switch (clockDirection)
+                {
+                    case ClockDirections.Clockwise:
+                        TurnClockwise(angle);
+                        break;
+                    case ClockDirections.CounterClockwise:
+                        TurnCounterClockwise(angle);
+                        break;
+                }
+            }
+
+            Land();
         }
 
         /// <summary>
