@@ -20,7 +20,7 @@ namespace Tello.Controller
             _stateServer = new StateServer(statePort);
             _stateServer.DroneStateReceived += _stateServer_DroneStateReceived;
 
-            _frameServer = new FrameServer(32, TimeSpan.FromSeconds(30), videoPort);
+            _frameServer = new FrameServer(30, TimeSpan.FromSeconds(30), videoPort);
             _frameServer.FrameReady += _frameServer_FrameReady;
         }
 
