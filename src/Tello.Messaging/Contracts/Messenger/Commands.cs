@@ -1,4 +1,4 @@
-﻿namespace Tello.Controller.Messages
+﻿namespace Tello.Messaging
 {
     public enum Responses
     {
@@ -19,13 +19,13 @@
         Back
     }
 
-    public enum Messages
+    public enum Commands
     {
         // ------------------------
         // control commands
         // ------------------------
         // no args
-        EstablishLink,
+        EnterSdkMode,
         Takeoff,
         Land,
         Stop,

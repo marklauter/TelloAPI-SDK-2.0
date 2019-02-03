@@ -1,11 +1,12 @@
 ﻿using System;
+using Tello.Messaging;
 
-namespace Tello.Controller.Messages
+namespace Tello.Controller
 {
     /// <summary>
     /// https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf
     /// </summary>
-    internal static class MessageFactory
+    internal static class CommandFactory
     {
         private static bool IsNumeric(this Type type)
         {
@@ -64,37 +65,37 @@ namespace Tello.Controller.Messages
         /// </summary>
         /// <param name="command"></param>
         /// <param name="args"></param>
-        private static void Validate(Messages command, params object[] args)
+        private static void Validate(Commands command, params object[] args)
         {
             var expectedLength = 0;
 
             switch (command)
             {
-                case Messages.EstablishLink:
-                case Messages.Takeoff:
-                case Messages.Land:
-                case Messages.Stop:
-                case Messages.StartVideo:
-                case Messages.StopVideo:
-                case Messages.EmergencyStop:
-                case Messages.GetSpeed:
-                case Messages.GetBattery:
-                case Messages.GetTime:
-                case Messages.GetWiFiSnr:
-                case Messages.GetSdkVersion:
-                case Messages.GetSerialNumber:
+                case Commands.EnterSdkMode:
+                case Commands.Takeoff:
+                case Commands.Land:
+                case Commands.Stop:
+                case Commands.StartVideo:
+                case Commands.StopVideo:
+                case Commands.EmergencyStop:
+                case Commands.GetSpeed:
+                case Commands.GetBattery:
+                case Commands.GetTime:
+                case Commands.GetWiFiSnr:
+                case Commands.GetSdkVersion:
+                case Commands.GetSerialNumber:
                     if (args.Length != expectedLength)
                     {
                         throw new ArgumentException($"{command} expected {nameof(args)}.Length == {expectedLength}");
                     }
                     break;
 
-                case Messages.Up:
-                case Messages.Down:
-                case Messages.Left:
-                case Messages.Right:
-                case Messages.Forward:
-                case Messages.Back:
+                case Commands.Up:
+                case Commands.Down:
+                case Commands.Left:
+                case Commands.Right:
+                case Commands.Forward:
+                case Commands.Back:
                     expectedLength = 1;
                     if (args.Length != expectedLength)
                     {
@@ -110,8 +111,8 @@ namespace Tello.Controller.Messages
                     }
                     break;
 
-                case Messages.ClockwiseTurn:
-                case Messages.CounterClockwiseTurn:
+                case Commands.ClockwiseTurn:
+                case Commands.CounterClockwiseTurn:
                     expectedLength = 1;
                     if (args.Length != expectedLength)
                     {
@@ -127,7 +128,7 @@ namespace Tello.Controller.Messages
                     }
                     break;
 
-                case Messages.Flip:
+                case Commands.Flip:
                     expectedLength = 1;
                     if (args.Length != expectedLength)
                     {
@@ -147,7 +148,7 @@ namespace Tello.Controller.Messages
                     }
                     break;
 
-                case Messages.Go:
+                case Commands.Go:
                     expectedLength = 4;
                     if (args.Length != expectedLength)
                     {
@@ -178,7 +179,7 @@ namespace Tello.Controller.Messages
                     }
                     break;
 
-                case Messages.Curve:
+                case Commands.Curve:
                     expectedLength = 7;
                     if (args.Length != expectedLength)
                     {
@@ -201,7 +202,7 @@ namespace Tello.Controller.Messages
                     }
                     break;
 
-                case Messages.SetSpeed:
+                case Commands.SetSpeed:
                     expectedLength = 1;
                     if (args.Length != expectedLength)
                     {
@@ -219,7 +220,7 @@ namespace Tello.Controller.Messages
                         }
                     }
                     break;
-                case Messages.SetRemoteControl:
+                case Commands.SetRemoteControl:
                     expectedLength = 4;
                     if (args.Length != expectedLength)
                     {
@@ -237,7 +238,7 @@ namespace Tello.Controller.Messages
                         }
                     }
                     break;
-                case Messages.SetWiFiPassword:
+                case Commands.SetWiFiPassword:
                     expectedLength = 2;
                     if (args.Length != expectedLength)
                     {
@@ -252,7 +253,7 @@ namespace Tello.Controller.Messages
                 //case Commands.SetMissionPadDirection:
                 //    break;
 
-                case Messages.SetStationMode:
+                case Commands.SetStationMode:
                     expectedLength = 2;
                     if (args.Length != expectedLength)
                     {
@@ -272,7 +273,7 @@ namespace Tello.Controller.Messages
         /// <param name="command"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public static string ToMessage(this Messages command, params object[] args)
+        public static string ToMessage(this Commands command, params object[] args)
         {
             Validate(command, args);
 
@@ -280,37 +281,37 @@ namespace Tello.Controller.Messages
             switch (command)
             {
                 // no args
-                case Messages.EstablishLink:
+                case Commands.EnterSdkMode:
                     return "command";
-                case Messages.Takeoff:
+                case Commands.Takeoff:
                     return "takeoff";
-                case Messages.Land:
+                case Commands.Land:
                     return "land";
-                case Messages.Stop:
+                case Commands.Stop:
                     return "stop";
-                case Messages.StartVideo:
+                case Commands.StartVideo:
                     return "streamon";
-                case Messages.StopVideo:
+                case Commands.StopVideo:
                     return "streamoff";
-                case Messages.EmergencyStop:
+                case Commands.EmergencyStop:
                     return "emergency";
 
                 // 1 arg
-                case Messages.Up:
-                case Messages.Down:
-                case Messages.Left:
-                case Messages.Right:
-                case Messages.Forward:
-                case Messages.Back:
-                case Messages.Flip:
+                case Commands.Up:
+                case Commands.Down:
+                case Commands.Left:
+                case Commands.Right:
+                case Commands.Forward:
+                case Commands.Back:
+                case Commands.Flip:
                     return $"{command.ToString().ToLowerInvariant()} {args[0]}";
-                case Messages.ClockwiseTurn:
+                case Commands.ClockwiseTurn:
                     return $"cw {args[0]}";
-                case Messages.CounterClockwiseTurn:
+                case Commands.CounterClockwiseTurn:
                     return $"ccw {args[0]}";
 
-                case Messages.Go:
-                case Messages.Curve:
+                case Commands.Go:
+                case Commands.Curve:
                     message = $"{command.ToString().ToLowerInvariant()}";
                     for (var i = 0; i < args.Length; ++i)
                     {
@@ -319,7 +320,7 @@ namespace Tello.Controller.Messages
 
                     return message;
 
-                case Messages.SetSpeed:
+                case Commands.SetSpeed:
                     message = "speed";
                     for (var i = 0; i < args.Length; ++i)
                     {
@@ -328,7 +329,7 @@ namespace Tello.Controller.Messages
 
                     return message;
 
-                case Messages.SetRemoteControl:
+                case Commands.SetRemoteControl:
                     message = "rc";
                     for (var i = 0; i < args.Length; ++i)
                     {
@@ -337,7 +338,7 @@ namespace Tello.Controller.Messages
 
                     return message;
 
-                case Messages.SetWiFiPassword:
+                case Commands.SetWiFiPassword:
                     message = "wifi";
                     for (var i = 0; i < args.Length; ++i)
                     {
@@ -353,7 +354,7 @@ namespace Tello.Controller.Messages
                 //case Commands.SetMissionPadDirection:
                 //    return "mdirection";
 
-                case Messages.SetStationMode:
+                case Commands.SetStationMode:
                     message = "ap";
                     for (var i = 0; i < args.Length; ++i)
                     {
@@ -362,17 +363,17 @@ namespace Tello.Controller.Messages
 
                     return message;
 
-                case Messages.GetSpeed:
+                case Commands.GetSpeed:
                     return "speed?";
-                case Messages.GetBattery:
+                case Commands.GetBattery:
                     return "battery?";
-                case Messages.GetTime:
+                case Commands.GetTime:
                     return "time?";
-                case Messages.GetWiFiSnr:
+                case Commands.GetWiFiSnr:
                     return "wifi?";
-                case Messages.GetSdkVersion:
+                case Commands.GetSdkVersion:
                     return "sdk?";
-                case Messages.GetSerialNumber:
+                case Commands.GetSerialNumber:
                     return "sn?";
 
                 default:
@@ -380,7 +381,7 @@ namespace Tello.Controller.Messages
             }
         }
 
-        public static TimeSpan ToTimeout(this Messages command, params object[] args)
+        public static TimeSpan ToTimeout(this Commands command, params object[] args)
         {
             Validate(command, args);
 
@@ -390,58 +391,58 @@ namespace Tello.Controller.Messages
 
             switch (command)
             {
-                case Messages.SetSpeed:
-                case Messages.SetRemoteControl:
-                case Messages.SetWiFiPassword:
-                case Messages.SetStationMode:
-                case Messages.GetSpeed:
-                case Messages.GetBattery:
-                case Messages.GetTime:
-                case Messages.GetWiFiSnr:
-                case Messages.GetSdkVersion:
-                case Messages.GetSerialNumber:
-                case Messages.EstablishLink:
-                case Messages.StartVideo:
-                case Messages.StopVideo:
-                case Messages.EmergencyStop:
+                case Commands.SetSpeed:
+                case Commands.SetRemoteControl:
+                case Commands.SetWiFiPassword:
+                case Commands.SetStationMode:
+                case Commands.GetSpeed:
+                case Commands.GetBattery:
+                case Commands.GetTime:
+                case Commands.GetWiFiSnr:
+                case Commands.GetSdkVersion:
+                case Commands.GetSerialNumber:
+                case Commands.EnterSdkMode:
+                case Commands.StartVideo:
+                case Commands.StopVideo:
+                case Commands.EmergencyStop:
                     return TimeSpan.FromSeconds(5);
 
-                case Messages.Takeoff:
+                case Commands.Takeoff:
                     return TimeSpan.FromSeconds(15);
-                case Messages.Land:
+                case Commands.Land:
                     return TimeSpan.FromSeconds(30);
-                case Messages.Stop:
+                case Commands.Stop:
                     return TimeSpan.FromSeconds(10);
 
 
-                case Messages.Up:
-                case Messages.Down:
+                case Commands.Up:
+                case Commands.Down:
                     return TimeSpan.FromSeconds(10);
 
                 //todo: if I knew the speed in cm/s I could get a better idea how far
-                case Messages.Left:
-                case Messages.Right:
-                case Messages.Forward:
-                case Messages.Back:
+                case Commands.Left:
+                case Commands.Right:
+                case Commands.Forward:
+                case Commands.Back:
                     distance = (int)args[0]; //cm
                     return TimeSpan.FromSeconds(distance / avgspeed);
 
-                case Messages.Go:
+                case Commands.Go:
                     var x = (int)args[0];
                     var y = (int)args[1];
                     distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
                     return TimeSpan.FromSeconds(distance / avgspeed + 10);
 
-                case Messages.ClockwiseTurn:
-                case Messages.CounterClockwiseTurn:
+                case Commands.ClockwiseTurn:
+                case Commands.CounterClockwiseTurn:
                     var degrees = (int)args[0];
                     return TimeSpan.FromSeconds(degrees / arcspeed + 5);
 
-                case Messages.Flip:
+                case Commands.Flip:
                     return TimeSpan.FromSeconds(10);
 
                 //todo: I don't know how to take the args for this command to generate an arc from which I can determin distance
-                case Messages.Curve:
+                case Commands.Curve:
                     return TimeSpan.FromSeconds(30);
 
                 default:
@@ -449,26 +450,26 @@ namespace Tello.Controller.Messages
             }
         }
 
-        internal static Responses ToReponse(this Messages command)
+        internal static Responses ToReponse(this Commands command)
         {
             switch (command)
             {
-                case Messages.GetSpeed:
+                case Commands.GetSpeed:
                     return Responses.Speed;
 
-                case Messages.GetBattery:
+                case Commands.GetBattery:
                     return Responses.Battery;
 
-                case Messages.GetTime:
+                case Commands.GetTime:
                     return Responses.Time;
 
-                case Messages.GetWiFiSnr:
+                case Commands.GetWiFiSnr:
                     return Responses.WiFiSnr;
 
-                case Messages.GetSdkVersion:
+                case Commands.GetSdkVersion:
                     return Responses.SdkVersion;
 
-                case Messages.GetSerialNumber:
+                case Commands.GetSerialNumber:
                     return Responses.SerialNumber;
 
                 default:

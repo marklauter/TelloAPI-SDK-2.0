@@ -1,5 +1,5 @@
 ﻿using System;
-using Tello.Controller.Messages;
+using Tello.Messaging;
 
 namespace Tello.Controller
 {

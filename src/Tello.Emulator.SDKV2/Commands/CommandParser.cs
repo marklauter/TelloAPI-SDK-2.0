@@ -1,58 +1,8 @@
 ﻿using System.Collections.Generic;
+using Tello.Messaging;
 
 namespace Tello.Emulator.SDKV2
 {
-    internal enum Commands
-    {
-        // ------------------------
-        // control commands
-        // ------------------------
-        // no args
-        EnterSdkMode,
-        Takeoff,
-        Land,
-        Stop,
-        StartVideo,
-        StopVideo,
-        EmergencyStop,
-
-        // single args
-        Up,
-        Down,
-        Left,
-        Right,
-        Forward,
-        Back,
-        ClockwiseTurn,
-        CounterClockwiseTurn,
-        Flip,
-
-        // multi args
-        Go,
-        Curve,
-
-        // ------------------------
-        // set commands
-        // ------------------------
-        SetSpeed,
-        SetRemoteControl,
-        SetWiFiPassword,
-        SetMissionPadOn,
-        SetMissionPadOff,
-        SetMissionPadDirection,
-        SetStationMode,
-
-        // ------------------------
-        // read commands
-        // ------------------------
-        GetSpeed,
-        GetBattery,
-        GetTime,
-        GetWiFiSnr,
-        GetSdkVersion,
-        GetSerialNumber,
-    }
-
     //todo: add mission padd commands
     internal static class CommandParser
     {
@@ -109,9 +59,9 @@ namespace Tello.Emulator.SDKV2
             { "speed", Commands.SetSpeed },
             { "rc", Commands.SetRemoteControl },
             { "wifi", Commands.SetWiFiPassword },
-            { "mon", Commands.SetMissionPadOn },
-            { "moff", Commands.SetMissionPadOff },
-            { "mdirection", Commands.SetMissionPadDirection },
+            //{ "mon", Messages.SetMissionPadOn },
+            //{ "moff", Messages.SetMissionPadOff },
+            //{ "mdirection", Messages.SetMissionPadDirection },
             { "ap", Commands.SetStationMode },
             { "speed?", Commands.GetSpeed },
             { "battery?", Commands.GetBattery },

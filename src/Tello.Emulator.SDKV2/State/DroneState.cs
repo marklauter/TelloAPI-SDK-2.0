@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using Tello.Messaging;
 
 namespace Tello.Emulator.SDKV2
@@ -51,6 +50,7 @@ namespace Tello.Emulator.SDKV2
         {
             //mid:64;x:0;y:0;z:0;mpry:0,0,0;pitch:0;roll:0;yaw:0;vgx:0;vgy:0;vgz:-7;templ:60;temph:63;tof:20;h:10;bat:89;baro:-67.44;time:0;agx:14.00;agy:-12.00;agz:-1094.00;
             var builder = new StringBuilder();
+
             builder.Append($"mid:{MissionPadId};");
             builder.Append($"x:{MissionPadX};");
             builder.Append($"y:{MissionPadY};");
