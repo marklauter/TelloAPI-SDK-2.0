@@ -6,6 +6,7 @@ namespace Tello.Messaging
     {
         byte[] Data { get; }
         TimeSpan TimeElapsed { get; }
+        Guid RequestId { get; }
 
         bool IsSuccess { get; }
         string ErrorMessage { get; }

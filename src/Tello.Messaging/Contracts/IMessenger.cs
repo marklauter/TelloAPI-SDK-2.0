@@ -7,14 +7,12 @@ namespace Tello.Messaging
     {
         Disconnected,
         Connecting,
-        Connected,
-        Error
+        Connected
     }
 
     public interface IMessenger
     {
         MessengerStates State { get; }
-        void ClearError();
 
         void Connect(TimeSpan timeout, Action<IMessenger> continuation);
         void Disconnect(Action<IMessenger> continuation);

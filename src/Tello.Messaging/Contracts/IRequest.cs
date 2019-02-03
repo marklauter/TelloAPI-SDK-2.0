@@ -6,5 +6,6 @@ namespace Tello.Messaging
     {
         byte[] Data { get; }
         Guid Id { get; }
+        TimeSpan Timeout { get; }
     }
 }

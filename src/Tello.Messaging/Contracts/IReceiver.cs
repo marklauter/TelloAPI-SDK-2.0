@@ -2,21 +2,7 @@
 
 namespace Tello.Messaging
 {
-    //public sealed class Message
-    //{
-    //    public Message(byte[] data)
-    //    {
-    //        Data = data;
-    //    }
-    //    public byte[] Data { get; }
-
-    //    /// <summary>
-    //    /// set reply inside the received event to send a message back to tello
-    //    /// </summary>
-    //    public byte[] Reply { get; set; }
-    //}
-
-    public interface IMessage
+    public interface INotification
     {
         byte[] Data { get; }
 
@@ -29,15 +15,14 @@ namespace Tello.Messaging
     public enum ReceiverStates
     {
         Stopped,
-        Listening,
-        Error
+        Listening
     }
 
     public interface IReceiver
     {
         ReceiverStates State { get; }
 
-        void Listen(Action<IReceiver, IMessage> messageHandler);
+        void Listen(Action<IReceiver, INotification> messageHandler, Action<IReceiver, Exception> errorHandler);
         void Stop(Action<IMessenger> continuation);
     }
 }
