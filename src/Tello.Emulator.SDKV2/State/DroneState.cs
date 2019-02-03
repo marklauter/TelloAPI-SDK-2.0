@@ -8,11 +8,36 @@ namespace Tello.Emulator.SDKV2
 
     internal sealed class DroneState : IDroneState
     {
-        internal Stopwatch MotorClock { get; }
+        internal Stopwatch MotorClock { get; private set; }
+        private int _motorTime;
 
         internal DroneState()
         {
             MotorClock = new Stopwatch();
+        }
+
+        public static IDroneState Clone(IDroneState droneState)
+        {
+            return new DroneState
+            {
+                MotorClock = null,
+                _motorTime = droneState.MotorTimeInSeconds,
+                Pitch = droneState.Pitch,
+                Roll = droneState.Roll,
+                Yaw = droneState.Yaw,
+                SpeedX = droneState.SpeedX,
+                SpeedY = droneState.SpeedY,
+                SpeedZ = droneState.SpeedZ,
+                TemperatureLowC = droneState.TemperatureLowC,
+                TemperatureHighC = droneState.TemperatureHighC,
+                DistanceTraversedInCm = droneState.DistanceTraversedInCm,
+                HeightInCm = droneState.HeightInCm,
+                BatteryPercent = droneState.BatteryPercent,
+                BarometerInCm = droneState.BarometerInCm,
+                AccelerationX = droneState.AccelerationX,
+                AccelerationY = droneState.AccelerationY,
+                AccelerationZ = droneState.AccelerationZ,
+            };
         }
 
         public int MissionPadId => -1;
@@ -34,7 +59,9 @@ namespace Tello.Emulator.SDKV2
         public int HeightInCm { get; internal set; }
         public int BatteryPercent { get; internal set; }
         public double BarometerInCm { get; internal set; }
-        public int MotorTimeInSeconds => (int)MotorClock.Elapsed.TotalSeconds;
+        public int MotorTimeInSeconds => MotorClock != null
+            ? (int)MotorClock.Elapsed.TotalSeconds
+            : _motorTime;
         public double AccelerationX { get; internal set; }
         public double AccelerationY { get; internal set; }
         public double AccelerationZ { get; internal set; }

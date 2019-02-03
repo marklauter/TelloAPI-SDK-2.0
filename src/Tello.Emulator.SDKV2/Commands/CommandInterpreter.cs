@@ -1,19 +1,18 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Tello.Messaging;
 
 namespace Tello.Emulator.SDKV2
 {
-    internal class CommandInterpreter
+    internal sealed class CommandInterpreter
     {
-        public CommandInterpreter(FlightController flightController, ILog log)
+        public CommandInterpreter(StateController stateController)
         {
-            _flightController = flightController ?? throw new ArgumentNullException(nameof(flightController));
-            _log = log;
+            _stateController = stateController ?? throw new ArgumentNullException(nameof(stateController));
         }
 
-        private readonly ILog _log;
-        private readonly FlightController _flightController;
+        private readonly StateController _stateController;
 
         private readonly string _ok = "ok";
         private readonly string _error = "error";
@@ -23,95 +22,95 @@ namespace Tello.Emulator.SDKV2
             try
             {
                 var command = CommandParser.GetCommand(message);
-                if (!_flightController.IsSdkModeActivated && command != Commands.EnterSdkMode)
+                if (!_stateController.IsSdkModeActivated && command != Commands.EnterSdkMode)
                 {
-                    Log($"{nameof(CommandInterpreter)} - not in SDK mode. Message ignored: {message}");
+                    Debug.WriteLine($"{nameof(CommandInterpreter)} - not in SDK mode. Message ignored: {message}");
                     return null;
                 }
-                Log($"{nameof(CommandInterpreter)} - message received: {message}, command identified: {command}");
+                Debug.WriteLine($"{nameof(CommandInterpreter)} - message received: {message}, command identified: {command}");
 
                 var args = CommandParser.GetArgs(message);
                 switch (command)
                 {
                     case Commands.EnterSdkMode:
-                        if (!_flightController.IsSdkModeActivated)
+                        if (!_stateController.IsSdkModeActivated)
                         {
-                            await _flightController.EnterSdkMode();
+                            await _stateController.EnterSdkMode();
                             return _ok;
                         }
                         return null;
                     case Commands.Takeoff:
-                        await _flightController.TakeOff();
+                        await _stateController.TakeOff();
                         return _ok;
                     case Commands.Land:
-                        await _flightController.Land();
+                        await _stateController.Land();
                         return _ok;
                     case Commands.StartVideo:
-                        _flightController.StartVideo();
+                        _stateController.StartVideo();
                         return _ok;
                     case Commands.StopVideo:
-                        _flightController.StopVideo();
+                        _stateController.StopVideo();
                         return _ok;
                     case Commands.Stop:
                         return _ok;
                     case Commands.EmergencyStop:
-                        await _flightController.EmergencyStop();
+                        await _stateController.EmergencyStop();
                         return _ok;
                     case Commands.Up:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _flightController.GoUp(Int32.Parse(args[0]));
+                        await _stateController.GoUp(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Down:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _flightController.GoDown(Int32.Parse(args[0]));
+                        await _stateController.GoDown(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Left:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _flightController.GoLeft(Int32.Parse(args[0]));
+                        await _stateController.GoLeft(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Right:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _flightController.GoRight(Int32.Parse(args[0]));
+                        await _stateController.GoRight(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Forward:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _flightController.GoForward(Int32.Parse(args[0]));
+                        await _stateController.GoForward(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Back:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _flightController.GoBack(Int32.Parse(args[0]));
+                        await _stateController.GoBack(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.ClockwiseTurn:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _flightController.TurnClockwise(Int32.Parse(args[0]));
+                        await _stateController.TurnClockwise(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.CounterClockwiseTurn:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _flightController.TurnCounterClockwise(Int32.Parse(args[0]));
+                        await _stateController.TurnCounterClockwise(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Flip:
                     {
@@ -129,7 +128,7 @@ namespace Tello.Emulator.SDKV2
                         {
                             return _error;
                         }
-                        await _flightController.Go(
+                        await _stateController.Go(
                             Int32.Parse(args[0]),
                             Int32.Parse(args[1]),
                             Int32.Parse(args[2]),
@@ -152,7 +151,7 @@ namespace Tello.Emulator.SDKV2
                         {
                             return _error;
                         }
-                        await _flightController.SetSpeed(Int32.Parse(args[0]));
+                        await _stateController.SetSpeed(Int32.Parse(args[0]));
                         return _ok;
                     }
                     case Commands.SetRemoteControl:
@@ -218,11 +217,11 @@ namespace Tello.Emulator.SDKV2
                         return _ok;
                     }
                     case Commands.GetSpeed:
-                        return _flightController.GetSpeed().ToString();
+                        return _stateController.GetSpeed().ToString();
                     case Commands.GetBattery:
-                        return _flightController.GetBattery().ToString();
+                        return _stateController.GetBattery().ToString();
                     case Commands.GetTime:
-                        return _flightController.GetTime().ToString();
+                        return _stateController.GetTime().ToString();
                     case Commands.GetWiFiSnr:
                         return "snr";
                     case Commands.GetSdkVersion:
@@ -235,16 +234,8 @@ namespace Tello.Emulator.SDKV2
             }
             catch (Exception ex)
             {
-                Log($"{nameof(CommandInterpreter)} - {ex}");
+                Debug.WriteLine($"{nameof(CommandInterpreter)} - {ex}");
                 return _error;
-            }
-        }
-
-        public void Log(string meesage)
-        {
-            if (_log != null)
-            {
-                _log.WriteLine(meesage);
             }
         }
     }

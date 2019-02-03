@@ -29,15 +29,10 @@ namespace Tello.EmulatorConsole
             Console.WriteLine("Tello SDK V2.0 Emulator");
 
             byte[] videoData = null;
-            var videoFile = new FileStream("./AppData/tello.video", FileMode.Open);
-            try
+            using (var videoFile = new FileStream("./AppData/tello.video", FileMode.Open))
             {
                 videoData = new byte[videoFile.Length];
                 videoFile.Read(videoData, 0, videoData.Length);
-            }
-            finally
-            {
-                videoFile.Close();
             }
 
             Sample[] sampleDefs = null;
@@ -54,7 +49,7 @@ namespace Tello.EmulatorConsole
                 sampleDefsFile.Close();
             }
 
-            var drone = new Drone(new Log(), videoData, sampleDefs);
+            var drone = new Emulator.SDKV2.Tello(new Log(), videoData, sampleDefs);
             drone.PowerOn();
 
             Console.WriteLine("press any key to quit");

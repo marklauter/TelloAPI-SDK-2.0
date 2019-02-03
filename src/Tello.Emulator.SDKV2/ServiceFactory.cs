@@ -1,10 +1,12 @@
 ﻿using System;
 using Tello.Messaging;
 
-namespace Tello.Udp
+namespace Tello.Emulator.SDKV2
 {
     public sealed class ServiceFactory : IReceiverFactory<INotification>, IMessengerFactory
     {
+        private static Tello _tello = new Tello();
+
         public IMessenger CreateMessenger(params object[] args)
         {
             if (args == null || args.Length == 0)
@@ -22,7 +24,7 @@ namespace Tello.Udp
                 throw new ArgumentException($"{nameof(args)}[1] should be type of int.");
             }
 
-            return new Messenger((string)args[0], (int)args[1]);
+            return _tello;
         }
 
         public IReceiver<INotification> CreateReceiver(params object[] args)
@@ -37,7 +39,7 @@ namespace Tello.Udp
                 throw new ArgumentException($"{nameof(args)}[0] should be type of int.");
             }
 
-            return new Receiver((int)args[0]);
+            return _tello;
         }
     }
 }

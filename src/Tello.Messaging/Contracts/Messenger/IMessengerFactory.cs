@@ -1,4 +1,4 @@
-﻿namespace Tello.Messaging.Contracts
+﻿namespace Tello.Messaging
 {
     public interface IMessengerFactory
     {

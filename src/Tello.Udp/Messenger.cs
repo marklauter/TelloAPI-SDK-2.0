@@ -87,7 +87,7 @@ namespace Tello.Udp
                     }
 
                     var response = await _client.ReceiveAsync();
-                    return Response.FromUdpReceiveResult(request, response.Buffer, timer.Elapsed);
+                    return Response.FromData(request, response.Buffer, timer.Elapsed);
                 }
                 catch (Exception ex)
                 {

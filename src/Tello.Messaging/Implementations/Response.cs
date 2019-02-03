@@ -28,7 +28,7 @@ namespace Tello.Messaging
             };
         }
 
-        public static IResponse FromUdpReceiveResult(IRequest request, byte[] data, TimeSpan timeElapsed)
+        public static IResponse FromData(IRequest request, byte[] data, TimeSpan timeElapsed)
         {
             return new Response
             {

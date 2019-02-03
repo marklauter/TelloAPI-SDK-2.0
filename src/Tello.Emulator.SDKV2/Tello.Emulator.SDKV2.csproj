@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tello.Udp\Tello.Udp.csproj" />
+    <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj" />
   </ItemGroup>
 
 </Project>

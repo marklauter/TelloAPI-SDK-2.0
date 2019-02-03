@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Tello.Emulator.SDKV2
 {
-    public sealed class Position
+    internal sealed class Position
     {
         public int X { get; internal set; } = 0;
         public int Y { get; internal set; } = 0;
@@ -11,11 +12,16 @@ namespace Tello.Emulator.SDKV2
         public int Heading { get; internal set; } = 0;
     }
 
-    public sealed class FlightController
+    internal sealed class StateController 
     {
-        private StateServer _stateServer;
-        private DroneState _droneState;
-        private VideoServer _videoServer = new VideoServer();
+        public StateController(DroneState droneState)
+        {
+            _droneState = droneState;
+            _batteryTimer = new Timer(UpdateBattery, null, 10000, 10000);
+        }
+
+        private readonly DroneState _droneState;
+        private readonly Timer _batteryTimer;
 
         public bool IsVideoOn { get; private set; } = false;
         public int Speed { get; private set; } = 10;
@@ -40,9 +46,6 @@ namespace Tello.Emulator.SDKV2
                 if (!IsSdkModeActivated)
                 {
                     IsSdkModeActivated = true;
-                    _droneState = new DroneState();
-                    _stateServer = new StateServer(_droneState);
-                    _stateServer.Start();
                     await Task.Delay(TimeSpan.FromSeconds(1));
                 }
             });
@@ -271,7 +274,7 @@ namespace Tello.Emulator.SDKV2
             if (!IsVideoOn)
             {
                 IsVideoOn = true;
-                _videoServer.Start();
+                //_videoServer.Start();
             }
         }
 
@@ -280,7 +283,7 @@ namespace Tello.Emulator.SDKV2
             if (IsVideoOn)
             {
                 IsVideoOn = false;
-                _videoServer.Stop();
+                //_videoServer.Stop();
             }
         }
 
@@ -299,5 +302,19 @@ namespace Tello.Emulator.SDKV2
             return _droneState.MotorTimeInSeconds;
         }
 
+        private void UpdateBattery(object state)
+        {
+            //if (_poweredOn)
+            //{
+            //    // documentation says there's ~ 15 minuts of battery
+            //    _droneState.BatteryPercent = 100 - (int)((DateTime.Now - _poweredOnTime).TotalMinutes / 15.0 * 100);
+            //    Debug.WriteLine($"battery updated {_droneState.BatteryPercent}");
+            //    if (_droneState.BatteryPercent < 1)
+            //    {
+            //        PowerOff();
+            //        Debug.WriteLine("battery died");
+            //    }
+            //}
+        }
     }
 }

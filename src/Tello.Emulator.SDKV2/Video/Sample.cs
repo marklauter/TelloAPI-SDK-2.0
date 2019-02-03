@@ -2,7 +2,7 @@
 
 namespace Tello.Emulator.SDKV2
 {
-    public sealed class Sample
+    internal sealed class Sample
     {
         public bool IsFrameStart { get; set; }
         public long Offset { get; set; }
