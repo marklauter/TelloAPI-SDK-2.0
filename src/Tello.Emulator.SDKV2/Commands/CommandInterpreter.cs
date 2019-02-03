@@ -1,154 +1,162 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Tello.Messaging;
 
 namespace Tello.Emulator.SDKV2
 {
     internal class CommandInterpreter
     {
-        public CommandInterpreter(DroneState droneState, VideoServer videoServer, StateServer stateServer, ILog log)
+        public CommandInterpreter(FlightController flightController, ILog log)
         {
-            _droneState = droneState ?? throw new ArgumentNullException(nameof(droneState));
-            _videoServer = videoServer ?? throw new ArgumentNullException(nameof(videoServer));
-            _stateServer = stateServer ?? throw new ArgumentNullException(nameof(stateServer));
+            _flightController = flightController ?? throw new ArgumentNullException(nameof(flightController));
             _log = log;
         }
 
         private readonly ILog _log;
-        private readonly DroneState _droneState;
-        private readonly VideoServer _videoServer;
-        private readonly StateServer _stateServer;
-
-        private bool _inMissionPadMode = false;
+        private readonly FlightController _flightController;
 
         private readonly string _ok = "ok";
         private readonly string _error = "error";
 
-        public string Interpret(string message)
+        public async Task<string> InterpretAsync(string message)
         {
             try
             {
                 var command = CommandParser.GetCommand(message);
-                if (!_droneState.IsSdkModeActivated && command != Commands.EnterSdkMode)
+                if (!_flightController.IsSdkModeActivated && command != Commands.EnterSdkMode)
                 {
                     Log($"{nameof(CommandInterpreter)} - not in SDK mode. Message ignored: {message}");
                     return null;
                 }
                 Log($"{nameof(CommandInterpreter)} - message received: {message}, command identified: {command}");
 
+                var args = CommandParser.GetArgs(message);
                 switch (command)
                 {
                     case Commands.EnterSdkMode:
-                        if (!_droneState.IsSdkModeActivated)
+                        if (!_flightController.IsSdkModeActivated)
                         {
-                            _droneState.ActivateSdkMode();
-                            _stateServer.Start();
+                            await _flightController.EnterSdkMode();
                             return _ok;
                         }
                         return null;
                     case Commands.Takeoff:
-                        _droneState.TakeOff();
+                        await _flightController.TakeOff();
                         return _ok;
                     case Commands.Land:
-                        _droneState.Land();
+                        await _flightController.Land();
                         return _ok;
                     case Commands.StartVideo:
-                        if (!_droneState.IsVideoOn)
-                        {
-                            _droneState.StartVideo();
-                            _videoServer.Start();
-                        }
+                        _flightController.StartVideo();
                         return _ok;
                     case Commands.StopVideo:
-                        if (_droneState.IsVideoOn)
-                        {
-                            _videoServer.Stop();
-                            _droneState.StopVideo();
-                        }
+                        _flightController.StopVideo();
                         return _ok;
                     case Commands.Stop:
                         return _ok;
                     case Commands.EmergencyStop:
+                        await _flightController.EmergencyStop();
                         return _ok;
                     case Commands.Up:
-                    {
-                        var args = CommandParser.GetArgs(message);
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-
-                        _droneState.Height += Int32.Parse(args[0]);
+                        await _flightController.GoUp(Int32.Parse(args[0]));
                         return _ok;
-                    }
                     case Commands.Down:
-                    {
-                        var args = CommandParser.GetArgs(message);
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-
-                        _droneState.Height -= Int32.Parse(args[0]);
-                        if (_droneState.Height < 0)
-                        {
-                            _droneState.Height = 0;
-                        }
+                        await _flightController.GoDown(Int32.Parse(args[0]));
                         return _ok;
-                    }
                     case Commands.Left:
+                        if (args.Length != 1)
+                        {
+                            return _error;
+                        }
+                        await _flightController.GoLeft(Int32.Parse(args[0]));
+                        return _ok;
                     case Commands.Right:
+                        if (args.Length != 1)
+                        {
+                            return _error;
+                        }
+                        await _flightController.GoRight(Int32.Parse(args[0]));
+                        return _ok;
                     case Commands.Forward:
+                        if (args.Length != 1)
+                        {
+                            return _error;
+                        }
+                        await _flightController.GoForward(Int32.Parse(args[0]));
+                        return _ok;
                     case Commands.Back:
+                        if (args.Length != 1)
+                        {
+                            return _error;
+                        }
+                        await _flightController.GoBack(Int32.Parse(args[0]));
+                        return _ok;
                     case Commands.ClockwiseTurn:
+                        if (args.Length != 1)
+                        {
+                            return _error;
+                        }
+                        await _flightController.TurnClockwise(Int32.Parse(args[0]));
+                        return _ok;
                     case Commands.CounterClockwiseTurn:
+                        if (args.Length != 1)
+                        {
+                            return _error;
+                        }
+                        await _flightController.TurnCounterClockwise(Int32.Parse(args[0]));
+                        return _ok;
                     case Commands.Flip:
                     {
-                        var args = CommandParser.GetArgs(message);
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        // there's no state to manage for horizontal movements
+                        // there's no state to manage for zero sum movements
+                        await Task.Delay(TimeSpan.FromSeconds(1));
                         return _ok;
                     }
                     case Commands.Go:
                     {
-                        var args = CommandParser.GetArgs(message);
                         if (args.Length != 4)
                         {
                             return _error;
                         }
-                        // there's no state to manage for horizontal movements
+                        await _flightController.Go(
+                            Int32.Parse(args[0]),
+                            Int32.Parse(args[1]),
+                            Int32.Parse(args[2]),
+                            Int32.Parse(args[3]));
                         return _ok;
                     }
                     case Commands.Curve:
                     {
-                        var args = CommandParser.GetArgs(message);
                         if (args.Length != 7)
                         {
                             return _error;
                         }
-                        // there's no state to manage for horizontal movements
+                        //todo: implement curve in _flightController
+                        await Task.Delay(TimeSpan.FromSeconds(1));
                         return _ok;
                     }
                     case Commands.SetSpeed:
                     {
-                        var args = CommandParser.GetArgs(message);
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        var speed = Int32.Parse(args[0]);
-                        if (speed < 10 || speed > 100)
-                        {
-                            return _error;
-                        }
-                        _droneState.Speed = speed;
+                        await _flightController.SetSpeed(Int32.Parse(args[0]));
                         return _ok;
                     }
                     case Commands.SetRemoteControl:
                     {
-                        var args = CommandParser.GetArgs(message);
                         if (args.Length != 4)
                         {
                             return _error;
@@ -160,55 +168,49 @@ namespace Tello.Emulator.SDKV2
                         {
                             return _error;
                         }
-
-                        _droneState.Height += Int32.Parse(args[2]);
-                        if (_droneState.Height < 0)
-                        {
-                            _droneState.Height = 0;
-                        }
                         return _ok;
                     }
                     case Commands.SetWiFiPassword:
                     {
-                        var args = CommandParser.GetArgs(message);
                         if (args.Length != 2)
                         {
                             return _error;
                         }
                         return _ok;
                     }
-                    case Commands.SetMissionPadOn:
-                        //if (_droneState.MissionPadDected == -1)
-                        //{
-                        //    return _error;
-                        //}
-                        _inMissionPadMode = true;
-                        return _ok;
-                    case Commands.SetMissionPadOff:
-                        _inMissionPadMode = false;
-                        return _ok;
-                    case Commands.SetMissionPadDirection:
-                        if (!_inMissionPadMode)
-                        {
-                            return null;
-                        }
-                        else
-                        {
-                            var args = CommandParser.GetArgs(message);
-                            if (args.Length != 1)
-                            {
-                                return _error;
-                            }
-                            var direction = Int32.Parse(args[0]);
-                            if (direction < 0 || direction > 2)
-                            {
-                                return _error;
-                            }
-                            return _ok;
-                        }
+                    #region mission pad
+                    //case Commands.SetMissionPadOn:
+                    //    //if (_droneState.MissionPadDected == -1)
+                    //    //{
+                    //    //    return _error;
+                    //    //}
+                    //    _inMissionPadMode = true;
+                    //    return _ok;
+                    //case Commands.SetMissionPadOff:
+                    //    _inMissionPadMode = false;
+                    //    return _ok;
+                    //case Commands.SetMissionPadDirection:
+                    //    if (!_inMissionPadMode)
+                    //    {
+                    //        return null;
+                    //    }
+                    //    else
+                    //    {
+                    //        var args = CommandParser.GetArgs(message);
+                    //        if (args.Length != 1)
+                    //        {
+                    //            return _error;
+                    //        }
+                    //        var direction = Int32.Parse(args[0]);
+                    //        if (direction < 0 || direction > 2)
+                    //        {
+                    //            return _error;
+                    //        }
+                    //        return _ok;
+                    //    }
+                    #endregion
                     case Commands.SetStationMode:
                     {
-                        var args = CommandParser.GetArgs(message);
                         if (args.Length != 2)
                         {
                             return _error;
@@ -216,17 +218,11 @@ namespace Tello.Emulator.SDKV2
                         return _ok;
                     }
                     case Commands.GetSpeed:
-                        return _droneState.Speed.ToString();
+                        return _flightController.GetSpeed().ToString();
                     case Commands.GetBattery:
-                        return _droneState.BatteryPercentage.ToString();
+                        return _flightController.GetBattery().ToString();
                     case Commands.GetTime:
-                        //todo: see what format the tello returns
-                        if (_droneState.IsFlying)
-                        {
-                            return _droneState.TimeOfFlight.ToString();
-                            //return (DateTime.Now - _takeoffTime).ToString("hh:mm:ss");
-                        }
-                        return "0";
+                        return _flightController.GetTime().ToString();
                     case Commands.GetWiFiSnr:
                         return "snr";
                     case Commands.GetSdkVersion:

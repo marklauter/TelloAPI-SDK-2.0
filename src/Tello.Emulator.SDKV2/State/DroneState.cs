@@ -1,19 +1,27 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using Tello.Messaging;
 
 namespace Tello.Emulator.SDKV2
 {
     //https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf
 
-    public sealed class DroneState : IDroneState
+    internal sealed class DroneState : IDroneState
     {
-        public int MissionPadId { get; internal set; }
-        public int MissionPadX { get; internal set; }
-        public int MissionPadY { get; internal set; }
-        public int MissionPadZ { get; internal set; }
-        public int MissionPadPitch { get; internal set; }
-        public int MissionPadRoll { get; internal set; }
-        public int MissionPadYaw { get; internal set; }
+        internal Stopwatch MotorClock { get; }
+
+        internal DroneState()
+        {
+            MotorClock = new Stopwatch();
+        }
+
+        public int MissionPadId => -1;
+        public int MissionPadX => 0;
+        public int MissionPadY => 0;
+        public int MissionPadZ => 0;
+        public int MissionPadPitch => 0;
+        public int MissionPadRoll => 0;
+        public int MissionPadYaw => 0;
         public int Pitch { get; internal set; }
         public int Roll { get; internal set; }
         public int Yaw { get; internal set; }
@@ -26,7 +34,7 @@ namespace Tello.Emulator.SDKV2
         public int HeightInCm { get; internal set; }
         public int BatteryPercent { get; internal set; }
         public double BarometerInCm { get; internal set; }
-        public int MotorTimeInSeconds { get; internal set; }
+        public int MotorTimeInSeconds => (int)MotorClock.Elapsed.TotalSeconds;
         public double AccelerationX { get; internal set; }
         public double AccelerationY { get; internal set; }
         public double AccelerationZ { get; internal set; }

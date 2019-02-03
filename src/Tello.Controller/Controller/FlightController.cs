@@ -425,8 +425,11 @@ namespace Tello.Controller
         /// </summary>
         public void Land()
         {
-            FlightState = FlightStates.Landing;
-            EnqueueCommand(Commands.Land);
+            if (FlightState == FlightStates.InFlight || FlightState == FlightStates.Takingoff)
+            {
+                FlightState = FlightStates.Landing;
+                EnqueueCommand(Commands.Land);
+            }
         }
 
         /// <summary>
