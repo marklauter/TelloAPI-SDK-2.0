@@ -104,9 +104,9 @@ namespace Tello.Controller
 
         #region command queue
 
-        private readonly ConcurrentQueue<Tuple<Commands, string, TimeSpan>> _messageQueue = new ConcurrentQueue<Tuple<Commands, string, TimeSpan>>();
+        private readonly ConcurrentQueue<Tuple<Messages.Messages, string, TimeSpan>> _messageQueue = new ConcurrentQueue<Tuple<Messages.Messages, string, TimeSpan>>();
 
-        private bool IsResponseOk(Commands command, string responseMessage)
+        private bool IsResponseOk(Messages.Messages command, string responseMessage)
         {
             if (String.IsNullOrEmpty(responseMessage))
             {
@@ -116,36 +116,36 @@ namespace Tello.Controller
             switch (command)
             {
                 // ok / error commands
-                case Commands.EstablishLink:
-                case Commands.Takeoff:
-                case Commands.Land:
-                case Commands.Stop:
-                case Commands.StartVideo:
-                case Commands.StopVideo:
-                case Commands.EmergencyStop:
-                case Commands.Up:
-                case Commands.Down:
-                case Commands.Left:
-                case Commands.Right:
-                case Commands.Forward:
-                case Commands.Back:
-                case Commands.ClockwiseTurn:
-                case Commands.CounterClockwiseTurn:
-                case Commands.Flip:
-                case Commands.Go:
-                case Commands.Curve:
-                case Commands.SetSpeed:
-                case Commands.SetRemoteControl:
-                case Commands.SetWiFiPassword:
-                case Commands.SetStationMode:
+                case Messages.Messages.EstablishLink:
+                case Messages.Messages.Takeoff:
+                case Messages.Messages.Land:
+                case Messages.Messages.Stop:
+                case Messages.Messages.StartVideo:
+                case Messages.Messages.StopVideo:
+                case Messages.Messages.EmergencyStop:
+                case Messages.Messages.Up:
+                case Messages.Messages.Down:
+                case Messages.Messages.Left:
+                case Messages.Messages.Right:
+                case Messages.Messages.Forward:
+                case Messages.Messages.Back:
+                case Messages.Messages.ClockwiseTurn:
+                case Messages.Messages.CounterClockwiseTurn:
+                case Messages.Messages.Flip:
+                case Messages.Messages.Go:
+                case Messages.Messages.Curve:
+                case Messages.Messages.SetSpeed:
+                case Messages.Messages.SetRemoteControl:
+                case Messages.Messages.SetWiFiPassword:
+                case Messages.Messages.SetStationMode:
                     return responseMessage.ToLowerInvariant() == "ok";
 
-                case Commands.GetSpeed:
-                case Commands.GetBattery:
-                case Commands.GetTime:
-                case Commands.GetWiFiSnr:
-                case Commands.GetSdkVersion:
-                case Commands.GetSerialNumber:
+                case Messages.Messages.GetSpeed:
+                case Messages.Messages.GetBattery:
+                case Messages.Messages.GetTime:
+                case Messages.Messages.GetWiFiSnr:
+                case Messages.Messages.GetSdkVersion:
+                case Messages.Messages.GetSerialNumber:
                     return responseMessage.ToLowerInvariant() != "error";
 
                 default:
@@ -153,65 +153,65 @@ namespace Tello.Controller
             }
         }
 
-        private bool IsValueCommand(Commands command)
+        private bool IsValueCommand(Messages.Messages command)
         {
             switch (command)
             {
-                case Commands.GetSpeed:
-                case Commands.GetBattery:
-                case Commands.GetTime:
-                case Commands.GetWiFiSnr:
-                case Commands.GetSdkVersion:
-                case Commands.GetSerialNumber:
+                case Messages.Messages.GetSpeed:
+                case Messages.Messages.GetBattery:
+                case Messages.Messages.GetTime:
+                case Messages.Messages.GetWiFiSnr:
+                case Messages.Messages.GetSdkVersion:
+                case Messages.Messages.GetSerialNumber:
                     return true;
                 default:
                     return false;
             }
         }
 
-        private void HandleResponse(Commands command, string responseValue)
+        private void HandleResponse(Messages.Messages command, string responseValue)
         {
             try
             {
                 switch (command)
                 {
-                    case Commands.EstablishLink:
+                    case Messages.Messages.EstablishLink:
                         ConnectionState = ConnectionStates.CommandLinkEstablished;
                         ProcessMessageQueue();
                         RunKeepAlive();
                         break;
-                    case Commands.Takeoff:
+                    case Messages.Messages.Takeoff:
                         FlightState = FlightStates.InFlight;
                         break;
-                    case Commands.EmergencyStop:
-                    case Commands.Land:
+                    case Messages.Messages.EmergencyStop:
+                    case Messages.Messages.Land:
                         FlightState = FlightStates.StandingBy;
                         break;
-                    case Commands.Stop:
+                    case Messages.Messages.Stop:
                         // hovers in air - no state change
                         break;
-                    case Commands.StartVideo:
+                    case Messages.Messages.StartVideo:
                         VideoState = VideoStates.Streaming;
                         break;
-                    case Commands.StopVideo:
+                    case Messages.Messages.StopVideo:
                         VideoState = VideoStates.Stopped;
                         break;
-                    case Commands.GetSpeed:
+                    case Messages.Messages.GetSpeed:
                         ReportedSpeed = Int32.Parse(responseValue);
                         break;
-                    case Commands.GetBattery:
+                    case Messages.Messages.GetBattery:
                         ReportedBattery = Int32.Parse(responseValue);
                         break;
-                    case Commands.GetTime:
+                    case Messages.Messages.GetTime:
                         ReportedTime = Int32.Parse(responseValue);
                         break;
-                    case Commands.GetWiFiSnr:
+                    case Messages.Messages.GetWiFiSnr:
                         ReportedWiFiSnr = responseValue;
                         break;
-                    case Commands.GetSdkVersion:
+                    case Messages.Messages.GetSdkVersion:
                         ReportedSdkVersion = responseValue;
                         break;
-                    case Commands.GetSerialNumber:
+                    case Messages.Messages.GetSerialNumber:
                         ReportedSerialNumber = responseValue;
                         break;
                 }
@@ -228,7 +228,7 @@ namespace Tello.Controller
         /// </summary>
         /// <param name="commandTuple"></param>
         /// <returns></returns>
-        private async Task SendMessage(Tuple<Commands, string, TimeSpan> commandTuple)
+        private async Task SendMessage(Tuple<Messages.Messages, string, TimeSpan> commandTuple)
         {
             if (commandTuple == null)
             {
@@ -295,7 +295,7 @@ namespace Tello.Controller
         /// </summary>
         /// <param name="commandTuple"></param>
         /// <returns>true if no exceptions were encountered, else false</returns>
-        private async Task<bool> TrySendMessage(Tuple<Commands, string, TimeSpan> commandTuple)
+        private async Task<bool> TrySendMessage(Tuple<Messages.Messages, string, TimeSpan> commandTuple)
         {
             var result = false;
             try
@@ -351,7 +351,7 @@ namespace Tello.Controller
                     await Task.Delay(1000 * 10);
                     if (_messageQueue.IsEmpty)
                     {
-                        EnqueueCommand(Commands.GetBattery);
+                        EnqueueCommand(Messages.Messages.GetBattery);
                     }
                 }
             });
@@ -363,12 +363,12 @@ namespace Tello.Controller
         /// <param name="command"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        private Tuple<Commands, string, TimeSpan> CreateCommand(Commands command, params object[] args)
+        private Tuple<Messages.Messages, string, TimeSpan> CreateCommand(Messages.Messages command, params object[] args)
         {
-            return new Tuple<Commands, string, TimeSpan>(command, command.ToMessage(args), command.ToTimeout(args));
+            return new Tuple<Messages.Messages, string, TimeSpan>(command, command.ToMessage(args), command.ToTimeout(args));
         }
 
-        private void EnqueueCommand(Commands command, params object[] args)
+        private void EnqueueCommand(Messages.Messages command, params object[] args)
         {
             if (ConnectionState != ConnectionStates.Disconnected)
             {
@@ -397,7 +397,7 @@ namespace Tello.Controller
                 _stateReceiver.Listen(StateReceiverNotificationHandler, StateReceiverErrorHandler);
                 _messenger.Connect();
                 ConnectionState = ConnectionStates.Connected;
-                if (!await TrySendMessage(CreateCommand(Commands.EstablishLink)))
+                if (!await TrySendMessage(CreateCommand(Messages.Messages.EstablishLink)))
                 {
                     ConnectionState = ConnectionStates.Disconnected;
                 }
@@ -418,7 +418,7 @@ namespace Tello.Controller
         public void TakeOff()
         {
             FlightState = FlightStates.Takingoff;
-            EnqueueCommand(Commands.Takeoff);
+            EnqueueCommand(Messages.Messages.Takeoff);
         }
 
         /// <summary>
@@ -427,7 +427,7 @@ namespace Tello.Controller
         public void Land()
         {
             FlightState = FlightStates.Landing;
-            EnqueueCommand(Commands.Land);
+            EnqueueCommand(Messages.Messages.Land);
         }
 
         /// <summary>
@@ -436,7 +436,7 @@ namespace Tello.Controller
         public async void Stop()
         {
             // stop and emergency can be sent immediately - no need to wait
-            await TrySendMessage(CreateCommand(Commands.Land));
+            await TrySendMessage(CreateCommand(Messages.Messages.Land));
         }
 
         /// <summary>
@@ -446,7 +446,7 @@ namespace Tello.Controller
         {
             // stop and emergency can be sent immediately - no need to wait
             FlightState = FlightStates.EmergencyStop;
-            await TrySendMessage(CreateCommand(Commands.EmergencyStop));
+            await TrySendMessage(CreateCommand(Messages.Messages.EmergencyStop));
         }
 
         /// <summary>
@@ -460,7 +460,7 @@ namespace Tello.Controller
 
                 _videoReceiver.Listen(VideoReceiverNotificationHandler, VideoReceiverErrorHandler);
 
-                if (!await TrySendMessage(CreateCommand(Commands.StartVideo)))
+                if (!await TrySendMessage(CreateCommand(Messages.Messages.StartVideo)))
                 {
                     _videoReceiver.Stop();
                     VideoState = VideoStates.Stopped;
@@ -476,7 +476,7 @@ namespace Tello.Controller
             if (VideoState != VideoStates.Stopped)
             {
                 _videoReceiver.Stop();
-                await TrySendMessage(CreateCommand(Commands.StopVideo));
+                await TrySendMessage(CreateCommand(Messages.Messages.StopVideo));
             }
         }
 
@@ -486,7 +486,7 @@ namespace Tello.Controller
         /// <param name="cm">20 to 500</param>
         public void GoUp(int cm)
         {
-            EnqueueCommand(Commands.Up, cm);
+            EnqueueCommand(Messages.Messages.Up, cm);
         }
 
         /// <summary>
@@ -495,7 +495,7 @@ namespace Tello.Controller
         /// <param name="cm">20 to 500</param>
         public void GoDown(int cm)
         {
-            EnqueueCommand(Commands.Down, cm);
+            EnqueueCommand(Messages.Messages.Down, cm);
         }
 
         /// <summary>
@@ -504,7 +504,7 @@ namespace Tello.Controller
         /// <param name="cm">20 to 500</param>
         public void GoLeft(int cm)
         {
-            EnqueueCommand(Commands.Left, cm);
+            EnqueueCommand(Messages.Messages.Left, cm);
         }
 
         /// <summary>
@@ -513,7 +513,7 @@ namespace Tello.Controller
         /// <param name="cm">20 to 500</param>
         public void GoRight(int cm)
         {
-            EnqueueCommand(Commands.Right, cm);
+            EnqueueCommand(Messages.Messages.Right, cm);
         }
 
         /// <summary>
@@ -522,7 +522,7 @@ namespace Tello.Controller
         /// <param name="cm">20 to 500</param>
         public void GoForward(int cm)
         {
-            EnqueueCommand(Commands.Forward, cm);
+            EnqueueCommand(Messages.Messages.Forward, cm);
         }
 
         /// <summary>
@@ -531,7 +531,7 @@ namespace Tello.Controller
         /// <param name="cm">20 to 500</param>
         public void GoBackward(int cm)
         {
-            EnqueueCommand(Commands.Back, cm);
+            EnqueueCommand(Messages.Messages.Back, cm);
         }
 
         /// <summary>
@@ -540,7 +540,7 @@ namespace Tello.Controller
         /// <param name="degrees">1 to 360</param>
         public void TurnClockwise(int degress)
         {
-            EnqueueCommand(Commands.ClockwiseTurn, degress);
+            EnqueueCommand(Messages.Messages.ClockwiseTurn, degress);
         }
 
         /// <summary>
@@ -558,7 +558,7 @@ namespace Tello.Controller
         /// <param name="degrees">1 to 360</param>
         public void TurnCounterClockwise(int degress)
         {
-            EnqueueCommand(Commands.CounterClockwiseTurn, degress);
+            EnqueueCommand(Messages.Messages.CounterClockwiseTurn, degress);
         }
 
         /// <summary>
@@ -576,7 +576,7 @@ namespace Tello.Controller
         /// <param name="FlipDirections">FlipDirections.Left, FlipDirections.Right, FlipDirections.Front, FlipDirections.Back</param>
         public void Flip(FlipDirections direction)
         {
-            EnqueueCommand(Commands.Flip, direction.ToChar());
+            EnqueueCommand(Messages.Messages.Flip, direction.ToChar());
         }
 
         /// <summary>
@@ -588,7 +588,7 @@ namespace Tello.Controller
         /// <param name="speed">cm/s, 10 to 100</param>
         public void Go(int x, int y, int z, int speed)
         {
-            EnqueueCommand(Commands.Go, x, y, z, speed);
+            EnqueueCommand(Messages.Messages.Go, x, y, z, speed);
         }
 
         /// <summary>
@@ -603,7 +603,7 @@ namespace Tello.Controller
         /// <param name="speed">cm/s, 10 to 60</param>
         public void Curve(int x1, int y1, int z1, int x2, int y2, int z2, int speed)
         {
-            EnqueueCommand(Commands.Curve, x1, y1, z1, x2, y2, z2, speed);
+            EnqueueCommand(Messages.Messages.Curve, x1, y1, z1, x2, y2, z2, speed);
         }
 
         public enum ClockDirections
@@ -666,7 +666,7 @@ namespace Tello.Controller
         /// <param name="speed">cm/s, 10 to 100</param>
         public void SetSpeed(int speed)
         {
-            EnqueueCommand(Commands.SetSpeed, speed);
+            EnqueueCommand(Messages.Messages.SetSpeed, speed);
         }
 
         /// <summary>
@@ -678,17 +678,17 @@ namespace Tello.Controller
         /// <param name="yaw">-100 to 100</param>
         public void Set4ChannelRC(int leftRight, int forwardBackward, int upDown, int yaw)
         {
-            EnqueueCommand(Commands.SetRemoteControl, leftRight, forwardBackward, upDown, yaw);
+            EnqueueCommand(Messages.Messages.SetRemoteControl, leftRight, forwardBackward, upDown, yaw);
         }
 
         public void SetWIFIPassword(string ssid, string password)
         {
-            EnqueueCommand(Commands.SetWiFiPassword, ssid, password);
+            EnqueueCommand(Messages.Messages.SetWiFiPassword, ssid, password);
         }
 
         public void SetStationMode(string ssid, string password)
         {
-            EnqueueCommand(Commands.SetStationMode, ssid, password);
+            EnqueueCommand(Messages.Messages.SetStationMode, ssid, password);
         }
 
         /// <summary>
@@ -696,7 +696,7 @@ namespace Tello.Controller
         /// </summary>
         public void GetSpeed()
         {
-            EnqueueCommand(Commands.GetSpeed);
+            EnqueueCommand(Messages.Messages.GetSpeed);
         }
 
         /// <summary>
@@ -704,27 +704,27 @@ namespace Tello.Controller
         /// </summary>
         public void GetBattery()
         {
-            EnqueueCommand(Commands.GetBattery);
+            EnqueueCommand(Messages.Messages.GetBattery);
         }
 
         public void GetTime()
         {
-            EnqueueCommand(Commands.GetTime);
+            EnqueueCommand(Messages.Messages.GetTime);
         }
 
         public void GetWIFISNR()
         {
-            EnqueueCommand(Commands.GetWiFiSnr);
+            EnqueueCommand(Messages.Messages.GetWiFiSnr);
         }
 
         public void GetSdkVersion()
         {
-            EnqueueCommand(Commands.GetSdkVersion);
+            EnqueueCommand(Messages.Messages.GetSdkVersion);
         }
 
         public void GetWiFiSerialNumber()
         {
-            EnqueueCommand(Commands.GetSerialNumber);
+            EnqueueCommand(Messages.Messages.GetSerialNumber);
         }
         #endregion 
     }

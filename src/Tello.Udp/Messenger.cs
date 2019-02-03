@@ -11,7 +11,7 @@ namespace Tello.Udp
 {
     public sealed class Messenger : IMessenger
     {
-        public Messenger(string ip, int port) : base()
+        internal Messenger(string ip, int port) : base()
         {
             if (String.IsNullOrEmpty(ip))
             {

@@ -5,11 +5,10 @@ namespace Tello.Controller.Video
 {
     public sealed class VideoReceiver : IReceiver<Frame>
     {
-        public VideoReceiver(double frameRate, int secondsToBuffer, IReceiver<INotification> receiver)
+        public VideoReceiver(IReceiver<INotification> receiver, double frameRate, int secondsToBuffer)
         {
+            _receiver = receiver ?? throw new ArgumentNullException(nameof(receiver));
             _frameComposer = new FrameComposer(frameRate, secondsToBuffer);
-
-            _receiver = receiver;
         }
 
         private readonly FrameComposer _frameComposer;

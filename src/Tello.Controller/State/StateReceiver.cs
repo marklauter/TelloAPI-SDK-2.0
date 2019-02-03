@@ -7,7 +7,7 @@ namespace Tello.Controller.State
     {
         public StateReceiver(IReceiver<INotification> receiver)
         {
-            _receiver = receiver;
+            _receiver = receiver ?? throw new ArgumentNullException(nameof(receiver));
         }
 
         private readonly IReceiver<INotification> _receiver;

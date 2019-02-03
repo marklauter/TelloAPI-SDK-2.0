@@ -19,7 +19,7 @@
         Back
     }
 
-    public enum Commands
+    public enum Messages
     {
         // ------------------------
         // control commands

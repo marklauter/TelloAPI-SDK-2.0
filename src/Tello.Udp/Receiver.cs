@@ -7,7 +7,7 @@ namespace Tello.Udp
 {
     public sealed class Receiver : IReceiver<INotification>
     {
-        public Receiver(int port) 
+        internal Receiver(int port) 
         {
             _port = port;
         }
