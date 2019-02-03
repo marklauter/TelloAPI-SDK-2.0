@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Tello.Controller.Contracts
+namespace Tello.Messaging
 {
     public interface IResponse
     {
         byte[] Data { get; }
-        TimeSpan Elapsed { get; }
+        TimeSpan TimeElapsed { get; }
 
         bool IsSuccess { get; }
         string ErrorMessage { get; }

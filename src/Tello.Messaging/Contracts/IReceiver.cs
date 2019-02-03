@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tello.Controller.Contracts
+namespace Tello.Messaging
 {
     //public sealed class Message
     //{
