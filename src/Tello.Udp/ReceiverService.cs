@@ -5,9 +5,9 @@ using Tello.Messaging;
 
 namespace Tello.Udp
 {
-    public sealed class Receiver : IReceiver<INotification>
+    internal sealed class ReceiverService : IRelay<INotification>
     {
-        internal Receiver(int port) 
+        internal ReceiverService(int port) 
         {
             _port = port;
         }
@@ -16,7 +16,7 @@ namespace Tello.Udp
 
         public ReceiverStates State { get; private set; }
 
-        public async void Listen(Action<IReceiver<INotification>, INotification> messageHandler, Action<IReceiver<INotification>, Exception> errorHandler)
+        public async void Listen(Action<IRelay<INotification>, INotification> messageHandler, Action<IRelay<INotification>, Exception> errorHandler)
         {
             State = ReceiverStates.Listening;
 

@@ -3,7 +3,7 @@ using Tello.Messaging;
 
 namespace Tello.Udp
 {
-    public sealed class ServiceFactory : IReceiverFactory<INotification>, IMessengerFactory
+    public sealed class ServiceFactory : IRelayFactory<INotification>, IMessengerFactory
     {
         public IMessenger CreateMessenger(params object[] args)
         {
@@ -22,10 +22,10 @@ namespace Tello.Udp
                 throw new ArgumentException($"{nameof(args)}[1] should be type of int.");
             }
 
-            return new Messenger((string)args[0], (int)args[1]);
+            return new MessengerService((string)args[0], (int)args[1]);
         }
 
-        public IReceiver<INotification> CreateReceiver(params object[] args)
+        public IRelay<INotification> CreateReceiver(params object[] args)
         {
             if (args == null || args.Length == 0)
             {
@@ -37,7 +37,7 @@ namespace Tello.Udp
                 throw new ArgumentException($"{nameof(args)}[0] should be type of int.");
             }
 
-            return new Receiver((int)args[0]);
+            return new ReceiverService((int)args[0]);
         }
     }
 }

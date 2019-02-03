@@ -3,30 +3,30 @@ using Tello.Messaging;
 
 namespace Tello.Controller.Video
 {
-    public sealed class VideoReceiver : IReceiver<Frame>
+    internal sealed class VideoReceiver : IRelay<IVideoFrame>
     {
-        public VideoReceiver(IReceiver<INotification> receiver, double frameRate, int secondsToBuffer)
+        public VideoReceiver(IRelay<INotification> receiver, double frameRate, int secondsToBuffer)
         {
             _receiver = receiver ?? throw new ArgumentNullException(nameof(receiver));
             _frameComposer = new FrameComposer(frameRate, secondsToBuffer);
         }
 
         private readonly FrameComposer _frameComposer;
-        private readonly IReceiver<INotification> _receiver;
+        private readonly IRelay<INotification> _receiver;
 
         public FrameCollection GetSample(TimeSpan timeout)
         {
             return _frameComposer.GetFrames(timeout);
         }
 
-        public bool TryReadFrame(out Frame frame, TimeSpan timeout)
+        public bool TryReadFrame(out VideoFrame frame, TimeSpan timeout)
         {
             return _frameComposer.TryGetFrame(out frame, timeout);
         }
 
         public ReceiverStates State => _receiver.State;
 
-        public void Listen(Action<IReceiver<Frame>, Frame> messageHandler, Action<IReceiver<Frame>, Exception> errorHandler)
+        public void Listen(Action<IRelay<IVideoFrame>, IVideoFrame> messageHandler, Action<IRelay<IVideoFrame>, Exception> errorHandler)
         {
             _receiver.Listen(
                 (receiver, notification) =>

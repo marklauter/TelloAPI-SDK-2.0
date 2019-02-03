@@ -12,7 +12,7 @@ namespace Tello.Controller.Video
             _frameRate = frameRate;
             _frameDuration = TimeSpan.FromSeconds(1 / _frameRate);
 
-            _frames = new RingBuffer<Frame>((int)(_frameRate * secondsToBuffer));
+            _frames = new RingBuffer<VideoFrame>((int)(_frameRate * secondsToBuffer));
         }
 
         #region fields
@@ -22,7 +22,7 @@ namespace Tello.Controller.Video
         private MemoryStream _stream = null;
         private readonly TimeSpan _frameDuration;
         private readonly double _frameRate;
-        private readonly RingBuffer<Frame> _frames;
+        private readonly RingBuffer<VideoFrame> _frames;
         #endregion
 
         #region frame composition
@@ -32,16 +32,16 @@ namespace Tello.Controller.Video
             return sample.Length > 4 && sample[0] == 0x00 && sample[1] == 0x00 && sample[2] == 0x00 && sample[3] == 0x01;
         }
 
-        private Frame QueueFrame(MemoryStream stream, long frameIndex)
+        private VideoFrame QueueFrame(MemoryStream stream, long frameIndex)
         {
-            var frame = new Frame(stream.ToArray(), frameIndex, TimeSpan.FromSeconds(frameIndex / _frameRate), _frameDuration);
+            var frame = new VideoFrame(stream.ToArray(), frameIndex, TimeSpan.FromSeconds(frameIndex / _frameRate), _frameDuration);
             _frames.Push(frame);
             return frame;
         }
 
-        private Frame ComposeFrame(byte[] sample)
+        private VideoFrame ComposeFrame(byte[] sample)
         {
-            var frame = default(Frame);
+            var frame = default(VideoFrame);
             if (IsNewH264Frame(sample))
             {
                 // close out existing frame
@@ -83,7 +83,7 @@ namespace Tello.Controller.Video
         /// </summary>
         /// <param name="sample"></param>
         /// <returns>Frame if this sample completes a frame, else null.</returns>
-        public Frame AddSample(byte[] sample)
+        public VideoFrame AddSample(byte[] sample)
         {
             return ComposeFrame(sample);
         }
@@ -105,7 +105,7 @@ namespace Tello.Controller.Video
 
         private Stopwatch _frameStopWatch = new Stopwatch();
         private SpinWait _frameWait = new SpinWait();
-        public bool TryGetFrame(out Frame frame, TimeSpan timeout)
+        public bool TryGetFrame(out VideoFrame frame, TimeSpan timeout)
         {
             _frameStopWatch.Restart();
             while (!_frames.TryPop(out frame) && _frameStopWatch.Elapsed < timeout)

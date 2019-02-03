@@ -1,23 +1,23 @@
 ﻿using System;
+using Tello.Messaging;
 
 namespace Tello.Controller.Video
 {
-    public sealed class Frame
+    internal sealed class VideoFrame : IVideoFrame
     {
-        public Frame(byte[] content, long frameIndex, TimeSpan timeIndex, TimeSpan duration)
+        public VideoFrame(byte[] content, int frameIndex, TimeSpan timeIndex, TimeSpan duration)
         {
             Content = content;
-            Index = frameIndex;
-            TimeIndex = timeIndex;
             Duration = duration;
+            TimeIndex = timeIndex;
             Size = content.Length;
+            Index = frameIndex;
         }
 
-        public TimeSpan Duration { get; } = TimeSpan.FromSeconds(1 / 30.0);
-
         public byte[] Content { get; }
-        public long Index { get; }
+        public TimeSpan Duration { get; } = TimeSpan.FromSeconds(1 / 30.0);
         public TimeSpan TimeIndex { get; }
         public int Size { get; }
+        public int Index { get; }
     }
 }

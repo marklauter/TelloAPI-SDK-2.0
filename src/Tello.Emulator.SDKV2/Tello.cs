@@ -9,7 +9,7 @@ namespace Tello.Emulator.SDKV2
 {
     //https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf
 
-    public class Tello : IMessenger, IReceiver<INotification>
+    public class Tello : IMessenger, IRelay<INotification>
     {
         public Tello()
         {
@@ -52,14 +52,14 @@ namespace Tello.Emulator.SDKV2
         #endregion
 
         #region IReceiver<INotification>
-        ReceiverStates IReceiver<INotification>.State => _stateServer.State;
+        ReceiverStates IRelay<INotification>.State => _stateServer.State;
 
-        void IReceiver<INotification>.Listen(Action<IReceiver<INotification>, INotification> messageHandler, Action<IReceiver<INotification>, Exception> errorHandler)
+        void IRelay<INotification>.Listen(Action<IRelay<INotification>, INotification> messageHandler, Action<IRelay<INotification>, Exception> errorHandler)
         {
             _stateServer.Listen(messageHandler, errorHandler);
         }
 
-        void IReceiver<INotification>.Stop()
+        void IRelay<INotification>.Stop()
         {
             _stateServer.Stop();
         }

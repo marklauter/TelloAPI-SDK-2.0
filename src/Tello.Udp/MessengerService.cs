@@ -9,9 +9,9 @@ using Tello.Messaging;
 
 namespace Tello.Udp
 {
-    public sealed class Messenger : IMessenger
+    internal sealed class MessengerService : IMessenger
     {
-        internal Messenger(string ip, int port) : base()
+        internal MessengerService(string ip, int port) : base()
         {
             if (String.IsNullOrEmpty(ip))
             {
@@ -95,7 +95,5 @@ namespace Tello.Udp
                 }
             });
         }
-
-
     }
 }

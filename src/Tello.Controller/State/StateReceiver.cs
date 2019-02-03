@@ -4,18 +4,18 @@ using Tello.Messaging;
 namespace Tello.Controller.State
 {
     // this will couple with either the Tello.UDP receiver, or with the Tello.Emulator StateServer
-    public sealed class StateReceiver : IReceiver<DroneState>
+    internal sealed class StateReceiver : IRelay<DroneState>
     {
-        public StateReceiver(IReceiver<INotification> receiver)
+        public StateReceiver(IRelay<INotification> receiver)
         {
             _receiver = receiver ?? throw new ArgumentNullException(nameof(receiver));
         }
 
-        private readonly IReceiver<INotification> _receiver;
+        private readonly IRelay<INotification> _receiver;
 
         public ReceiverStates State => _receiver.State;
 
-        public void Listen(Action<IReceiver<DroneState>, DroneState> messageHandler, Action<IReceiver<DroneState>, Exception> errorHandler)
+        public void Listen(Action<IRelay<DroneState>, DroneState> messageHandler, Action<IRelay<DroneState>, Exception> errorHandler)
         {
             _receiver.Listen(
                 (receiver, notification) => messageHandler?.Invoke(this, DroneState.FromDatagram(notification.Data)),

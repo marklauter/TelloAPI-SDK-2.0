@@ -36,12 +36,12 @@ namespace Tello.Controller
         #region video
         private readonly VideoReceiver _videoReceiver;
 
-        private void VideoReceiverNotificationHandler(IReceiver<Frame> receiver, Frame frame)
+        private void VideoReceiverNotificationHandler(IRelay<VideoFrame> receiver, VideoFrame frame)
         {
             FrameReady?.Invoke(this, new FrameReadyArgs(frame));
         }
 
-        private void VideoReceiverErrorHandler(IReceiver<Frame> receiver, Exception ex)
+        private void VideoReceiverErrorHandler(IRelay<VideoFrame> receiver, Exception ex)
         {
             FlightControllerExceptionThrown?.Invoke(this,
                 new FlightControllerExceptionThrownArgs(
@@ -88,12 +88,12 @@ namespace Tello.Controller
 
         private readonly StateReceiver _stateReceiver;
 
-        private void StateReceiverNotificationHandler(IReceiver<DroneState> receiver, DroneState state)
+        private void StateReceiverNotificationHandler(IRelay<DroneState> receiver, DroneState state)
         {
             DroneStateReceived?.Invoke(this, new DroneStateReceivedArgs(state));
         }
 
-        private void StateReceiverErrorHandler(IReceiver<DroneState> receiver, Exception ex)
+        private void StateReceiverErrorHandler(IRelay<DroneState> receiver, Exception ex)
         {
             FlightControllerExceptionThrown?.Invoke(this, 
                 new FlightControllerExceptionThrownArgs(

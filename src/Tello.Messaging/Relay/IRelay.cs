@@ -8,11 +8,11 @@ namespace Tello.Messaging
         Listening
     }
 
-    public interface IReceiver<T>
+    public interface IRelay<T>
     {
         ReceiverStates State { get; }
 
-        void Listen(Action<IReceiver<T>, T> messageHandler, Action<IReceiver<T>, Exception> errorHandler);
+        void Listen(Action<IRelay<T>, T> messageHandler, Action<IRelay<T>, Exception> errorHandler);
         void Stop();
     }
 }

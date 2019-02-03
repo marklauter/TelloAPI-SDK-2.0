@@ -1,14 +1,15 @@
 ﻿using System;
+using Tello.Messaging;
 
-namespace Tello.Controller.Video
+namespace Tello.Controller
 {
     public sealed class FrameReadyArgs : EventArgs
     {
-        public FrameReadyArgs(Frame frame)
+        public FrameReadyArgs(IVideoFrame frame)
         {
             Frame = frame ?? throw new ArgumentNullException(nameof(frame));
         }
 
-        public Frame Frame { get; }
+        public IVideoFrame Frame { get; }
     }
 }

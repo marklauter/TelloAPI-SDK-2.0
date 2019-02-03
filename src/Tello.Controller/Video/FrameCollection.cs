@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
+using Tello.Messaging;
 
 namespace Tello.Controller.Video
 {
-    public sealed class FrameCollection
+    public sealed class FrameCollection : IVideoFrameCollection
     {
-        public FrameCollection(Frame frame = null)
+        public FrameCollection(IVideoSample frame = null)
         {
             _sample = new MemoryStream(frame.Size);
             if (frame != null)
@@ -14,7 +15,7 @@ namespace Tello.Controller.Video
             }
         }
 
-        public FrameCollection(Frame[] frames)
+        public FrameCollection(IVideoFrame[] frames)
         {
             if (frames == null || frames.Length == 0)
             {
@@ -27,7 +28,13 @@ namespace Tello.Controller.Video
             TimeIndex = frame.TimeIndex;
             Duration += frame.Duration;
 
-            _sample = new MemoryStream(frames.Length * 1024 * 16);
+            var sampleSize = 0;
+            for(var i = 0; i < frames.Length; ++i)
+            {
+                sampleSize += frames[i].Size;
+            }
+
+            _sample = new MemoryStream(sampleSize);
             _sample.Write(frame.Content, 0, frame.Size);
 
             for (var i = 1; i < frames.Length; ++i)
@@ -38,7 +45,7 @@ namespace Tello.Controller.Video
             }
         }
 
-        public void Add(Frame frame)
+        public void Add(IVideoSample frame)
         {
             if (frame == null)
             {
@@ -59,8 +66,8 @@ namespace Tello.Controller.Video
 
         public byte[] Content => _sample.ToArray();
         public TimeSpan Duration { get; private set; } = TimeSpan.FromSeconds(0.0);
-        public long Size => _sample.Length;
         public TimeSpan TimeIndex { get; private set; }
+        public int Size => (int)_sample.Length;
         public int Count { get; private set; } = 0;
     }
 }

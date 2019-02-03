@@ -5,7 +5,7 @@ using Tello.Messaging;
 
 namespace Tello.Emulator.SDKV2
 {
-    internal sealed class StateServer : IReceiver<INotification>
+    internal sealed class StateServer : IRelay<INotification>
     {
         public StateServer(IDroneState droneState)
         {
@@ -16,7 +16,7 @@ namespace Tello.Emulator.SDKV2
 
         public ReceiverStates State { get; private set; }
 
-        public async void Listen(Action<IReceiver<INotification>, INotification> messageHandler, Action<IReceiver<INotification>, Exception> errorHandler)
+        public async void Listen(Action<IRelay<INotification>, INotification> messageHandler, Action<IRelay<INotification>, Exception> errorHandler)
         {
             State = ReceiverStates.Listening;
 
