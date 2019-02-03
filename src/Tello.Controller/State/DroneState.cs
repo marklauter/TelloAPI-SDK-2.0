@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Tello.Messaging;
 
 namespace Tello.Controller.State
 {
     //mid:64;x:0;y:0;z:0;mpry:0,0,0;pitch:0;roll:0;yaw:0;vgx:0;vgy:0;vgz:-7;templ:60;temph:63;tof:20;h:10;bat:89;baro:-67.44;time:0;agx:14.00;agy:-12.00;agz:-1094.00;
-    public sealed class DroneState
+    //todo: the current implentation works from the order of the parameters and ignores the names - better to use the names to set the values - maybe a hashtable that points to the property or something
+    public sealed class DroneState : IDroneState
     {
+        #region private static parsing helpers
         private static readonly char[] _delimiters = { ':', ';' };
         private static readonly HashSet<string> _doubles = new HashSet<string>(new string[] { "baro", "agx", "agy", "agz" });
+        #endregion
 
         public static DroneState FromDatagram(byte[] datagram)
         {
@@ -77,6 +81,7 @@ namespace Tello.Controller.State
                 (double)values[22]);
         }
 
+        #region ctor
         private DroneState(
             int missionPadId,
             int missionPadX,
@@ -126,7 +131,9 @@ namespace Tello.Controller.State
             AccelerationY = accelerationY;
             AccelerationZ = accelerationZ;
         }
+        #endregion
 
+        #region public properties
         public int MissionPadId { get; }
         public int MissionPadX { get; }
         public int MissionPadY { get; }
@@ -153,5 +160,6 @@ namespace Tello.Controller.State
         public double AccelerationZ { get; }
 
         public bool MissionPadDetected => MissionPadId != -1;
+        #endregion
     }
 }

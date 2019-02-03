@@ -1,54 +1,37 @@
 ﻿using System;
+using System.Text;
+using Tello.Messaging;
 
 namespace Tello.Emulator.SDKV2
 {
     //https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf
 
-    internal sealed class DroneState
+    public sealed class DroneState : IDroneState
     {
-        /// <summary>
-        /// speed in cm/s
-        /// </summary>
-        public int Speed { get; set; } = 10;
-
-        public void TakeOff()
-        {
-            if (!IsFlying)
-            {
-                IsFlying = true;
-                TakeoffTime = DateTime.Now;
-                Height = 20;
-            }
-        }
-
-        public void Land()
-        {
-            if (IsFlying)
-            {
-                IsFlying = false;
-                Height = 0;
-            }
-        }
-
-        public void StartVideo()
-        {
-            IsVideoOn = true;
-        }
-
-        public void StopVideo()
-        {
-            IsVideoOn = false;
-        }
-
-        public void ActivateSdkMode()
-        {
-            IsSdkModeActivated = true;
-        }
-
-        public bool IsSdkModeActivated { get; private set; } = false;
-        public bool IsVideoOn { get; private set; } = false;
-        public bool IsFlying { get; private set; } = false;
-        public DateTime TakeoffTime { get; private set; }
+        public int MissionPadId { get; internal set; }
+        public int MissionPadX { get; internal set; }
+        public int MissionPadY { get; internal set; }
+        public int MissionPadZ { get; internal set; }
+        public int MissionPadPitch { get; internal set; }
+        public int MissionPadRoll { get; internal set; }
+        public int MissionPadYaw { get; internal set; }
+        public int Pitch { get; internal set; }
+        public int Roll { get; internal set; }
+        public int Yaw { get; internal set; }
+        public int SpeedX { get; internal set; }
+        public int SpeedY { get; internal set; }
+        public int SpeedZ { get; internal set; }
+        public int TemperatureLowC { get; internal set; }
+        public int TemperatureHighC { get; internal set; }
+        public int DistanceTraversedInCm { get; internal set; }
+        public int HeightInCm { get; internal set; }
+        public int BatteryPercent { get; internal set; }
+        public double BarometerInCm { get; internal set; }
+        public int MotorTimeInSeconds { get; internal set; }
+        public double AccelerationX { get; internal set; }
+        public double AccelerationY { get; internal set; }
+        public double AccelerationZ { get; internal set; }
+        public bool MissionPadDetected => MissionPadId != -1;
 
         #region Mission Pad
         //[JsonProperty("mid")]
@@ -64,70 +47,33 @@ namespace Tello.Emulator.SDKV2
         //public double MissionPadZ { get; set; } = 0;
         #endregion
 
-        #region Reportable State
-        public int Pitch { get; set; } = 0;
-
-        public int Roll { get; set; } = 0;
-
-        public int Yaw { get; set; } = 0;
-
-        public int XSpeed { get; set; } = 0;
-
-        public int YSpeed { get; set; } = 0;
-
-        public int ZSpeed { get; set; } = 0;
-
-        /// <summary>
-        /// lowest temp in celsius
-        /// </summary>
-        public int TemperatureLow { get; set; } = 0;
-
-        /// <summary>
-        /// highest temp in celsius
-        /// </summary>
-        public int TemperatureHigh { get; set; } = 0;
-
-        /// <summary>
-        /// documentation says "time of flight distance in cm" - what does that mean?
-        /// </summary>
-        public int TimeOfFlight { get; set; } = 0;
-
-        /// <summary>
-        /// height in cm
-        /// </summary>
-        public int Height { get; set; } = 0;
-
-        public int BatteryPercentage { get; set; } = 100;
-
-        /// <summary>
-        /// barometer measurement in cm
-        /// </summary>
-        public float BarometricPressure { get; set; } = 0;
-
-        /// <summary>
-        /// amount of time the motor has been used
-        /// </summary>
-        public int MotorTime { get; set; } = 0;
-
-        /// <summary>
-        /// acceleration along x axis
-        /// </summary>
-        public float AccelerationX { get; set; } = 0;
-
-        /// <summary>
-        /// acceleration along y axis
-        /// </summary>
-        public float AccelerationY { get; set; } = 0;
-
-        /// <summary>
-        /// acceleration along z axis
-        /// </summary>
-        public float AccelerationZ { get; set; } = 0;
-
         public override string ToString()
         {
-            return $"pitch:{Pitch};roll:{Roll};yaw:{Yaw};vgx:{XSpeed};vgy:{YSpeed};vgz:{ZSpeed};templ:{TemperatureLow};temph:{TemperatureHigh};tof:{TimeOfFlight};h:{Height};bat:{BatteryPercentage};baro:{BarometricPressure.ToString("F2")};time:{MotorTime};agx:{AccelerationX.ToString("F2")};agy:{AccelerationY.ToString("F2")};agz:{AccelerationZ.ToString("F2")};\r\n";
+            //mid:64;x:0;y:0;z:0;mpry:0,0,0;pitch:0;roll:0;yaw:0;vgx:0;vgy:0;vgz:-7;templ:60;temph:63;tof:20;h:10;bat:89;baro:-67.44;time:0;agx:14.00;agy:-12.00;agz:-1094.00;
+            var builder = new StringBuilder();
+            builder.Append($"mid:{MissionPadId};");
+            builder.Append($"x:{MissionPadX};");
+            builder.Append($"y:{MissionPadY};");
+            builder.Append($"z:{MissionPadZ};");
+            builder.Append($"mpry:{MissionPadPitch},{MissionPadRoll},{MissionPadYaw};");
+            builder.Append($"pitch:{Pitch};");
+            builder.Append($"roll:{Roll};");
+            builder.Append($"yaw:{Yaw};");
+            builder.Append($"vgx:{SpeedX};");
+            builder.Append($"vgy:{SpeedY};");
+            builder.Append($"vgz:{SpeedZ};");
+            builder.Append($"templ:{TemperatureLowC};");
+            builder.Append($"temph:{TemperatureHighC};");
+            builder.Append($"tof:{DistanceTraversedInCm};");
+            builder.Append($"h:{HeightInCm};");
+            builder.Append($"bat:{BatteryPercent};");
+            builder.Append($"baro:{BarometerInCm.ToString("F2")};");
+            builder.Append($"time:{MotorTimeInSeconds};");
+            builder.Append($"agx:{AccelerationX.ToString("F2")};");
+            builder.Append($"agy:{AccelerationY.ToString("F2")};");
+            builder.Append($"agz:{AccelerationZ.ToString("F2")};");
+
+            return builder.ToString();
         }
-        #endregion
     }
 }

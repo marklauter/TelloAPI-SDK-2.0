@@ -455,16 +455,22 @@ namespace Tello.Controller.Messages
             {
                 case Messages.GetSpeed:
                     return Responses.Speed;
+
                 case Messages.GetBattery:
                     return Responses.Battery;
+
                 case Messages.GetTime:
                     return Responses.Time;
+
                 case Messages.GetWiFiSnr:
                     return Responses.WiFiSnr;
+
                 case Messages.GetSdkVersion:
                     return Responses.SdkVersion;
+
                 case Messages.GetSerialNumber:
                     return Responses.SerialNumber;
+
                 default:
                     return Responses.Ok;
             }
