@@ -65,7 +65,7 @@ namespace Tello.Controller.Messages
         /// <param name="command"></param>
         /// <param name="args"></param>
         private static void Validate(Commands command, params object[] args)
-        {            
+        {
             var expectedLength = 0;
 
             switch (command)
@@ -276,7 +276,7 @@ namespace Tello.Controller.Messages
         {
             Validate(command, args);
 
-            var message = string.Empty;
+            var message = String.Empty;
             switch (command)
             {
                 // no args
@@ -313,25 +313,37 @@ namespace Tello.Controller.Messages
                 case Commands.Curve:
                     message = $"{command.ToString().ToLowerInvariant()}";
                     for (var i = 0; i < args.Length; ++i)
+                    {
                         message += $" {args[0]}";
+                    }
+
                     return message;
 
                 case Commands.SetSpeed:
                     message = "speed";
                     for (var i = 0; i < args.Length; ++i)
+                    {
                         message += $" {args[0]}";
+                    }
+
                     return message;
 
                 case Commands.SetRemoteControl:
                     message = "rc";
                     for (var i = 0; i < args.Length; ++i)
+                    {
                         message += $" {args[0]}";
+                    }
+
                     return message;
 
                 case Commands.SetWiFiPassword:
                     message = "wifi";
                     for (var i = 0; i < args.Length; ++i)
+                    {
                         message += $" {args[0]}";
+                    }
+
                     return message;
 
                 //case Commands.SetMissionPadOn:
@@ -344,7 +356,10 @@ namespace Tello.Controller.Messages
                 case Commands.SetStationMode:
                     message = "ap";
                     for (var i = 0; i < args.Length; ++i)
+                    {
                         message += $" {args[0]}";
+                    }
+
                     return message;
 
                 case Commands.GetSpeed:
@@ -362,6 +377,75 @@ namespace Tello.Controller.Messages
 
                 default:
                     throw new NotSupportedException();
+            }
+        }
+
+        public static TimeSpan ToTimeout(this Commands command, params object[] args)
+        {
+            Validate(command, args);
+
+            var avgspeed = 60.0; // cm/s
+            var distance = 0.0;
+            var arcspeed = 45.0; // degrees/s
+
+            switch (command)
+            {
+                case Commands.SetSpeed:
+                case Commands.SetRemoteControl:
+                case Commands.SetWiFiPassword:
+                case Commands.SetStationMode:
+                case Commands.GetSpeed:
+                case Commands.GetBattery:
+                case Commands.GetTime:
+                case Commands.GetWiFiSnr:
+                case Commands.GetSdkVersion:
+                case Commands.GetSerialNumber:
+                case Commands.EstablishLink:
+                case Commands.StartVideo:
+                case Commands.StopVideo:
+                case Commands.EmergencyStop:
+                    return TimeSpan.FromSeconds(5);
+
+                case Commands.Takeoff:
+                    return TimeSpan.FromSeconds(15);
+                case Commands.Land:
+                    return TimeSpan.FromSeconds(30);
+                case Commands.Stop:
+                    return TimeSpan.FromSeconds(10);
+
+
+                case Commands.Up:
+                case Commands.Down:
+                    return TimeSpan.FromSeconds(10);
+
+                //todo: if I knew the speed in cm/s I could get a better idea how far
+                case Commands.Left:
+                case Commands.Right:
+                case Commands.Forward:
+                case Commands.Back:
+                    distance = (int)args[0]; //cm
+                    return TimeSpan.FromSeconds(distance / avgspeed);
+
+                case Commands.Go:
+                    var x = (int)args[0];
+                    var y = (int)args[1];
+                    distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+                    return TimeSpan.FromSeconds(distance / avgspeed + 10);
+
+                case Commands.ClockwiseTurn:
+                case Commands.CounterClockwiseTurn:
+                    var degrees = (int)args[0];
+                    return TimeSpan.FromSeconds(degrees / arcspeed + 5);
+
+                case Commands.Flip:
+                    return TimeSpan.FromSeconds(10);
+
+                //todo: I don't know how to take the args for this command to generate an arc from which I can determin distance
+                case Commands.Curve:
+                    return TimeSpan.FromSeconds(30);
+
+                default:
+                    return TimeSpan.FromSeconds(30);
             }
         }
 

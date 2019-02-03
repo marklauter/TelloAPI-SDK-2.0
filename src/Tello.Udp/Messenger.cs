@@ -27,7 +27,7 @@ namespace Tello.Udp
         private readonly IPEndPoint _endPoint;
         private UdpClient _client = null;
 
-        public void Connect(TimeSpan timeout, Action<IMessenger> continuation = null)
+        public void Connect()
         {
             if (State == MessengerStates.Disconnected)
             {
@@ -42,12 +42,10 @@ namespace Tello.Udp
                 _client = new UdpClient();
                 _client.Connect(_endPoint);
                 State = MessengerStates.Connected;
-
-                continuation?.Invoke(this);
             }
         }
 
-        public void Disconnect(Action<IMessenger> continuation)
+        public void Disconnect()
         {
             if (State != MessengerStates.Disconnected)
             {
@@ -58,7 +56,6 @@ namespace Tello.Udp
                     _client.Dispose();
                     _client = null;
                 }
-                continuation?.Invoke(this);
             }
         }
 

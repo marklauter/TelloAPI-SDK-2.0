@@ -7,15 +7,13 @@ namespace Tello.Controller.Video
 {
     internal sealed class FrameComposer
     {
-        public FrameComposer(double frameRate, TimeSpan bufferTime)
+        public FrameComposer(double frameRate, int secondsToBuffer = 5)
         {
             _frameRate = frameRate;
             _frameDuration = TimeSpan.FromSeconds(1 / _frameRate);
 
-            _frames = new RingBuffer<Frame>((int)(_frameRate * bufferTime.TotalSeconds));
+            _frames = new RingBuffer<Frame>((int)(_frameRate * secondsToBuffer));
         }
-
-        public event EventHandler<FrameReadyArgs> FrameReady;
 
         #region fields
         private long _byteCount = 0;
@@ -28,7 +26,7 @@ namespace Tello.Controller.Video
         #endregion
 
         #region frame composition
-        private bool IsNewFrame(byte[] sample)
+        private bool IsNewH264Frame(byte[] sample)
         {
             // check sample for 0x00 0x00 0x00 0x01 header - H264 NALU frame start delimiter
             return sample.Length > 4 && sample[0] == 0x00 && sample[1] == 0x00 && sample[2] == 0x00 && sample[3] == 0x01;
@@ -38,24 +36,29 @@ namespace Tello.Controller.Video
         {
             var frame = new Frame(stream.ToArray(), frameIndex, TimeSpan.FromSeconds(frameIndex / _frameRate), _frameDuration);
             _frames.Push(frame);
-            FrameReady?.Invoke(this, new FrameReadyArgs(frame));
             return frame;
         }
 
-        private void ComposeFrame(byte[] sample)
+        private Frame ComposeFrame(byte[] sample)
         {
-            if (IsNewFrame(sample))
+            var frame = default(Frame);
+            if (IsNewH264Frame(sample))
             {
                 // close out existing frame
                 if (_stream != null)
                 {
-                    var frame = QueueFrame(_stream, _frameIndex);
+                    frame = QueueFrame(_stream, _frameIndex);
+                    _stream.Dispose();
                     Interlocked.Increment(ref _frameIndex);
+                    #region debug
+#if DEBUG
                     // write a frame sample to debug output ~every 5 seconds so we can see how we're doing with performance
                     if (_frameIndex % (_frameRate * 5) == 0)
                     {
                         Debug.WriteLine($"\nFC {frame.TimeIndex}: f#{frame.Index}, composition rate: {(frame.Index / _frameRateWatch.Elapsed.TotalSeconds).ToString("#,#")}f/s, bit rate: {((uint)(_byteCount * 8 / frame.TimeIndex.TotalSeconds)).ToString("#,#")}b/s");
                     }
+#endif
+                    #endregion
                 }
                 else
                 {
@@ -65,18 +68,24 @@ namespace Tello.Controller.Video
                 _stream = new MemoryStream(1024 * 16);
             }
 
-            // don't start writing until we have a frame start
+            // don't start writing until we have a received a frame start sequence
             if (_stream != null)
             {
                 _stream.Write(sample, 0, sample.Length);
                 Interlocked.Add(ref _byteCount, sample.Length);
             }
+            return frame;
         }
         #endregion
 
-        public void AddSample(byte[] sample)
+        /// <summary>
+        /// returning a frame now instead of raising event for OnFrameReady
+        /// </summary>
+        /// <param name="sample"></param>
+        /// <returns>Frame if this sample completes a frame, else null.</returns>
+        public Frame AddSample(byte[] sample)
         {
-            ComposeFrame(sample);
+            return ComposeFrame(sample);
         }
 
         internal FrameCollection GetFrames(TimeSpan timeout)

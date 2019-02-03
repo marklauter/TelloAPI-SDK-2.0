@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Tello.Messaging
 {
@@ -14,8 +13,8 @@ namespace Tello.Messaging
     {
         MessengerStates State { get; }
 
-        void Connect(TimeSpan timeout, Action<IMessenger> continuation);
-        void Disconnect(Action<IMessenger> continuation);
+        void Connect();
+        void Disconnect();
 
         Task<IResponse> SendAsync(IRequest request);
     }

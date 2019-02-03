@@ -18,11 +18,11 @@ namespace Tello.Messaging
         Listening
     }
 
-    public interface IReceiver
+    public interface IReceiver<T>
     {
         ReceiverStates State { get; }
 
-        void Listen(Action<IReceiver, INotification> messageHandler, Action<IReceiver, Exception> errorHandler);
-        void Stop(Action<IMessenger> continuation);
+        void Listen(Action<IReceiver<T>, T> messageHandler, Action<IReceiver<T>, Exception> errorHandler);
+        void Stop();
     }
 }
