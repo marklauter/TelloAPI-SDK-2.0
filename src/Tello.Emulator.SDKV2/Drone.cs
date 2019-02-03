@@ -34,9 +34,9 @@ namespace Tello.Emulator.SDKV2
             if (_poweredOn)
             {
                 // documentation says there's ~ 15 minuts of battery
-                _droneState.BatteryPercentage = 100 - (int)((DateTime.Now - _poweredOnTime).TotalMinutes / 15.0 * 100);
-                Log($"battery updated {_droneState.BatteryPercentage}");
-                if (_droneState.BatteryPercentage < 1)
+                _droneState.BatteryPercent = 100 - (int)((DateTime.Now - _poweredOnTime).TotalMinutes / 15.0 * 100);
+                Log($"battery updated {_droneState.BatteryPercent}");
+                if (_droneState.BatteryPercent < 1)
                 {
                     PowerOff();
                     Log("battery died");
@@ -54,10 +54,10 @@ namespace Tello.Emulator.SDKV2
         private readonly StateServer _stateServer;
         private readonly CommandInterpreter _commandInterpreter;
 
-        private void _udpReceiver_DatagramReceived(object sender, DatagramReceivedArgs e)
+        private async void _udpReceiver_DatagramReceived(object sender, DatagramReceivedArgs e)
         {
             var message = Encoding.UTF8.GetString(e.Datagram);
-            var response = _commandInterpreter.Interpret(message);
+            var response = await _commandInterpreter.InterpretAsync(message);
             Log($"message: {message}, response: {response}");
             if (!String.IsNullOrEmpty(response))
             {
