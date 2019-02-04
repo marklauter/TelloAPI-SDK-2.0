@@ -14,6 +14,7 @@ namespace Tello.Emulator.SDKV2
         internal DroneState()
         {
             MotorClock = new Stopwatch();
+            BatteryPercent = 100;
         }
 
         internal DroneState(IDroneState droneState)

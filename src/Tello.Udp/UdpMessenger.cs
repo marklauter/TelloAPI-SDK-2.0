@@ -65,16 +65,17 @@ namespace Tello.Udp
         {
             return Task.Run(async () =>
             {
-                if (State != MessengerStates.Connected)
-                {
-                    return Response.FromFailure(request, "Unable to send request.");
-                }
-
-                var spinWait = new SpinWait();
                 var timer = Stopwatch.StartNew();
                 try
                 {
+                    if (State != MessengerStates.Connected)
+                    {
+                        throw new InvalidOperationException("Not connected.");
+                    }
+
                     await _client.SendAsync(request.Data, request.Data.Length);
+
+                    var spinWait = new SpinWait();
                     while (_client.Available == 0 && timer.Elapsed <= request.Timeout)
                     {
                         spinWait.SpinOnce();

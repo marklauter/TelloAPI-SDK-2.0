@@ -1,4 +1,5 @@
 ﻿using System;
+using Tello.Messaging;
 
 namespace Tello.Controller
 {
@@ -10,5 +11,17 @@ namespace Tello.Controller
         }
 
         public FlightControllerException Exception { get; }
+    }
+
+    public class FlightControllerCommandExceptionThrownArgs : FlightControllerExceptionThrownArgs
+    {
+        public FlightControllerCommandExceptionThrownArgs(Commands command, FlightControllerException ex, TimeSpan elapsed) : base(ex)
+        {
+            Command = command;
+            Elapsed = elapsed;
+        }
+
+        public Commands Command { get; }
+        public TimeSpan Elapsed { get; }
     }
 }

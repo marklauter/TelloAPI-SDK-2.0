@@ -19,10 +19,18 @@ namespace Tello.Emulator.SDKV2
 
         public ReceiverStates State {get;private set; }
 
-        public async void Listen(Action<IRelayService<IVideoSample>, IVideoSample> messageHandler, Action<IRelayService<IVideoSample>, Exception> errorHandler)
+        internal void Start()
         {
             State = ReceiverStates.Listening;
+        }
 
+        /// <summary>
+        /// emulates listening to udp for H264 samples 
+        /// </summary>
+        /// <param name="messageHandler"></param>
+        /// <param name="errorHandler"></param>
+        public async void Listen(Action<IRelayService<IVideoSample>, IVideoSample> messageHandler, Action<IRelayService<IVideoSample>, Exception> errorHandler)
+        {
             await Task.Run(async () =>
             {
                 int frameCount = 0;

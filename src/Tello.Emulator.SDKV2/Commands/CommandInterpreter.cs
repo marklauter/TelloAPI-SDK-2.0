@@ -22,6 +22,11 @@ namespace Tello.Emulator.SDKV2
             try
             {
                 var command = CommandParser.GetCommand(message);
+                if (!_stateManager.IsPoweredUp)
+                {
+                    Debug.WriteLine($"{nameof(CommandInterpreter)} - not powered up. Message ignored: {message}");
+                    return null;
+                }
                 if (!_stateManager.IsSdkModeActivated && command != Commands.EnterSdkMode)
                 {
                     Debug.WriteLine($"{nameof(CommandInterpreter)} - not in SDK mode. Message ignored: {message}");
@@ -36,7 +41,14 @@ namespace Tello.Emulator.SDKV2
                         if (!_stateManager.IsSdkModeActivated)
                         {
                             await _stateManager.EnterSdkMode();
-                            return _ok;
+                            if (_stateManager.IsSdkModeActivated)
+                            {
+                                return _ok;
+                            }
+                            else
+                            {
+                                return _error;
+                            }
                         }
                         return null;
                     case Commands.Takeoff:

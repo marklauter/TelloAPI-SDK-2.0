@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,16 +13,34 @@ namespace Tello.Emulator.SDKV2
         public int Heading { get; internal set; } = 0;
     }
 
-    internal sealed class StateManager 
+    internal sealed class StateManager
     {
-        public StateManager(DroneState droneState)
+        public StateManager(DroneState droneState, VideoServer videoServer)
         {
             _droneState = droneState;
-            _batteryTimer = new Timer(UpdateBattery, null, 10000, 10000);
+            _videoServer = videoServer;
+            UpdateBattery();
         }
 
         private readonly DroneState _droneState;
-        private readonly Timer _batteryTimer;
+        private readonly VideoServer _videoServer;
+        private readonly Stopwatch _batteryClock = new Stopwatch();
+
+        public bool IsPoweredUp { get; private set; } = false;
+        public void PowerOn()
+        {
+            if (!IsPoweredUp)
+            {
+                IsPoweredUp = true;
+                _batteryClock.Start();
+            }
+        }
+
+        public void PowerOff()
+        {
+            IsPoweredUp = false;
+            _batteryClock.Stop();
+        }
 
         public bool IsVideoOn { get; private set; } = false;
         public int Speed { get; private set; } = 10;
@@ -41,6 +60,11 @@ namespace Tello.Emulator.SDKV2
 
         public Task EnterSdkMode()
         {
+            if (!IsPoweredUp)
+            {
+                return Task.CompletedTask;
+            }
+
             return Task.Run(async () =>
             {
                 if (!IsSdkModeActivated)
@@ -53,6 +77,11 @@ namespace Tello.Emulator.SDKV2
 
         public Task TakeOff()
         {
+            if (!IsPoweredUp)
+            {
+                return Task.CompletedTask;
+            }
+
             return Task.Run(async () =>
             {
                 if (IsSdkModeActivated && FlightState == FlightStates.StandingBy)
@@ -68,6 +97,11 @@ namespace Tello.Emulator.SDKV2
 
         public Task Land()
         {
+            if (!IsPoweredUp)
+            {
+                return Task.CompletedTask;
+            }
+
             return Task.Run(async () =>
             {
                 if (IsSdkModeActivated &&
@@ -85,6 +119,11 @@ namespace Tello.Emulator.SDKV2
 
         public Task EmergencyStop()
         {
+            if (!IsPoweredUp)
+            {
+                return Task.CompletedTask;
+            }
+
             return Task.Run(async () =>
             {
                 if (IsSdkModeActivated && FlightState != FlightStates.StandingBy)
@@ -99,6 +138,11 @@ namespace Tello.Emulator.SDKV2
 
         public Task SetSpeed(int speed)
         {
+            if (!IsPoweredUp)
+            {
+                return Task.CompletedTask;
+            }
+
             if (speed < 10 || speed > 100)
             {
                 throw new ArgumentOutOfRangeException(nameof(speed));
@@ -114,6 +158,11 @@ namespace Tello.Emulator.SDKV2
         //todo: set an approximate acceleration in the movement commands before the delay and reset to zero after
         public Task GoForward(int cm)
         {
+            if (!IsPoweredUp)
+            {
+                return Task.CompletedTask;
+            }
+
             if (cm < 20 || cm > 500)
             {
                 throw new ArgumentOutOfRangeException(nameof(cm));
@@ -128,6 +177,11 @@ namespace Tello.Emulator.SDKV2
 
         public Task GoBack(int cm)
         {
+            if (!IsPoweredUp)
+            {
+                return Task.CompletedTask;
+            }
+
             if (cm < 20 || cm > 500)
             {
                 throw new ArgumentOutOfRangeException(nameof(cm));
@@ -142,6 +196,11 @@ namespace Tello.Emulator.SDKV2
 
         public Task GoRight(int cm)
         {
+            if (!IsPoweredUp)
+            {
+                return Task.CompletedTask;
+            }
+
             if (cm < 20 || cm > 500)
             {
                 throw new ArgumentOutOfRangeException(nameof(cm));
@@ -156,6 +215,11 @@ namespace Tello.Emulator.SDKV2
 
         public Task GoLeft(int cm)
         {
+            if (!IsPoweredUp)
+            {
+                return Task.CompletedTask;
+            }
+
             if (cm < 20 || cm > 500)
             {
                 throw new ArgumentOutOfRangeException(nameof(cm));
@@ -170,6 +234,11 @@ namespace Tello.Emulator.SDKV2
 
         public Task GoUp(int cm)
         {
+            if (!IsPoweredUp)
+            {
+                return Task.CompletedTask;
+            }
+
             if (cm < 20 || cm > 500)
             {
                 throw new ArgumentOutOfRangeException(nameof(cm));
@@ -184,6 +253,11 @@ namespace Tello.Emulator.SDKV2
 
         public Task GoDown(int cm)
         {
+            if (!IsPoweredUp)
+            {
+                return Task.CompletedTask;
+            }
+
             if (cm < 20 || cm > 500)
             {
                 throw new ArgumentOutOfRangeException(nameof(cm));
@@ -202,6 +276,11 @@ namespace Tello.Emulator.SDKV2
 
         public Task TurnClockwise(int degrees)
         {
+            if (!IsPoweredUp)
+            {
+                return Task.CompletedTask;
+            }
+
             if (degrees < 1 || degrees > 360)
             {
                 throw new ArgumentOutOfRangeException(nameof(degrees));
@@ -220,6 +299,11 @@ namespace Tello.Emulator.SDKV2
 
         public Task TurnCounterClockwise(int degrees)
         {
+            if (!IsPoweredUp)
+            {
+                return Task.CompletedTask;
+            }
+
             if (degrees < 1 || degrees > 360)
             {
                 throw new ArgumentOutOfRangeException(nameof(degrees));
@@ -238,6 +322,11 @@ namespace Tello.Emulator.SDKV2
 
         public Task Go(int x, int y, int z, int speed)
         {
+            if (!IsPoweredUp)
+            {
+                return Task.CompletedTask;
+            }
+
             if (x < -500 || x > 500)
             {
                 throw new ArgumentOutOfRangeException(nameof(x));
@@ -271,10 +360,10 @@ namespace Tello.Emulator.SDKV2
 
         public void StartVideo()
         {
-            if (!IsVideoOn)
+            if (IsPoweredUp && !IsVideoOn)
             {
                 IsVideoOn = true;
-                //_videoServer.Start();
+                _videoServer.Start();
             }
         }
 
@@ -283,7 +372,7 @@ namespace Tello.Emulator.SDKV2
             if (IsVideoOn)
             {
                 IsVideoOn = false;
-                //_videoServer.Stop();
+                _videoServer.Stop();
             }
         }
 
@@ -302,19 +391,28 @@ namespace Tello.Emulator.SDKV2
             return _droneState.MotorTimeInSeconds;
         }
 
-        private void UpdateBattery(object state)
+        private async void UpdateBattery()
         {
-            //if (_poweredOn)
-            //{
-            //    // documentation says there's ~ 15 minuts of battery
-            //    _droneState.BatteryPercent = 100 - (int)((DateTime.Now - _poweredOnTime).TotalMinutes / 15.0 * 100);
-            //    Debug.WriteLine($"battery updated {_droneState.BatteryPercent}");
-            //    if (_droneState.BatteryPercent < 1)
-            //    {
-            //        PowerOff();
-            //        Debug.WriteLine("battery died");
-            //    }
-            //}
+            // documentation says there's ~ 15 minutes of battery
+            await Task.Run(() =>
+            {
+                var wait = new SpinWait();
+                while (true)
+                {
+                    if (IsPoweredUp)
+                    {
+                        _droneState.BatteryPercent = 100 - (int)(_batteryClock.Elapsed.TotalMinutes / 15.0 * 100);
+
+                        if (_droneState.BatteryPercent < 1)
+                        {
+                            _droneState.BatteryPercent = 0;
+                            PowerOff();
+                            Debug.WriteLine("battery died");
+                        }
+                    }
+                    wait.SpinOnce();
+                }
+            });
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Tello.Controller
     {
         // TimeSpan commandTimeout, string ip = "192.168.10.1", int commandPort = 8889, int statePort = 8890, int videoPort = 11111
 
-        public FlightController(IMessengerService messenger, IRelayService<IDroneState> stateServer, IRelayService<IVideoFrame> videoServer)
+        public FlightController(IMessengerService messenger, IRelayService<IDroneState> stateServer, IRelayService<IVideoSample> videoServer)
         {
             _messenger = messenger;
             _stateServer = stateServer;
@@ -20,11 +20,12 @@ namespace Tello.Controller
         }
 
         #region events
-        public event EventHandler<VideoSampleReadyArgs> FrameReady;
+        public event EventHandler<VideoSampleReadyArgs> VideoSampleReady;
         public event EventHandler<DroneStateReceivedArgs> DroneStateReceived;
         public event EventHandler<FlightControllerValueReceivedArgs> FlightControllerValueReceived;
         public event EventHandler<FlightControllerExceptionThrownArgs> FlightControllerExceptionThrown;
         public event EventHandler<FlightControllerResponseReceivedArgs> FlightControllerResponseReceived;
+        public event EventHandler<FlightControllerCommandExceptionThrownArgs> FlightControllerCommandExceptionThrown;        
         #endregion
 
         #region messenger
@@ -32,14 +33,14 @@ namespace Tello.Controller
         #endregion
 
         #region video
-        private readonly IRelayService<IVideoFrame> _videoServer;
+        private readonly IRelayService<IVideoSample> _videoServer;
 
-        private void VideoReceiverNotificationHandler(IRelayService<IVideoFrame> receiver, IVideoFrame frame)
+        private void VideoReceiverNotificationHandler(IRelayService<IVideoSample> receiver, IVideoSample sample)
         {
-            FrameReady?.Invoke(this, new VideoSampleReadyArgs(frame));
+            VideoSampleReady?.Invoke(this, new VideoSampleReadyArgs(sample));
         }
 
-        private void VideoReceiverErrorHandler(IRelayService<IVideoFrame> receiver, Exception ex)
+        private void VideoReceiverErrorHandler(IRelayService<IVideoSample> receiver, Exception ex)
         {
             FlightControllerExceptionThrown?.Invoke(this,
                 new FlightControllerExceptionThrownArgs(
@@ -237,52 +238,58 @@ namespace Tello.Controller
             var timeout = commandTuple.Item3;
 
             var response = default(IResponse);
+            var clock = Stopwatch.StartNew();
             try
             {
+                #region debug output
+#if DEBUG
                 Debug.WriteLine($"{DateTime.Now.ToString("o")} - sending '{message}'");
+#endif
+                #endregion
                 //todo: get timeouts for various actions based on command and params
                 var request = Request.FromData(Encoding.UTF8.GetBytes(message), timeout);
                 response = await _messenger.SendAsync(request);
+                clock.Stop();
             }
             catch (Exception ex)
             {
                 throw new FlightControllerException($"'{message}' command failed with message '{ex.Message}'", ex);
             }
 
-            var responseValue = response.IsSuccess
-                ? Encoding.UTF8.GetString(response.Data)
-                : string.Empty;
-
-            if (response.IsSuccess && IsResponseOk(command, responseValue))
+            if (response.Successful)
             {
+                var responseValue = Encoding.UTF8.GetString(response.Data);
+
                 #region debug output
 #if DEBUG
-                Debug.WriteLine($"{DateTime.Now.ToString("o")} - response received for '{message}' - '{responseValue}'");
+                Debug.WriteLine($"{DateTime.Now.ToString("o")} - response received for '{message}' - '{responseValue}' - ok? {response.Successful}");
 #endif
                 #endregion
 
-                HandleResponse(command, responseValue);
-
-                FlightControllerResponseReceived?.Invoke(this, new FlightControllerResponseReceivedArgs(responseValue));
-                if (IsValueCommand(command))
+                if (IsResponseOk(command, responseValue))
                 {
-                    FlightControllerValueReceived?.Invoke(this, new FlightControllerValueReceivedArgs(command.ToReponse(), responseValue));
+                    HandleResponse(command, responseValue);
+
+                    if (IsValueCommand(command))
+                    {
+                        FlightControllerValueReceived?.Invoke(this, new FlightControllerValueReceivedArgs(command.ToReponse(), responseValue, clock.Elapsed));
+                    }
+                    else
+                    {
+                        FlightControllerResponseReceived?.Invoke(this, new FlightControllerResponseReceivedArgs(command, responseValue, clock.Elapsed));
+                    }
                 }
             }
-            else // response received from Tello wasn't "ok"
+            else // udp receiver pooped
             {
-                var err = response.IsSuccess
-                    ? responseValue
-                    : response.ErrorMessage;
-
                 #region debug output
 #if DEBUG
-                Debug.WriteLine($"{DateTime.Now.ToString("o")} - '{message}' command failed with message - '{err}'");
+                Debug.WriteLine($"{DateTime.Now.ToString("o")} - '{message}' command failed with message - '{response.ErrorMessage}'");
 #endif
                 #endregion
 
                 throw new FlightControllerException(
-                    $"'{message}' command failed with message '{err}'",
+                    $"'{message}' command failed with message '{response.ErrorMessage}'",
                     response.Exception);
             }
         }
@@ -294,7 +301,15 @@ namespace Tello.Controller
         /// <returns>true if no exceptions were encountered, else false</returns>
         private async Task<bool> TrySendMessage(Tuple<Commands, string, TimeSpan> commandTuple)
         {
+            if (commandTuple == null)
+            {
+                throw new ArgumentNullException(nameof(commandTuple));
+            }
+
+            var command = commandTuple.Item1;
+
             var result = false;
+            var clock = Stopwatch.StartNew();
             try
             {
                 await SendMessage(commandTuple);
@@ -302,11 +317,15 @@ namespace Tello.Controller
             }
             catch (FlightControllerException ex)
             {
-                FlightControllerExceptionThrown?.Invoke(this, new FlightControllerExceptionThrownArgs(ex));
+                FlightControllerExceptionThrown?.Invoke(this, new FlightControllerCommandExceptionThrownArgs(command, ex, clock.Elapsed));
             }
             catch (Exception ex)
             {
-                FlightControllerExceptionThrown?.Invoke(this, new FlightControllerExceptionThrownArgs(new FlightControllerException($"SendMessage failed with message '{ex.Message}'", ex)));
+                FlightControllerExceptionThrown?.Invoke(this, 
+                    new FlightControllerCommandExceptionThrownArgs(
+                        command, 
+                        new FlightControllerException($"SendMessage failed with message '{ex.Message}'", ex),
+                        clock.Elapsed));
             }
             return result;
         }
@@ -319,7 +338,7 @@ namespace Tello.Controller
             await Task.Run(async () =>
             {
                 var spinWait = new SpinWait();
-                while (ConnectionState != ConnectionStates.CommandLinkEstablished)
+                while (ConnectionState != ConnectionStates.Disconnected)
                 {
                     if (!_messageQueue.IsEmpty)
                     {
@@ -381,12 +400,12 @@ namespace Tello.Controller
         }
         #endregion
 
-        #region command messages
+        #region command methods
 
         /// <summary>
         /// establish a command link with Tello - validates network connection, connects to UDP, sends "command" to Tello
         /// </summary>
-        public async void InitiateCommandLink()
+        public async void EnterSdkMode()
         {
             ConnectionState = ConnectionStates.Connecting;
             try

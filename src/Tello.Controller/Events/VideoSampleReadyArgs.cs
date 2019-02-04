@@ -5,11 +5,11 @@ namespace Tello.Controller
 {
     public class VideoSampleReadyArgs : EventArgs
     {
-        public VideoSampleReadyArgs(IVideoFrame sample)
+        public VideoSampleReadyArgs(IVideoSample sample)
         {
             Sample = sample ?? throw new ArgumentNullException(nameof(sample));
         }
 
-        public IVideoFrame Sample { get; }
+        public IVideoSample Sample { get; }
     }
 }

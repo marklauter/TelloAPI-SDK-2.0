@@ -8,7 +8,7 @@ namespace Tello.Messaging
         TimeSpan TimeElapsed { get; }
         Guid RequestId { get; }
 
-        bool IsSuccess { get; }
+        bool Successful { get; }
         string ErrorMessage { get; }
         Exception Exception { get; }
     }

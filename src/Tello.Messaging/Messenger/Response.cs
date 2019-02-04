@@ -6,21 +6,11 @@ namespace Tello.Messaging
     {
         private Response() { }
 
-        public static IResponse FromFailure(IRequest request, string errorMessage)
-        {
-            return new Response
-            {
-                IsSuccess = false,
-                ErrorMessage = errorMessage,
-                RequestId = request.Id,
-            };
-        }
-
         public static IResponse FromException(IRequest request, Exception ex, TimeSpan timeElapsed)
         {
             return new Response
             {
-                IsSuccess = false,
+                Successful = false,
                 ErrorMessage = $"{ex.GetType().Name} - {ex.Message}",
                 Exception = ex,
                 TimeElapsed = timeElapsed,
@@ -32,8 +22,7 @@ namespace Tello.Messaging
         {
             return new Response
             {
-                IsSuccess = true,
-                ErrorMessage = "ok",
+                Successful = true,
                 Data = data,
                 TimeElapsed = timeElapsed,
                 RequestId = request.Id,
@@ -43,7 +32,7 @@ namespace Tello.Messaging
         public byte[] Data { get; private set; }
         public TimeSpan TimeElapsed { get; private set; }
 
-        public bool IsSuccess { get; private set; } = false;
+        public bool Successful { get; private set; } = false;
         public string ErrorMessage { get; private set; }
         public Exception Exception { get; private set; }
 

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj" />
+    <ProjectReference Include="..\Tello.Emulator.SDKV2\Tello.Emulator.SDKV2.csproj" />
+    <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj" />
+  </ItemGroup>
+
+</Project>
