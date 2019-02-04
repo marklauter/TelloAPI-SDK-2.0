@@ -9,7 +9,7 @@ namespace Tello.Messaging
         Connected
     }
 
-    public interface IMessenger
+    public interface IMessengerService 
     {
         MessengerStates State { get; }
 

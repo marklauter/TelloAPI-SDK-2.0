@@ -2,6 +2,7 @@
 {
     public interface IDroneState
     {
+        bool MissionPadDetected { get; }
         int MissionPadId { get; }
         int MissionPadX { get; }
         int MissionPadY { get; }
@@ -9,7 +10,6 @@
         int MissionPadPitch { get; }
         int MissionPadRoll { get; }
         int MissionPadYaw { get; }
-
         int Pitch { get; }
         int Roll { get; }
         int Yaw { get; }
@@ -21,12 +21,10 @@
         int DistanceTraversedInCm { get; }
         int HeightInCm { get; }
         int BatteryPercent { get; }
-        double BarometerInCm { get; }
         int MotorTimeInSeconds { get; }
+        double BarometerInCm { get; }
         double AccelerationX { get; }
         double AccelerationY { get; }
         double AccelerationZ { get; }
-
-        bool MissionPadDetected { get; }
     }
 }

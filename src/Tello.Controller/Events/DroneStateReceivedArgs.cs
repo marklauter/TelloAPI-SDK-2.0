@@ -3,7 +3,7 @@ using Tello.Messaging;
 
 namespace Tello.Controller
 {
-    public sealed class DroneStateReceivedArgs : EventArgs
+    public class DroneStateReceivedArgs : EventArgs
     {
         public DroneStateReceivedArgs(IDroneState state)
         {

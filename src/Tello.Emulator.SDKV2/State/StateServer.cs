@@ -1,22 +1,21 @@
 ﻿using System;
-using System.Text;
 using System.Threading.Tasks;
 using Tello.Messaging;
 
 namespace Tello.Emulator.SDKV2
 {
-    internal sealed class StateServer : IRelay<INotification>
+    internal sealed class StateServer : IRelayService<IDroneState>
     {
-        public StateServer(IDroneState droneState)
+        internal StateServer(IDroneState droneState)
         {
-            _droneState = droneState ?? throw new System.ArgumentNullException(nameof(droneState));
+            _droneState = droneState ?? throw new ArgumentNullException(nameof(droneState));
         }
 
         private readonly IDroneState _droneState;
 
         public ReceiverStates State { get; private set; }
 
-        public async void Listen(Action<IRelay<INotification>, INotification> messageHandler, Action<IRelay<INotification>, Exception> errorHandler)
+        public async void Listen(Action<IRelayService<IDroneState>, IDroneState> messageHandler, Action<IRelayService<IDroneState>, Exception> errorHandler)
         {
             State = ReceiverStates.Listening;
 
@@ -28,8 +27,7 @@ namespace Tello.Emulator.SDKV2
                     await Task.Delay(200);
                     try
                     {
-                        var bytes = Encoding.UTF8.GetBytes(_droneState.ToString());
-                        messageHandler?.Invoke(this, Notification.FromData(bytes));
+                        messageHandler?.Invoke(this, new DroneState(_droneState));
                     }
                     catch (Exception ex)
                     {

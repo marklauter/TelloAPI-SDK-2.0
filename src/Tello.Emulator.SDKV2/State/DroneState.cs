@@ -16,30 +16,29 @@ namespace Tello.Emulator.SDKV2
             MotorClock = new Stopwatch();
         }
 
-        public static IDroneState Clone(IDroneState droneState)
+        internal DroneState(IDroneState droneState)
         {
-            return new DroneState
-            {
-                MotorClock = null,
-                _motorTime = droneState.MotorTimeInSeconds,
-                Pitch = droneState.Pitch,
-                Roll = droneState.Roll,
-                Yaw = droneState.Yaw,
-                SpeedX = droneState.SpeedX,
-                SpeedY = droneState.SpeedY,
-                SpeedZ = droneState.SpeedZ,
-                TemperatureLowC = droneState.TemperatureLowC,
-                TemperatureHighC = droneState.TemperatureHighC,
-                DistanceTraversedInCm = droneState.DistanceTraversedInCm,
-                HeightInCm = droneState.HeightInCm,
-                BatteryPercent = droneState.BatteryPercent,
-                BarometerInCm = droneState.BarometerInCm,
-                AccelerationX = droneState.AccelerationX,
-                AccelerationY = droneState.AccelerationY,
-                AccelerationZ = droneState.AccelerationZ,
-            };
+                MotorClock = null;
+                _motorTime = droneState.MotorTimeInSeconds;
+                Pitch = droneState.Pitch;
+                Roll = droneState.Roll;
+                Yaw = droneState.Yaw;
+                SpeedX = droneState.SpeedX;
+                SpeedY = droneState.SpeedY;
+                SpeedZ = droneState.SpeedZ;
+                TemperatureLowC = droneState.TemperatureLowC;
+                TemperatureHighC = droneState.TemperatureHighC;
+                DistanceTraversedInCm = droneState.DistanceTraversedInCm;
+                HeightInCm = droneState.HeightInCm;
+                BatteryPercent = droneState.BatteryPercent;
+                BarometerInCm = droneState.BarometerInCm;
+                AccelerationX = droneState.AccelerationX;
+                AccelerationY = droneState.AccelerationY;
+                AccelerationZ = droneState.AccelerationZ;
         }
 
+        #region Mission Pad
+        public bool MissionPadDetected => MissionPadId != -1;
         public int MissionPadId => -1;
         public int MissionPadX => 0;
         public int MissionPadY => 0;
@@ -47,6 +46,7 @@ namespace Tello.Emulator.SDKV2
         public int MissionPadPitch => 0;
         public int MissionPadRoll => 0;
         public int MissionPadYaw => 0;
+        #endregion
         public int Pitch { get; internal set; }
         public int Roll { get; internal set; }
         public int Yaw { get; internal set; }
@@ -58,28 +58,14 @@ namespace Tello.Emulator.SDKV2
         public int DistanceTraversedInCm { get; internal set; }
         public int HeightInCm { get; internal set; }
         public int BatteryPercent { get; internal set; }
-        public double BarometerInCm { get; internal set; }
         public int MotorTimeInSeconds => MotorClock != null
             ? (int)MotorClock.Elapsed.TotalSeconds
             : _motorTime;
+        public double BarometerInCm { get; internal set; }
         public double AccelerationX { get; internal set; }
         public double AccelerationY { get; internal set; }
         public double AccelerationZ { get; internal set; }
-        public bool MissionPadDetected => MissionPadId != -1;
 
-        #region Mission Pad
-        //[JsonProperty("mid")]
-        //public int MissionPadDected { get; set; } = -1;
-
-        //[JsonProperty("x")]
-        //public double MissionPadX { get; set; } = 0;
-
-        //[JsonProperty("y")]
-        //public double MissionPadY { get; set; } = 0;
-
-        //[JsonProperty("z")]
-        //public double MissionPadZ { get; set; } = 0;
-        #endregion
 
         public override string ToString()
         {

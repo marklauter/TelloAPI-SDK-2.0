@@ -2,7 +2,7 @@
 
 namespace Tello.Controller
 {
-    public sealed class FlightControllerResponseReceivedArgs : EventArgs
+    public class FlightControllerResponseReceivedArgs : EventArgs
     {
         public FlightControllerResponseReceivedArgs(string response)
         {

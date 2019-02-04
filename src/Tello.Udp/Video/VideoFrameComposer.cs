@@ -2,27 +2,28 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using Tello.Messaging;
 
-namespace Tello.Controller.Video
+namespace Tello.Udp
 {
-    internal sealed class FrameComposer
+    internal sealed class VideoFrameComposer
     {
-        public FrameComposer(double frameRate, int secondsToBuffer = 5)
+        internal VideoFrameComposer(double frameRate, int secondsToBuffer = 5)
         {
             _frameRate = frameRate;
             _frameDuration = TimeSpan.FromSeconds(1 / _frameRate);
-
-            _frames = new RingBuffer<VideoFrame>((int)(_frameRate * secondsToBuffer));
+            _frames = new RingBuffer<IVideoFrame>((int)(_frameRate * secondsToBuffer));
         }
 
         #region fields
         private long _byteCount = 0;
-        private long _frameIndex = 0;
+        private int _frameIndex = 0;
         private readonly Stopwatch _frameRateWatch = new Stopwatch();
+
         private MemoryStream _stream = null;
         private readonly TimeSpan _frameDuration;
         private readonly double _frameRate;
-        private readonly RingBuffer<VideoFrame> _frames;
+        private readonly RingBuffer<IVideoFrame> _frames;
         #endregion
 
         #region frame composition
@@ -32,16 +33,16 @@ namespace Tello.Controller.Video
             return sample.Length > 4 && sample[0] == 0x00 && sample[1] == 0x00 && sample[2] == 0x00 && sample[3] == 0x01;
         }
 
-        private VideoFrame QueueFrame(MemoryStream stream, long frameIndex)
+        private IVideoFrame QueueFrame(MemoryStream stream, int frameIndex)
         {
             var frame = new VideoFrame(stream.ToArray(), frameIndex, TimeSpan.FromSeconds(frameIndex / _frameRate), _frameDuration);
             _frames.Push(frame);
             return frame;
         }
 
-        private VideoFrame ComposeFrame(byte[] sample)
+        private IVideoFrame ComposeFrame(byte[] sample)
         {
-            var frame = default(VideoFrame);
+            var frame = default(IVideoFrame);
             if (IsNewH264Frame(sample))
             {
                 // close out existing frame
@@ -55,7 +56,7 @@ namespace Tello.Controller.Video
                     // write a frame sample to debug output ~every 5 seconds so we can see how we're doing with performance
                     if (_frameIndex % (_frameRate * 5) == 0)
                     {
-                        Debug.WriteLine($"\nFC {frame.TimeIndex}: f#{frame.Index}, composition rate: {(frame.Index / _frameRateWatch.Elapsed.TotalSeconds).ToString("#,#")}f/s, bit rate: {((uint)(_byteCount * 8 / frame.TimeIndex.TotalSeconds)).ToString("#,#")}b/s");
+                        Debug.WriteLine($"\nFC {frame.TimeIndex}: f#{frame.FrameIndex}, composition rate: {(frame.FrameIndex / _frameRateWatch.Elapsed.TotalSeconds).ToString("#,#")}f/s, bit rate: {((uint)(_byteCount * 8 / frame.TimeIndex.TotalSeconds)).ToString("#,#")}b/s");
                     }
 #endif
                     #endregion
@@ -82,13 +83,13 @@ namespace Tello.Controller.Video
         /// returning a frame now instead of raising event for OnFrameReady
         /// </summary>
         /// <param name="sample"></param>
-        /// <returns>Frame if this sample completes a frame, else null.</returns>
-        public VideoFrame AddSample(byte[] sample)
+        /// <returns>IVideoFrame if this sample completes a frame, else null.</returns>
+        internal IVideoFrame AddSample(byte[] sample)
         {
             return ComposeFrame(sample);
         }
 
-        internal FrameCollection GetFrames(TimeSpan timeout)
+        internal bool TryGetSample(out IVideoSample sample, TimeSpan timeout)
         {
             var wait = new SpinWait();
             var clock = Stopwatch.StartNew();
@@ -98,19 +99,19 @@ namespace Tello.Controller.Video
             }
 
             var frames = _frames.Flush();
-            return frames != null && frames.Length > 0
-                ? new FrameCollection(frames)
+            sample = frames != null && frames.Length > 0
+                ? sample = new VideoSampleBuilder(frames)
                 : null;
+            return sample != null;
         }
 
-        private Stopwatch _frameStopWatch = new Stopwatch();
-        private SpinWait _frameWait = new SpinWait();
-        public bool TryGetFrame(out VideoFrame frame, TimeSpan timeout)
+        internal bool TryGetFrame(out IVideoFrame frame, TimeSpan timeout)
         {
-            _frameStopWatch.Restart();
-            while (!_frames.TryPop(out frame) && _frameStopWatch.Elapsed < timeout)
+            var wait = new SpinWait();
+            var clock = Stopwatch.StartNew();
+            while (!_frames.TryPop(out frame) && clock.Elapsed < timeout)
             {
-                _frameWait.SpinOnce();
+                wait.SpinOnce();
             }
             return frame != null;
         }

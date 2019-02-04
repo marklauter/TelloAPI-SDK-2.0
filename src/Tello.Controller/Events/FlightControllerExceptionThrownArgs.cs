@@ -2,7 +2,7 @@
 
 namespace Tello.Controller
 {
-    public sealed class FlightControllerExceptionThrownArgs : EventArgs
+    public class FlightControllerExceptionThrownArgs : EventArgs
     {
         public FlightControllerExceptionThrownArgs(FlightControllerException ex)
         {

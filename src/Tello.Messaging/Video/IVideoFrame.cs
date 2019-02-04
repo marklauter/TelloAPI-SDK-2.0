@@ -2,6 +2,6 @@
 {
     public interface IVideoFrame : IVideoSample
     {
-        int Index { get; }
+        int FrameIndex { get; }
     }
 }

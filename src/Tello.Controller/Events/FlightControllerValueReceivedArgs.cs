@@ -3,7 +3,7 @@ using Tello.Messaging;
 
 namespace Tello.Controller
 {
-    public sealed class FlightControllerValueReceivedArgs : EventArgs
+    public class FlightControllerValueReceivedArgs : EventArgs
     {
         public FlightControllerValueReceivedArgs(Responses responseType, string value)
         {

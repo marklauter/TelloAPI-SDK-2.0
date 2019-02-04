@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading;
 
-namespace Tello.Controller
+namespace Tello.Udp
 {
     internal sealed class Gate
     {
         private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
-        public T WithReadLock<T>(Func<T> func)
+        internal T WithReadLock<T>(Func<T> func)
         {
             _lock.EnterReadLock();
             try
@@ -20,7 +20,7 @@ namespace Tello.Controller
             }
         }
 
-        public void WithReadLock(Action action)
+        internal void WithReadLock(Action action)
         {
             _lock.EnterReadLock();
             try
@@ -33,7 +33,7 @@ namespace Tello.Controller
             }
         }
 
-        public T WithUpgradeableReadLock<T>(Func<T> func)
+        internal T WithUpgradeableReadLock<T>(Func<T> func)
         {
             _lock.EnterUpgradeableReadLock();
             try
@@ -46,7 +46,7 @@ namespace Tello.Controller
             }
         }
 
-        public void WithUpgradeableReadLock(Action action)
+        internal void WithUpgradeableReadLock(Action action)
         {
             _lock.EnterUpgradeableReadLock();
             try
@@ -59,7 +59,7 @@ namespace Tello.Controller
             }
         }
 
-        public void WithWriteLock(Action action)
+        internal void WithWriteLock(Action action)
         {
             _lock.EnterWriteLock();
             try
@@ -72,7 +72,7 @@ namespace Tello.Controller
             }
         }
 
-        public T WithWriteLock<T>(Func<T> func)
+        internal T WithWriteLock<T>(Func<T> func)
         {
             _lock.EnterWriteLock();
             try

@@ -7,12 +7,12 @@ namespace Tello.Emulator.SDKV2
 {
     internal sealed class CommandInterpreter
     {
-        public CommandInterpreter(StateController stateController)
+        public CommandInterpreter(StateManager stateManager)
         {
-            _stateController = stateController ?? throw new ArgumentNullException(nameof(stateController));
+            _stateManager = stateManager ?? throw new ArgumentNullException(nameof(stateManager));
         }
 
-        private readonly StateController _stateController;
+        private readonly StateManager _stateManager;
 
         private readonly string _ok = "ok";
         private readonly string _error = "error";
@@ -22,7 +22,7 @@ namespace Tello.Emulator.SDKV2
             try
             {
                 var command = CommandParser.GetCommand(message);
-                if (!_stateController.IsSdkModeActivated && command != Commands.EnterSdkMode)
+                if (!_stateManager.IsSdkModeActivated && command != Commands.EnterSdkMode)
                 {
                     Debug.WriteLine($"{nameof(CommandInterpreter)} - not in SDK mode. Message ignored: {message}");
                     return null;
@@ -33,84 +33,84 @@ namespace Tello.Emulator.SDKV2
                 switch (command)
                 {
                     case Commands.EnterSdkMode:
-                        if (!_stateController.IsSdkModeActivated)
+                        if (!_stateManager.IsSdkModeActivated)
                         {
-                            await _stateController.EnterSdkMode();
+                            await _stateManager.EnterSdkMode();
                             return _ok;
                         }
                         return null;
                     case Commands.Takeoff:
-                        await _stateController.TakeOff();
+                        await _stateManager.TakeOff();
                         return _ok;
                     case Commands.Land:
-                        await _stateController.Land();
+                        await _stateManager.Land();
                         return _ok;
                     case Commands.StartVideo:
-                        _stateController.StartVideo();
+                        _stateManager.StartVideo();
                         return _ok;
                     case Commands.StopVideo:
-                        _stateController.StopVideo();
+                        _stateManager.StopVideo();
                         return _ok;
                     case Commands.Stop:
                         return _ok;
                     case Commands.EmergencyStop:
-                        await _stateController.EmergencyStop();
+                        await _stateManager.EmergencyStop();
                         return _ok;
                     case Commands.Up:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _stateController.GoUp(Int32.Parse(args[0]));
+                        await _stateManager.GoUp(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Down:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _stateController.GoDown(Int32.Parse(args[0]));
+                        await _stateManager.GoDown(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Left:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _stateController.GoLeft(Int32.Parse(args[0]));
+                        await _stateManager.GoLeft(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Right:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _stateController.GoRight(Int32.Parse(args[0]));
+                        await _stateManager.GoRight(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Forward:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _stateController.GoForward(Int32.Parse(args[0]));
+                        await _stateManager.GoForward(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Back:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _stateController.GoBack(Int32.Parse(args[0]));
+                        await _stateManager.GoBack(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.ClockwiseTurn:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _stateController.TurnClockwise(Int32.Parse(args[0]));
+                        await _stateManager.TurnClockwise(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.CounterClockwiseTurn:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _stateController.TurnCounterClockwise(Int32.Parse(args[0]));
+                        await _stateManager.TurnCounterClockwise(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Flip:
                     {
@@ -128,7 +128,7 @@ namespace Tello.Emulator.SDKV2
                         {
                             return _error;
                         }
-                        await _stateController.Go(
+                        await _stateManager.Go(
                             Int32.Parse(args[0]),
                             Int32.Parse(args[1]),
                             Int32.Parse(args[2]),
@@ -151,7 +151,7 @@ namespace Tello.Emulator.SDKV2
                         {
                             return _error;
                         }
-                        await _stateController.SetSpeed(Int32.Parse(args[0]));
+                        await _stateManager.SetSpeed(Int32.Parse(args[0]));
                         return _ok;
                     }
                     case Commands.SetRemoteControl:
@@ -217,11 +217,11 @@ namespace Tello.Emulator.SDKV2
                         return _ok;
                     }
                     case Commands.GetSpeed:
-                        return _stateController.GetSpeed().ToString();
+                        return _stateManager.GetSpeed().ToString();
                     case Commands.GetBattery:
-                        return _stateController.GetBattery().ToString();
+                        return _stateManager.GetBattery().ToString();
                     case Commands.GetTime:
-                        return _stateController.GetTime().ToString();
+                        return _stateManager.GetTime().ToString();
                     case Commands.GetWiFiSnr:
                         return "snr";
                     case Commands.GetSdkVersion:

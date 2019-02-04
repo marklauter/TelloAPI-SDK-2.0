@@ -273,7 +273,7 @@ namespace Tello.Controller
         /// <param name="command"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public static string ToMessage(this Commands command, params object[] args)
+        internal static string ToMessage(this Commands command, params object[] args)
         {
             Validate(command, args);
 
@@ -381,7 +381,7 @@ namespace Tello.Controller
             }
         }
 
-        public static TimeSpan ToTimeout(this Commands command, params object[] args)
+        internal static TimeSpan ToTimeout(this Commands command, params object[] args)
         {
             Validate(command, args);
 

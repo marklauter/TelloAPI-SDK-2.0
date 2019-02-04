@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace Tello.Controller
+namespace Tello.Udp
 {
     internal class RingBuffer<T>
     {
-        public RingBuffer(int size)
+        internal RingBuffer(int size)
         {
             _buffer = new T[size];
         }
@@ -16,12 +16,12 @@ namespace Tello.Controller
         private int _tail = 0;
         #endregion
 
-        #region public
-        public int Count => _gate.WithReadLock(() => { return UnsafeGetSize(UnsafeGetInverted()); });
+        #region internal
+        internal int Count => _gate.WithReadLock(() => { return UnsafeGetSize(UnsafeGetInverted()); });
 
-        public bool IsEmpty => _gate.WithReadLock(() => { return UnsafeGetIsEmpty(); });
+        internal bool IsEmpty => _gate.WithReadLock(() => { return UnsafeGetIsEmpty(); });
 
-        public void Push(T item)
+        internal void Push(T item)
         {
             _gate.WithWriteLock(() =>
             {
@@ -30,7 +30,7 @@ namespace Tello.Controller
             });
         }
 
-        public bool TryPop(out T result)
+        internal bool TryPop(out T result)
         {
             result = _gate.WithUpgradeableReadLock(() =>
             {
@@ -49,7 +49,7 @@ namespace Tello.Controller
             return result != null;
         }
 
-        public bool TryPeek(out T result)
+        internal bool TryPeek(out T result)
         {
             result = _gate.WithReadLock(() =>
             {
@@ -60,7 +60,7 @@ namespace Tello.Controller
             return result != null;
         }
 
-        public T[] Flush()
+        internal T[] Flush()
         {
             return _gate.WithUpgradeableReadLock(() =>
             {
@@ -70,7 +70,7 @@ namespace Tello.Controller
             });
         }
 
-        public void Clear()
+        internal void Clear()
         {
             _gate.WithWriteLock(() =>
             {
@@ -80,7 +80,7 @@ namespace Tello.Controller
             });
         }
 
-        public T[] ToArray()
+        internal T[] ToArray()
         {
             return _gate.WithReadLock(() =>
             {

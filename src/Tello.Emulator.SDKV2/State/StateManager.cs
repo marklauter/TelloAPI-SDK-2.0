@@ -12,9 +12,9 @@ namespace Tello.Emulator.SDKV2
         public int Heading { get; internal set; } = 0;
     }
 
-    internal sealed class StateController 
+    internal sealed class StateManager 
     {
-        public StateController(DroneState droneState)
+        public StateManager(DroneState droneState)
         {
             _droneState = droneState;
             _batteryTimer = new Timer(UpdateBattery, null, 10000, 10000);

@@ -2,7 +2,7 @@
 
 namespace Tello.Udp
 {
-    public sealed class NetworkUnavailableException : Exception
+    public class NetworkUnavailableException : Exception
     {
         public NetworkUnavailableException()
         {

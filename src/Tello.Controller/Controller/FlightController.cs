@@ -4,25 +4,23 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Tello.Controller.State;
-using Tello.Controller.Video;
 using Tello.Messaging;
 
 namespace Tello.Controller
 {
-    public sealed class FlightController
+    public class FlightController
     {
         // TimeSpan commandTimeout, string ip = "192.168.10.1", int commandPort = 8889, int statePort = 8890, int videoPort = 11111
 
-        public FlightController(IMessenger messenger, StateReceiver stateReceiver, VideoReceiver videoReceiver)
+        public FlightController(IMessengerService messenger, IRelayService<IDroneState> stateServer, IRelayService<IVideoFrame> videoServer)
         {
             _messenger = messenger;
-            _stateReceiver = stateReceiver;
-            _videoReceiver = videoReceiver;
+            _stateServer = stateServer;
+            _videoServer = videoServer;
         }
 
         #region events
-        public event EventHandler<FrameReadyArgs> FrameReady;
+        public event EventHandler<VideoSampleReadyArgs> FrameReady;
         public event EventHandler<DroneStateReceivedArgs> DroneStateReceived;
         public event EventHandler<FlightControllerValueReceivedArgs> FlightControllerValueReceived;
         public event EventHandler<FlightControllerExceptionThrownArgs> FlightControllerExceptionThrown;
@@ -30,18 +28,18 @@ namespace Tello.Controller
         #endregion
 
         #region messenger
-        private readonly IMessenger _messenger;
+        private readonly IMessengerService _messenger;
         #endregion
 
         #region video
-        private readonly VideoReceiver _videoReceiver;
+        private readonly IRelayService<IVideoFrame> _videoServer;
 
-        private void VideoReceiverNotificationHandler(IRelay<VideoFrame> receiver, VideoFrame frame)
+        private void VideoReceiverNotificationHandler(IRelayService<IVideoFrame> receiver, IVideoFrame frame)
         {
-            FrameReady?.Invoke(this, new FrameReadyArgs(frame));
+            FrameReady?.Invoke(this, new VideoSampleReadyArgs(frame));
         }
 
-        private void VideoReceiverErrorHandler(IRelay<VideoFrame> receiver, Exception ex)
+        private void VideoReceiverErrorHandler(IRelayService<IVideoFrame> receiver, Exception ex)
         {
             FlightControllerExceptionThrown?.Invoke(this,
                 new FlightControllerExceptionThrownArgs(
@@ -86,14 +84,14 @@ namespace Tello.Controller
         }
         public VideoStates VideoState { get; private set; } = VideoStates.Stopped;
 
-        private readonly StateReceiver _stateReceiver;
+        private readonly IRelayService<IDroneState> _stateServer;
 
-        private void StateReceiverNotificationHandler(IRelay<DroneState> receiver, DroneState state)
+        private void StateReceiverNotificationHandler(IRelayService<IDroneState> receiver, IDroneState state)
         {
             DroneStateReceived?.Invoke(this, new DroneStateReceivedArgs(state));
         }
 
-        private void StateReceiverErrorHandler(IRelay<DroneState> receiver, Exception ex)
+        private void StateReceiverErrorHandler(IRelayService<IDroneState> receiver, Exception ex)
         {
             FlightControllerExceptionThrown?.Invoke(this, 
                 new FlightControllerExceptionThrownArgs(
@@ -393,7 +391,7 @@ namespace Tello.Controller
             ConnectionState = ConnectionStates.Connecting;
             try
             {
-                _stateReceiver.Listen(StateReceiverNotificationHandler, StateReceiverErrorHandler);
+                _stateServer.Listen(StateReceiverNotificationHandler, StateReceiverErrorHandler);
                 _messenger.Connect();
                 ConnectionState = ConnectionStates.Connected;
                 if (!await TrySendMessage(CreateCommand(Commands.EnterSdkMode)))
@@ -403,7 +401,7 @@ namespace Tello.Controller
             }
             catch (Exception ex)
             {
-                _stateReceiver.Stop();
+                _stateServer.Stop();
                 ConnectionState = ConnectionStates.Disconnected;
                 FlightControllerExceptionThrown?.Invoke(this, 
                     new FlightControllerExceptionThrownArgs(
@@ -460,11 +458,11 @@ namespace Tello.Controller
             {
                 VideoState = VideoStates.Connecting;
 
-                _videoReceiver.Listen(VideoReceiverNotificationHandler, VideoReceiverErrorHandler);
+                _videoServer.Listen(VideoReceiverNotificationHandler, VideoReceiverErrorHandler);
 
                 if (!await TrySendMessage(CreateCommand(Commands.StartVideo)))
                 {
-                    _videoReceiver.Stop();
+                    _videoServer.Stop();
                     VideoState = VideoStates.Stopped;
                 }
             }
@@ -477,7 +475,7 @@ namespace Tello.Controller
         {
             if (VideoState != VideoStates.Stopped)
             {
-                _videoReceiver.Stop();
+                _videoServer.Stop();
                 await TrySendMessage(CreateCommand(Commands.StopVideo));
             }
         }

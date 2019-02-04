@@ -9,22 +9,22 @@ using Tello.Messaging;
 
 namespace Tello.Udp
 {
-    internal sealed class MessengerService : IMessenger
+    public class UdpMessenger : IMessengerService
     {
-        internal MessengerService(string ip, int port) : base()
+        public UdpMessenger() : base()
         {
-            if (String.IsNullOrEmpty(ip))
-            {
-                throw new ArgumentNullException(nameof(ip));
-            }
+            _telloEndPoint = new IPEndPoint(IPAddress.Parse("192.168.10.1"), 8889);
 
-            _endPoint = new IPEndPoint(IPAddress.Parse(ip), port);
+            StateServer = new StateServer(8890);
+            VideoServer = new VideoServer(30, 10, 11111);
         }
 
-        public MessengerStates State { get; private set; } = MessengerStates.Disconnected;
-        public void ClearError() { State = MessengerStates.Disconnected; }
+        public IRelayService<IDroneState> StateServer { get; }
+        public IRelayService<IVideoSample> VideoServer { get; }
 
-        private readonly IPEndPoint _endPoint;
+        public MessengerStates State { get; private set; } = MessengerStates.Disconnected;
+
+        private readonly IPEndPoint _telloEndPoint;
         private UdpClient _client = null;
 
         public void Connect()
@@ -40,7 +40,7 @@ namespace Tello.Udp
 
                 _client?.Dispose();
                 _client = new UdpClient();
-                _client.Connect(_endPoint);
+                _client.Connect(_telloEndPoint);
                 State = MessengerStates.Connected;
             }
         }
@@ -83,7 +83,7 @@ namespace Tello.Udp
 
                     if (_client.Available == 0)
                     {
-                        throw new TimeoutException(_endPoint.ToString());
+                        throw new TimeoutException(_telloEndPoint.ToString());
                     }
 
                     var response = await _client.ReceiveAsync();
