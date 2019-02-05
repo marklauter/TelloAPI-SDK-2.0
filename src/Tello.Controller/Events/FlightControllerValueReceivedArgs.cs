@@ -8,7 +8,7 @@ namespace Tello.Controller
         public FlightControllerValueReceivedArgs(Responses responseType, string value, TimeSpan elapsed)
         {
             ResponseType = responseType;
-            Value = value;
+            Value = value?.TrimEnd();
             Elapsed = elapsed;
         }
 
