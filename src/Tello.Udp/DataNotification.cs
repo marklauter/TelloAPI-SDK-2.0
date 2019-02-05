@@ -1,12 +1,12 @@
-﻿namespace Tello.Messaging
+﻿namespace Tello.Udp
 {
-    public class Notification : INotification
+    public class DataNotification
     {
-        private Notification(byte[] data) { Data = data; }
+        private DataNotification(byte[] data) { Data = data; }
 
-        public static INotification FromData(byte[] data)
+        public static DataNotification FromData(byte[] data)
         {
-            return new Notification(data);
+            return new DataNotification(data);
         }
 
         public byte[] Data { get; }

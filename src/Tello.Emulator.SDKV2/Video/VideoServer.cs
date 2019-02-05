@@ -10,44 +10,44 @@ namespace Tello.Emulator.SDKV2
         public VideoServer(double frameRate, int secondsToBuffer)
         {
             _frameRate = frameRate;
-            _sampleDuration = TimeSpan.FromSeconds(1/_frameRate);
+            _sampleDuration = TimeSpan.FromSeconds(1 / _frameRate);
         }
 
-        private byte[] _sample = Encoding.UTF8.GetBytes("This is fake frame data.");
+        private readonly byte[] _sample = Encoding.UTF8.GetBytes("This is fake frame data.");
         private readonly double _frameRate;
         private readonly TimeSpan _sampleDuration;
 
-        public ReceiverStates State {get;private set; }
+        public event EventHandler<RelayMessageReceivedArgs<IVideoSample>> RelayMessageReceived;
+        public event EventHandler<RelayExceptionThrownArgs> RelayExceptionThrown;
 
-        internal void Start()
-        {
-            State = ReceiverStates.Listening;
-        }
+        public ReceiverStates State { get; private set; }
 
-        /// <summary>
-        /// emulates listening to udp for H264 samples 
-        /// </summary>
-        /// <param name="messageHandler"></param>
-        /// <param name="errorHandler"></param>
-        public async void Listen(Action<IRelayService<IVideoSample>, IVideoSample> messageHandler, Action<IRelayService<IVideoSample>, Exception> errorHandler)
+        public async void Start()
         {
-            await Task.Run(async () =>
+            if (State != ReceiverStates.Listening)
             {
-                int frameCount = 0;
-                while (State == ReceiverStates.Listening)
+                State = ReceiverStates.Listening;
+
+                await Task.Run(async () =>
                 {
-                    await Task.Delay(_sampleDuration);
-                    try
+                    var frameCount = 0;
+                    while (State == ReceiverStates.Listening)
                     {
-                        messageHandler?.Invoke(this, new VideoFrame(_sample, frameCount, TimeSpan.FromSeconds(frameCount / _frameRate), _sampleDuration));
-                        ++frameCount;
+                        await Task.Delay(_sampleDuration);
+                        try
+                        {
+                            var frame = new VideoFrame(_sample, frameCount, TimeSpan.FromSeconds(frameCount / _frameRate), _sampleDuration);
+                            var eventArgs = new RelayMessageReceivedArgs<IVideoSample>(frame);
+                            RelayMessageReceived?.Invoke(this, eventArgs);
+                            ++frameCount;
+                        }
+                        catch (Exception ex)
+                        {
+                            RelayExceptionThrown?.Invoke(this, new RelayExceptionThrownArgs(ex));
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        errorHandler?.Invoke(this, ex);
-                    }
-                }
-            });
+                });
+            }
         }
 
         public void Stop()

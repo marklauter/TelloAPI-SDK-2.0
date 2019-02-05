@@ -8,29 +8,44 @@ namespace Tello.Udp
         public StateServer(int port)
         {
             _receiver = new UdpReceiver(port);
+            _receiver.RelayMessageReceived += _receiver_RelayMessageReceived;
+            _receiver.RelayExceptionThrown += _receiver_RelayExceptionThrown;
         }
 
         private readonly UdpReceiver _receiver;
 
+        public event EventHandler<RelayMessageReceivedArgs<IDroneState>> RelayMessageReceived;
+        public event EventHandler<RelayExceptionThrownArgs> RelayExceptionThrown;
+
         public ReceiverStates State => _receiver.State;
 
-        public void Listen(Action<IRelayService<IDroneState>, IDroneState> messageHandler, Action<IRelayService<IDroneState>, Exception> errorHandler)
+        public void Start()
         {
-            _receiver.Listen(
-                (receiver, notification) => 
-                {
-                    try
-                    {
-                        messageHandler?.Invoke(this, DroneState.FromDatagram(notification.Data));
-                    }
-                    catch(Exception ex)
-                    {
-                        errorHandler?.Invoke(this, ex);
-                    }
-                },
-                (receiver, ex) => errorHandler?.Invoke(this, ex));
+            _receiver.Start();
         }
 
-        public void Stop() => _receiver.Stop();
+        public void Stop()
+        {
+            _receiver.Stop();
+        }
+
+        private void _receiver_RelayMessageReceived(object sender, RelayMessageReceivedArgs<DataNotification> e)
+        {
+            try
+            {
+                var droneState = DroneState.FromDatagram(e.Message.Data);
+                var eventArgs = new RelayMessageReceivedArgs<IDroneState>(droneState);
+                RelayMessageReceived?.Invoke(this, eventArgs);
+            }
+            catch (Exception ex)
+            {
+                RelayExceptionThrown?.Invoke(this, new RelayExceptionThrownArgs(ex));
+            }
+        }
+
+        private void _receiver_RelayExceptionThrown(object sender, RelayExceptionThrownArgs e)
+        {
+            RelayExceptionThrown?.Invoke(this, e);
+        }
     }
 }

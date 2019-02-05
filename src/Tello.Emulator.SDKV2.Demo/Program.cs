@@ -1,45 +1,65 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Diagnostics;
+﻿using System;
 using Tello.Controller;
 
 namespace Tello.Emulator.SDKV2.Demo
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        static Program()
         {
-            var tello = new TelloEmulator();
-            var controller = new FlightController(tello, tello.StateServer, tello.VideoServer);
-            controller.DroneStateReceived += Controller_DroneStateReceived;
-            controller.FlightControllerExceptionThrown += Controller_FlightControllerExceptionThrown;
-            controller.FlightControllerCommandExceptionThrown += Controller_FlightControllerCommandExceptionThrown;
-            controller.FlightControllerResponseReceived += Controller_FlightControllerResponseReceived;
-            controller.FlightControllerValueReceived += Controller_FlightControllerValueReceived;
-            controller.VideoSampleReady += Controller_VideoSampleReady;
-
-            tello.PowerOn();
-
-            controller.EnterSdkMode();
-
-            controller.TakeOff();
-            controller.Land();
-
-            WriteLine("press key to end");
-            Console.Read();
-
-            tello.PowerOff();
+            _tello = new TelloEmulator();
+            _controller = new FlightController(_tello, _tello.StateServer, _tello.VideoServer);
         }
 
-        private static void WriteLine(string text)
+        private static readonly TelloEmulator _tello;
+        private static readonly FlightController _controller;
+
+        private static void Main(string[] args)
         {
-            text = $"{DateTime.Now}: {text}";
+            _controller.DroneStateReceived += Controller_DroneStateReceived;
+            _controller.FlightControllerExceptionThrown += Controller_FlightControllerExceptionThrown;
+            _controller.FlightControllerCommandExceptionThrown += Controller_FlightControllerCommandExceptionThrown;
+            _controller.FlightControllerResponseReceived += Controller_FlightControllerResponseReceived;
+            _controller.FlightControllerValueReceived += Controller_FlightControllerValueReceived;
+            _controller.VideoSampleReady += Controller_VideoSampleReady;
 
-            Console.WriteLine(text);
-            Console.WriteLine("------------------");
+            Log.WriteLine("> power up");
+            _tello.PowerOn();
 
-            Debug.WriteLine(text);
-            Debug.WriteLine("------------------");
+            Log.WriteLine("> enter sdk mode");
+            _controller.EnterSdkMode();
+
+            Log.WriteLine("> take off");
+            _controller.TakeOff();
+            try
+            {
+                Log.WriteLine("> go forward failure example");
+                _controller.GoForward(10);
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLine($"GoForward failed with exception {ex.GetType()} and message '{ex.Message}'", ConsoleColor.Red);
+            }
+
+            Log.WriteLine("> go forward");
+            _controller.GoForward(50);
+
+            Log.WriteLine("> go up");
+            _controller.GoUp(50);
+
+            Log.WriteLine("> turn clockwise");
+            _controller.TurnClockwise(90);
+
+            Log.WriteLine("> turn counter clockwise");
+            _controller.TurnClockwise(45);
+
+            Log.WriteLine("> land");
+            _controller.Land();
+
+            Log.WriteLine("> press any key to end");
+            Console.ReadKey(false);
+
+            _tello.PowerOff();
         }
 
         private static void Controller_VideoSampleReady(object sender, VideoSampleReadyArgs e)
@@ -49,36 +69,36 @@ namespace Tello.Emulator.SDKV2.Demo
 
         private static void Controller_FlightControllerValueReceived(object sender, FlightControllerValueReceivedArgs e)
         {
-            WriteLine($"{e.ResponseType} == '{e.Value}' in {e.Elapsed.TotalMilliseconds}ms");
+            Log.WriteLine($"{e.ResponseType} == '{e.Value}' in {e.Elapsed.TotalMilliseconds}ms", ConsoleColor.Green);
         }
 
         private static void Controller_FlightControllerResponseReceived(object sender, FlightControllerResponseReceivedArgs e)
         {
-            WriteLine($"{e.Command} returned '{e.Response}' in {e.Elapsed.TotalMilliseconds}ms");
+            Log.WriteLine($"{e.Command} returned '{e.Response}' in {e.Elapsed.TotalMilliseconds}ms", ConsoleColor.Cyan);
+            Log.WriteLine($"Position: { _tello.Position}");
         }
 
         private static void Controller_FlightControllerExceptionThrown(object sender, FlightControllerExceptionThrownArgs e)
         {
-            WriteLine($"Exception {e.Exception.GetType()} with message '{e.Exception.Message}'");
-            WriteLine("| Stack trace");
-            WriteLine($"| {e.Exception.StackTrace}");
+            Log.WriteLine($"Exception {e.Exception.GetType()} with message '{e.Exception.Message}'", ConsoleColor.Red);
+            Log.WriteLine("| Stack trace");
+            Log.WriteLine($"| {e.Exception.StackTrace}");
         }
 
         private static void Controller_FlightControllerCommandExceptionThrown(object sender, FlightControllerCommandExceptionThrownArgs e)
         {
-            WriteLine($"{e.Command} failed with exception {e.Exception.GetType()} with message '{e.Exception.Message}'");
-            WriteLine("| Stack trace");
-            WriteLine($"| {e.Exception.StackTrace}");
+            Log.WriteLine($"{e.Command} failed with exception {e.Exception.GetType()} with message '{e.Exception.Message}'", ConsoleColor.Red);
+            Log.WriteLine("| Stack trace");
+            Log.WriteLine($"| {e.Exception.StackTrace}");
         }
 
         private static int _stateCount = 0;
         private static void Controller_DroneStateReceived(object sender, DroneStateReceivedArgs e)
         {
-            // state reporting interval is 5hz, so 50 should be once every 10 seconds
-            if (_stateCount % 50 == 0)
+            // state reporting interval is 5hz, so 25 should be once every 5 seconds
+            if (_stateCount % 25 == 0)
             {
-                var json = JsonConvert.SerializeObject(e.State, Formatting.None);
-                WriteLine($"state: {json}");
+                Log.WriteLine($"state: {e.State}", ConsoleColor.Yellow);
             }
             _stateCount = _stateCount < Int32.MaxValue
                 ? _stateCount + 1

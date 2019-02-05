@@ -2,49 +2,59 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Tello.Messaging;
 
 namespace Tello.Emulator.SDKV2
 {
-    internal sealed class Position
-    {
-        public int X { get; internal set; } = 0;
-        public int Y { get; internal set; } = 0;
-        public int Z { get; internal set; } = 0;
-        public int Heading { get; internal set; } = 0;
-    }
-
     internal sealed class StateManager
     {
-        public StateManager(DroneState droneState, VideoServer videoServer)
+        public StateManager(DroneState droneState, VideoServer videoServer, StateServer stateServer)
         {
-            _droneState = droneState;
-            _videoServer = videoServer;
-            UpdateBattery();
+            _droneState = droneState ?? throw new ArgumentNullException(nameof(droneState));
+            _videoServer = videoServer ?? throw new ArgumentNullException(nameof(videoServer));
+            _stateServer = stateServer ?? throw new ArgumentNullException(nameof(stateServer));
+            DischargeBattery();
         }
 
+        //private readonly Gate _gate = new Gate();
         private readonly DroneState _droneState;
         private readonly VideoServer _videoServer;
+        private readonly StateServer _stateServer;
+        private readonly Position _position = new Position();
         private readonly Stopwatch _batteryClock = new Stopwatch();
 
         public bool IsPoweredUp { get; private set; } = false;
+        public bool IsVideoOn { get; private set; } = false;
+        public bool IsSdkModeActivated { get; private set; } = false;
+        public int Speed { get; private set; } = 10;
+        public Position Position => new Position(_position);
+        public FlightStates FlightState { get; private set; } = FlightStates.StandingBy;
+
+        public void RechargeBattery()
+        {
+            _droneState.BatteryPercent = 100;
+        }
+
         public void PowerOn()
         {
             if (!IsPoweredUp)
             {
                 IsPoweredUp = true;
                 _batteryClock.Start();
+                _stateServer.Start();
             }
         }
 
         public void PowerOff()
         {
-            IsPoweredUp = false;
-            _batteryClock.Stop();
+            if (IsPoweredUp)
+            {
+                IsPoweredUp = false;
+                _batteryClock.Stop();
+                _stateServer.Stop();
+                StopVideo();
+            }
         }
-
-        public bool IsVideoOn { get; private set; } = false;
-        public int Speed { get; private set; } = 10;
-        public Position Position { get; } = new Position();
 
         public enum FlightStates
         {
@@ -54,9 +64,6 @@ namespace Tello.Emulator.SDKV2
             Landing,
             EmergencyStop
         }
-
-        public bool IsSdkModeActivated { get; private set; } = false;
-        public FlightStates FlightState { get; private set; } = FlightStates.StandingBy;
 
         public Task EnterSdkMode()
         {
@@ -90,6 +97,7 @@ namespace Tello.Emulator.SDKV2
                     FlightState = FlightStates.Takingoff;
                     await Task.Delay(TimeSpan.FromSeconds(1));
                     _droneState.HeightInCm = 20;
+                    _position.Z = _droneState.HeightInCm;
                     FlightState = FlightStates.InFlight;
                 }
             });
@@ -112,6 +120,7 @@ namespace Tello.Emulator.SDKV2
                     await Task.Delay(TimeSpan.FromSeconds(1));
                     _droneState.MotorClock.Stop();
                     _droneState.HeightInCm = 0;
+                    _position.Z = _droneState.HeightInCm;
                     FlightState = FlightStates.StandingBy;
                 }
             });
@@ -131,6 +140,7 @@ namespace Tello.Emulator.SDKV2
                     FlightState = FlightStates.EmergencyStop;
                     _droneState.MotorClock.Stop();
                     _droneState.HeightInCm = 0;
+                    _position.Z = _droneState.HeightInCm;
                     await Task.Delay(TimeSpan.FromSeconds(1));
                 }
             });
@@ -171,7 +181,7 @@ namespace Tello.Emulator.SDKV2
             return Task.Run(async () =>
             {
                 await Task.Delay(TimeSpan.FromSeconds(cm / Speed));
-                Position.X += cm;
+                _position.X += cm;
             });
         }
 
@@ -190,7 +200,7 @@ namespace Tello.Emulator.SDKV2
             return Task.Run(async () =>
             {
                 await Task.Delay(TimeSpan.FromSeconds(cm / Speed));
-                Position.X -= cm;
+                _position.X -= cm;
             });
         }
 
@@ -209,7 +219,7 @@ namespace Tello.Emulator.SDKV2
             return Task.Run(async () =>
             {
                 await Task.Delay(TimeSpan.FromSeconds(cm / Speed));
-                Position.Y += cm;
+                _position.Y += cm;
             });
         }
 
@@ -228,7 +238,7 @@ namespace Tello.Emulator.SDKV2
             return Task.Run(async () =>
             {
                 await Task.Delay(TimeSpan.FromSeconds(cm / Speed));
-                Position.Y -= cm;
+                _position.Y -= cm;
             });
         }
 
@@ -247,7 +257,8 @@ namespace Tello.Emulator.SDKV2
             return Task.Run(async () =>
             {
                 await Task.Delay(TimeSpan.FromSeconds(cm / Speed));
-                Position.Z += cm;
+                _droneState.HeightInCm += cm;
+                _position.Z = _droneState.HeightInCm;
             });
         }
 
@@ -266,11 +277,12 @@ namespace Tello.Emulator.SDKV2
             return Task.Run(async () =>
             {
                 await Task.Delay(TimeSpan.FromSeconds(cm / Speed));
-                Position.Z -= cm;
-                if (Position.Z < 0)
+                _droneState.HeightInCm -= cm;
+                if (_droneState.HeightInCm < 0)
                 {
-                    Position.Z = 0;
+                    _droneState.HeightInCm = 0;
                 }
+                _position.Z = _droneState.HeightInCm;
             });
         }
 
@@ -289,10 +301,10 @@ namespace Tello.Emulator.SDKV2
             return Task.Run(async () =>
             {
                 await Task.Delay(TimeSpan.FromSeconds(1));
-                Position.Heading += degrees;
-                if (Position.Heading > 360)
+                _position.Heading += degrees;
+                if (_position.Heading > 360)
                 {
-                    Position.Heading -= 360;
+                    _position.Heading -= 360;
                 }
             });
         }
@@ -312,10 +324,10 @@ namespace Tello.Emulator.SDKV2
             return Task.Run(async () =>
             {
                 await Task.Delay(TimeSpan.FromSeconds(1));
-                Position.Heading -= degrees;
-                if (Position.Heading < 0)
+                _position.Heading -= degrees;
+                if (_position.Heading < 0)
                 {
-                    Position.Heading += 360;
+                    _position.Heading += 360;
                 }
             });
         }
@@ -348,50 +360,95 @@ namespace Tello.Emulator.SDKV2
             {
                 var distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
                 await Task.Delay(TimeSpan.FromSeconds(distance / Speed));
-                Position.X += x;
-                Position.Y += y;
-                Position.Z += z;
-                if (Position.Z < 0)
+                _position.X += x;
+                _position.Y += y;
+                _position.Z += z;
+                if (_position.Z < 0)
                 {
-                    Position.Z = 0;
+                    _position.Z = 0;
                 }
             });
         }
 
-        public void StartVideo()
+        public Task StartVideo()
         {
-            if (IsPoweredUp && !IsVideoOn)
+            if (!IsPoweredUp)
             {
-                IsVideoOn = true;
-                _videoServer.Start();
+                return Task.CompletedTask;
             }
-        }
 
-        public void StopVideo()
-        {
-            if (IsVideoOn)
+            return Task.Run(async () =>
             {
-                IsVideoOn = false;
-                _videoServer.Stop();
+                await Task.Delay(500);
+                if (!IsVideoOn)
+                {
+                    IsVideoOn = true;
+                    _videoServer.Start();
+                }
+            });
+        }
+
+        public Task StopVideo()
+        {
+            if (!IsPoweredUp)
+            {
+                return Task.CompletedTask;
             }
+
+            return Task.Run(async () =>
+            {
+                await Task.Delay(500);
+                if (IsVideoOn)
+                {
+                    IsVideoOn = false;
+                    _videoServer.Stop();
+                }
+            });
         }
 
-        public int GetSpeed()
+        public Task<int> GetSpeed()
         {
-            return Speed;
+            if (!IsPoweredUp)
+            {
+                return Task.FromResult(-1);
+            }
+
+            return Task.Run(async () =>
+            {
+                await Task.Delay(500);
+                return Speed;
+            });
         }
 
-        public int GetBattery()
+        public Task<int> GetBattery()
         {
-            return _droneState.BatteryPercent;
+            if (!IsPoweredUp)
+            {
+                return Task.FromResult(-1);
+            }
+
+            return Task.Run(async () =>
+            {
+                await Task.Delay(500);
+                return _droneState.BatteryPercent;
+            });
         }
 
-        public int GetTime()
+        public Task<int> GetTime()
         {
-            return _droneState.MotorTimeInSeconds;
+            if (!IsPoweredUp)
+            {
+                return Task.FromResult(-1);
+            }
+
+            return Task.Run(async () =>
+            {
+                await Task.Delay(500);
+                return _droneState.MotorTimeInSeconds;
+            });
         }
 
-        private async void UpdateBattery()
+        private async void DischargeBattery()
         {
             // documentation says there's ~ 15 minutes of battery
             await Task.Run(() =>
@@ -407,7 +464,7 @@ namespace Tello.Emulator.SDKV2
                         {
                             _droneState.BatteryPercent = 0;
                             PowerOff();
-                            Debug.WriteLine("battery died");
+                            Log.WriteLine("battery died");
                         }
                     }
                     wait.SpinOnce();

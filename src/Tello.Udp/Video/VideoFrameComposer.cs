@@ -51,15 +51,11 @@ namespace Tello.Udp
                     frame = QueueFrame(_stream, _frameIndex);
                     _stream.Dispose();
                     Interlocked.Increment(ref _frameIndex);
-                    #region debug
-#if DEBUG
                     // write a frame sample to debug output ~every 5 seconds so we can see how we're doing with performance
                     if (_frameIndex % (_frameRate * 5) == 0)
                     {
-                        Debug.WriteLine($"\nFC {frame.TimeIndex}: f#{frame.FrameIndex}, composition rate: {(frame.FrameIndex / _frameRateWatch.Elapsed.TotalSeconds).ToString("#,#")}f/s, bit rate: {((uint)(_byteCount * 8 / frame.TimeIndex.TotalSeconds)).ToString("#,#")}b/s");
+                        Log.WriteLine($"\nFC {frame.TimeIndex}: f#{frame.FrameIndex}, composition rate: {(frame.FrameIndex / _frameRateWatch.Elapsed.TotalSeconds).ToString("#,#")}f/s, bit rate: {((uint)(_byteCount * 8 / frame.TimeIndex.TotalSeconds)).ToString("#,#")}b/s");
                     }
-#endif
-                    #endregion
                 }
                 else
                 {

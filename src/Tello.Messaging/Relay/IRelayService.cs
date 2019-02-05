@@ -12,7 +12,10 @@ namespace Tello.Messaging
     {
         ReceiverStates State { get; }
 
-        void Listen(Action<IRelayService<T>, T> messageHandler, Action<IRelayService<T>, Exception> errorHandler);
+        event EventHandler<RelayMessageReceivedArgs<T>> RelayMessageReceived;
+        event EventHandler<RelayExceptionThrownArgs> RelayExceptionThrown;
+
+        void Start();
         void Stop();
     }
 }

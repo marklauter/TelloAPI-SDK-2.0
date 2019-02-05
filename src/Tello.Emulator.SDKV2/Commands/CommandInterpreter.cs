@@ -13,7 +13,6 @@ namespace Tello.Emulator.SDKV2
         }
 
         private readonly StateManager _stateManager;
-
         private readonly string _ok = "ok";
         private readonly string _error = "error";
 
@@ -24,15 +23,15 @@ namespace Tello.Emulator.SDKV2
                 var command = CommandParser.GetCommand(message);
                 if (!_stateManager.IsPoweredUp)
                 {
-                    Debug.WriteLine($"{nameof(CommandInterpreter)} - not powered up. Message ignored: {message}");
+                    Log.WriteLine($"not powered up. Message ignored: {message}");
                     return null;
                 }
                 if (!_stateManager.IsSdkModeActivated && command != Commands.EnterSdkMode)
                 {
-                    Debug.WriteLine($"{nameof(CommandInterpreter)} - not in SDK mode. Message ignored: {message}");
+                    Log.WriteLine($"not in SDK mode. Message ignored: {message}");
                     return null;
                 }
-                Debug.WriteLine($"{nameof(CommandInterpreter)} - message received: {message}, command identified: {command}");
+                Log.WriteLine($"message received: {message}, command identified: {command}");
 
                 var args = CommandParser.GetArgs(message);
                 switch (command)
@@ -58,10 +57,10 @@ namespace Tello.Emulator.SDKV2
                         await _stateManager.Land();
                         return _ok;
                     case Commands.StartVideo:
-                        _stateManager.StartVideo();
+                        await _stateManager.StartVideo();
                         return _ok;
                     case Commands.StopVideo:
-                        _stateManager.StopVideo();
+                        await _stateManager.StopVideo();
                         return _ok;
                     case Commands.Stop:
                         return _ok;
@@ -229,25 +228,48 @@ namespace Tello.Emulator.SDKV2
                         return _ok;
                     }
                     case Commands.GetSpeed:
-                        return _stateManager.GetSpeed().ToString();
+                    {
+                        var value = await _stateManager.GetSpeed();
+                        return value != -1
+                            ? value.ToString()
+                            : null;
+                    }
                     case Commands.GetBattery:
-                        return _stateManager.GetBattery().ToString();
+                    {
+                        var value = await _stateManager.GetBattery();
+                        return value != -1
+                            ? value.ToString()
+                            : null;
+                    }
                     case Commands.GetTime:
-                        return _stateManager.GetTime().ToString();
+                    {
+                        var value = await _stateManager.GetTime();
+                        return value != -1
+                            ? value.ToString()
+                            : null;
+                    }
                     case Commands.GetWiFiSnr:
-                        return "snr";
+                        return _stateManager.IsPoweredUp
+                            ? "snr"
+                            : null;
                     case Commands.GetSdkVersion:
-                        return "V2.0 (emulated)";
+                        return _stateManager.IsPoweredUp
+                            ? "SDK 2.0-E"
+                            : null;
                     case Commands.GetSerialNumber:
-                        return "Tello Emulator V0.1";
+                        return _stateManager.IsPoweredUp
+                            ? "Tello SDK 2.0 Emulator"
+                            : null;
                     default:
                         return _error;
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"{nameof(CommandInterpreter)} - {ex}");
-                return _error;
+                Log.WriteLine($"{nameof(CommandInterpreter)} - {ex}");
+                return _stateManager.IsPoweredUp
+                    ? _error
+                    : null;
             }
         }
     }

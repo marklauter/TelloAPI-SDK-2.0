@@ -9,10 +9,27 @@ namespace Tello.Udp
         {
             _frameComposer = new VideoFrameComposer(frameRate, secondsToBuffer);
             _receiver = new UdpReceiver(port);
+            _receiver.RelayMessageReceived += _receiver_RelayMessageReceived;
+            _receiver.RelayExceptionThrown += _receiver_RelayExceptionThrown;
         }
 
-        private readonly VideoFrameComposer _frameComposer;
         private readonly UdpReceiver _receiver;
+        private readonly VideoFrameComposer _frameComposer;
+
+        public event EventHandler<RelayMessageReceivedArgs<IVideoSample>> RelayMessageReceived;
+        public event EventHandler<RelayExceptionThrownArgs> RelayExceptionThrown;
+
+        public ReceiverStates State => _receiver.State;
+
+        public void Start()
+        {
+            _receiver.Start();
+        }
+
+        public void Stop()
+        {
+            _receiver.Stop();
+        }
 
         public bool TryGetSample(out IVideoSample sample, TimeSpan timeout)
         {
@@ -24,32 +41,25 @@ namespace Tello.Udp
             return _frameComposer.TryGetFrame(out frame, timeout);
         }
 
-        public ReceiverStates State => _receiver.State;
-
-        public void Listen(Action<IRelayService<IVideoSample>, IVideoSample> messageHandler, Action<IRelayService<IVideoSample>, Exception> errorHandler)
+        private void _receiver_RelayMessageReceived(object sender, RelayMessageReceivedArgs<DataNotification> e)
         {
-            _receiver.Listen(
-                (receiver, notification) =>
+            try
+            {
+                var frame = _frameComposer.AddSample(e.Message.Data);
+                if (frame != null)
                 {
-                    try
-                    {
-                        var frame = _frameComposer.AddSample(notification.Data);
-                        if (frame != null)
-                        {
-                            messageHandler?.Invoke(this, frame);
-                        }
-                    }
-                    catch(Exception ex)
-                    {
-                        errorHandler?.Invoke(this, ex);
-                    }
-                },
-                (receiver, ex) => errorHandler?.Invoke(this, ex));
+                    RelayMessageReceived?.Invoke(this, new RelayMessageReceivedArgs<IVideoSample>(frame));
+                }
+            }
+            catch (Exception ex)
+            {
+                RelayExceptionThrown?.Invoke(this, new RelayExceptionThrownArgs(ex));
+            }
         }
 
-        public void Stop()
+        private void _receiver_RelayExceptionThrown(object sender, RelayExceptionThrownArgs e)
         {
-            _receiver.Stop();
+            RelayExceptionThrown?.Invoke(this, e);
         }
     }
 }

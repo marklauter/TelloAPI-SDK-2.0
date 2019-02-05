@@ -13,28 +13,34 @@ namespace Tello.Emulator.SDKV2
 
         private readonly IDroneState _droneState;
 
+        public event EventHandler<RelayMessageReceivedArgs<IDroneState>> RelayMessageReceived;
+        public event EventHandler<RelayExceptionThrownArgs> RelayExceptionThrown;
+
         public ReceiverStates State { get; private set; }
 
-        public async void Listen(Action<IRelayService<IDroneState>, IDroneState> messageHandler, Action<IRelayService<IDroneState>, Exception> errorHandler)
+        public async void Start()
         {
-            State = ReceiverStates.Listening;
-
-            await Task.Run(async () =>
+            if (State != ReceiverStates.Listening)
             {
-                while (State == ReceiverStates.Listening)
+                State = ReceiverStates.Listening;
+
+                await Task.Run(async () =>
                 {
-                    // 5Hz state reporting
-                    await Task.Delay(200);
-                    try
+                    while (State == ReceiverStates.Listening)
                     {
-                        messageHandler?.Invoke(this, new DroneState(_droneState));
+                        // 5Hz state reporting
+                        await Task.Delay(200);
+                        try
+                        {
+                            RelayMessageReceived?.Invoke(this, new RelayMessageReceivedArgs<IDroneState>(new DroneState(_droneState)));
+                        }
+                        catch (Exception ex)
+                        {
+                            RelayExceptionThrown?.Invoke(this, new RelayExceptionThrownArgs(ex));
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        errorHandler?.Invoke(this, ex);
-                    }
-                }
-            });
+                });
+            }
         }
 
         public void Stop()

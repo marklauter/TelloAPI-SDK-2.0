@@ -6,7 +6,7 @@ using Tello.Messaging;
 
 namespace Tello.Udp
 {
-    internal sealed class UdpReceiver : IRelayService<INotification>
+    internal sealed class UdpReceiver : IRelayService<DataNotification>
     {
         internal UdpReceiver(int port)
         {
@@ -15,43 +15,50 @@ namespace Tello.Udp
 
         private readonly int _port;
 
+        public event EventHandler<RelayMessageReceivedArgs<DataNotification>> RelayMessageReceived;
+        public event EventHandler<RelayExceptionThrownArgs> RelayExceptionThrown;
+
         public ReceiverStates State { get; private set; }
 
-        public async void Listen(Action<IRelayService<INotification>, INotification> messageHandler, Action<IRelayService<INotification>, Exception> errorHandler)
+        public async void Start()
         {
-            State = ReceiverStates.Listening;
-
-            await Task.Run(async () =>
+            if (State != ReceiverStates.Listening)
             {
-                var wait = new SpinWait();
-                using (var client = new UdpClient(_port))
+                State = ReceiverStates.Listening;
+
+                await Task.Run(async () =>
                 {
-                    while (State == ReceiverStates.Listening)
+                    var wait = new SpinWait();
+                    using (var client = new UdpClient(_port))
                     {
-                        try
+                        while (State == ReceiverStates.Listening)
                         {
-                            if (client.Available > 0)
+                            try
                             {
-                                var receiveResult = await client.ReceiveAsync();
-                                var message = Notification.FromData(receiveResult.Buffer);
-                                messageHandler?.Invoke(this, message);
-                                if (message.Reply != null)
+                                if (client.Available > 0)
                                 {
-                                    await client.SendAsync(message.Reply, message.Reply.Length, receiveResult.RemoteEndPoint);
+                                    var receiveResult = await client.ReceiveAsync();
+                                    var message = DataNotification.FromData(receiveResult.Buffer);
+                                    RelayMessageReceived?.Invoke(this, new RelayMessageReceivedArgs<DataNotification>(message));
+                                    if (message.Reply != null)
+                                    {
+                                        await client.SendAsync(message.Reply, message.Reply.Length, receiveResult.RemoteEndPoint);
+                                    }
+                                }
+                                else
+                                {
+                                    wait.SpinOnce();
                                 }
                             }
-                            else
+                            catch (Exception ex)
                             {
+                                RelayExceptionThrown?.Invoke(this, new RelayExceptionThrownArgs(ex));
                                 wait.SpinOnce();
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            errorHandler?.Invoke(this, ex);
-                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         public void Stop()

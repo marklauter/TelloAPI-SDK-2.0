@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 
-namespace Tello.Udp
+namespace Tello.Messaging
 {
-    internal sealed class Gate
+    public sealed class Gate
     {
         private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
