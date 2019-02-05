@@ -31,7 +31,7 @@ namespace Tello.Controller
         public event EventHandler<FlightControllerValueReceivedArgs> FlightControllerValueReceived;
         public event EventHandler<FlightControllerExceptionThrownArgs> FlightControllerExceptionThrown;
         public event EventHandler<FlightControllerResponseReceivedArgs> FlightControllerResponseReceived;
-        public event EventHandler<FlightControllerCommandExceptionThrownArgs> FlightControllerCommandExceptionThrown;        
+        public event EventHandler<FlightControllerCommandExceptionThrownArgs> FlightControllerCommandExceptionThrown;
         #endregion
 
         #region messenger
@@ -315,9 +315,9 @@ namespace Tello.Controller
             }
             catch (Exception ex)
             {
-                FlightControllerCommandExceptionThrown?.Invoke(this, 
+                FlightControllerCommandExceptionThrown?.Invoke(this,
                     new FlightControllerCommandExceptionThrownArgs(
-                        command, 
+                        command,
                         new FlightControllerException($"SendMessage failed with message '{ex.Message}'", ex),
                         clock.Elapsed));
             }
@@ -416,7 +416,7 @@ namespace Tello.Controller
             {
                 _stateServer.Stop();
                 ConnectionState = ConnectionStates.Disconnected;
-                FlightControllerExceptionThrown?.Invoke(this, 
+                FlightControllerExceptionThrown?.Invoke(this,
                     new FlightControllerExceptionThrownArgs(
                         new FlightControllerException($"Connection failed with message '{ex.Message}'", ex)));
             }
@@ -631,7 +631,7 @@ namespace Tello.Controller
         /// <param name="sides">3 to 15</param>
         /// <param name="length">length of each side. 20 to 500 in cm</param>
         /// <param name="speed">cm/s 10 to 100</param>
-        public void FlyPolygon(int sides, int length, int speed, ClockDirections clockDirection)
+        public void FlyPolygon(int sides, int length, int speed, ClockDirections clockDirection, bool land = false)
         {
             if (sides < 3 || sides > 15)
             {
@@ -669,8 +669,10 @@ namespace Tello.Controller
                         break;
                 }
             }
-
-            Land();
+            if (land)
+            {
+                Land();
+            }
         }
 
         /// <summary>
@@ -739,7 +741,7 @@ namespace Tello.Controller
         {
             EnqueueCommand(Commands.GetSerialNumber);
         }
-        #endregion 
-      
+        #endregion
+
     }
 }

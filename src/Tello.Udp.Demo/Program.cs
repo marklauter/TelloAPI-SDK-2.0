@@ -57,10 +57,14 @@ namespace Tello.Udp.Demo
             _controller.GoUp(50);
 
             Log.WriteLine("> turn clockwise");
-            _controller.TurnClockwise(90);
+            _controller.TurnCounterClockwise(90);
 
             Log.WriteLine("> turn counter clockwise");
-            _controller.TurnCounterClockwise(45);
+            _controller.TurnClockwise(45);
+
+            Log.WriteLine("> fly polygon");
+            _controller.FlyPolygon(4, 50, 50, FlightController.ClockDirections.Clockwise)
+
 
             Log.WriteLine("> land");
             _controller.Land();
