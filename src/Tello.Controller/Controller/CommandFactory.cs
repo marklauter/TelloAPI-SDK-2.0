@@ -385,9 +385,9 @@ namespace Tello.Controller
         {
             Validate(command, args);
 
-            var avgspeed = 20.0; // cm/s
+            var avgspeed = 10.0; // cm/s (using a low speed to give margin of error)
             var distance = 0.0;
-            var arcspeed = 5.0; // degrees/s
+            var arcspeed = 15.0; // degrees/s (tested at 30 degress/second, but want to add some margin for error)
 
             switch (command)
             {
@@ -409,21 +409,12 @@ namespace Tello.Controller
                 case Commands.GetWiFiSnr:
                 case Commands.GetSdkVersion:
                 case Commands.GetSerialNumber:
-                    return TimeSpan.FromSeconds(60);
+                    return TimeSpan.FromSeconds(5);
 
                 case Commands.Takeoff:
-                    return TimeSpan.FromSeconds(15);
-                case Commands.Land:
-                    return TimeSpan.FromSeconds(60);
-                case Commands.Stop:
-                    return TimeSpan.FromSeconds(60);
+                    return TimeSpan.FromSeconds(20);
 
-
-                case Commands.Up:
-                case Commands.Down:
-                    return TimeSpan.FromSeconds(60);
-
-                //todo: if I knew the speed in cm/s I could get a better idea how far
+                //todo: if I knew the actual speed in cm/s I could get a better timeout value
                 case Commands.Left:
                 case Commands.Right:
                 case Commands.Forward:
@@ -443,12 +434,12 @@ namespace Tello.Controller
                     return TimeSpan.FromSeconds(degrees / arcspeed);
 
                 case Commands.Flip:
-                    return TimeSpan.FromSeconds(30);
-
                 //todo: I don't know how to take the args for this command to generate an arc from which I can determin distance
                 case Commands.Curve:
-                    return TimeSpan.FromSeconds(30);
-
+                case Commands.Land:
+                case Commands.Stop:
+                case Commands.Up:
+                case Commands.Down:
                 default:
                     return TimeSpan.FromSeconds(60);
             }

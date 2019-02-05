@@ -35,6 +35,9 @@ namespace Tello.Udp.Demo
 
             _controller.EnterSdkMode();
 
+            Log.WriteLine("> get battery");
+            _controller.GetBattery();
+
             Log.WriteLine("> take off");
             _controller.TakeOff();
             try
@@ -89,15 +92,15 @@ namespace Tello.Udp.Demo
 
         private static void Controller_FlightControllerExceptionThrown(object sender, FlightControllerExceptionThrownArgs e)
         {
-            Log.WriteLine($"Exception {e.Exception.GetType()} with message '{e.Exception.Message}'", ConsoleColor.Red);
-            Log.WriteLine("| Stack trace", ConsoleColor.Red);
+            Log.WriteLine($"Exception {e.Exception.GetType()} with message '{e.Exception.Message}'", ConsoleColor.Red, false);
+            Log.WriteLine("| Stack trace", ConsoleColor.Red, false);
             Log.WriteLine($"| {e.Exception.StackTrace}", ConsoleColor.Red);
         }
 
         private static void Controller_FlightControllerCommandExceptionThrown(object sender, FlightControllerCommandExceptionThrownArgs e)
         {
-            Log.WriteLine($"{e.Command} failed with exception {e.Exception.GetType()} with message '{e.Exception.Message}' after {e.Elapsed.TotalMilliseconds}ms", ConsoleColor.Red);
-            Log.WriteLine("| Stack trace", ConsoleColor.Red);
+            Log.WriteLine($"{e.Command} failed with exception {e.Exception.GetType()} with message '{e.Exception.Message}' after {e.Elapsed.TotalMilliseconds}ms", ConsoleColor.Red, false);
+            Log.WriteLine("| Stack trace", ConsoleColor.Red, false);
             Log.WriteLine($"| {e.Exception.StackTrace}", ConsoleColor.Red);
         }
 
@@ -114,5 +117,4 @@ namespace Tello.Udp.Demo
                 : 0;
         }
     }
-
 }
