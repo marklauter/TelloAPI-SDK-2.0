@@ -63,7 +63,7 @@ namespace Tello.Udp.Demo
             _controller.TurnClockwise(45);
 
             Log.WriteLine("> fly polygon");
-            _controller.FlyPolygon(4, 50, 50, FlightController.ClockDirections.Clockwise, false);
+            _controller.FlyPolygon(4, 100, 50, FlightController.ClockDirections.Clockwise, false);
 
 
             Log.WriteLine("> land");

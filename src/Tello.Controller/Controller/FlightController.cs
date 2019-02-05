@@ -90,10 +90,13 @@ namespace Tello.Controller
         }
         public VideoStates VideoState { get; private set; } = VideoStates.Stopped;
 
+        private IDroneState _droneState = null;
+
         private readonly IRelayService<IDroneState> _stateServer;
 
         private void _stateServer_RelayMessageReceived(object sender, RelayMessageReceivedArgs<IDroneState> e)
         {
+            _droneState = e.Message;
             DroneStateReceived?.Invoke(this, new DroneStateReceivedArgs(e.Message));
         }
 
@@ -655,23 +658,46 @@ namespace Tello.Controller
 
             SetSpeed(speed);
 
+            var turnMethod = default(Action<int>);
+            switch (clockDirection)
+            {
+                case ClockDirections.Clockwise:
+                    turnMethod = TurnClockwise;
+                    break;
+                case ClockDirections.CounterClockwise:
+                    turnMethod = TurnCounterClockwise;
+                    break;
+            }
+
             var angle = (int)Math.Round(360.0 / sides);
             for (var i = 0; i < sides; ++i)
             {
                 GoForward(length);
-                switch (clockDirection)
-                {
-                    case ClockDirections.Clockwise:
-                        TurnClockwise(angle);
-                        break;
-                    case ClockDirections.CounterClockwise:
-                        TurnCounterClockwise(angle);
-                        break;
-                }
+                turnMethod(angle);
             }
+
             if (land)
             {
                 Land();
+            }
+        }
+
+        public void SetHeight(int cm)
+        {
+            if (_droneState != null)
+            {
+                var newHeight = cm - _droneState.HeightInCm;
+                if (newHeight >= 20 && newHeight <= 500)
+                {
+                    if (newHeight < 0)
+                    {
+                        GoDown(Math.Abs(newHeight));
+                    }
+                    else
+                    {
+                        GoUp(newHeight);
+                    }
+                }
             }
         }
 
