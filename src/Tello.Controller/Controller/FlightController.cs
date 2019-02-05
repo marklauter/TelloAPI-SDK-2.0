@@ -388,7 +388,7 @@ namespace Tello.Controller
                 }
                 catch (Exception ex)
                 {
-                    throw new FlightControllerException($"Failed to enqueue command '{command}'", ex);
+                    throw new FlightControllerException($"Failed to enqueue command '{command}' because {ex.GetType()} - '{ex.Message}'", ex);
                 }
             }
         }

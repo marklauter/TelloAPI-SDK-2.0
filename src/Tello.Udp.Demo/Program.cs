@@ -57,7 +57,7 @@ namespace Tello.Udp.Demo
             _controller.TurnClockwise(90);
 
             Log.WriteLine("> turn counter clockwise");
-            _controller.TurnClockwise(45);
+            _controller.TurnCounterClockwise(45);
 
             Log.WriteLine("> land");
             _controller.Land();
@@ -90,15 +90,15 @@ namespace Tello.Udp.Demo
         private static void Controller_FlightControllerExceptionThrown(object sender, FlightControllerExceptionThrownArgs e)
         {
             Log.WriteLine($"Exception {e.Exception.GetType()} with message '{e.Exception.Message}'", ConsoleColor.Red);
-            Log.WriteLine("| Stack trace");
-            Log.WriteLine($"| {e.Exception.StackTrace}");
+            Log.WriteLine("| Stack trace", ConsoleColor.Red);
+            Log.WriteLine($"| {e.Exception.StackTrace}", ConsoleColor.Red);
         }
 
         private static void Controller_FlightControllerCommandExceptionThrown(object sender, FlightControllerCommandExceptionThrownArgs e)
         {
-            Log.WriteLine($"{e.Command} failed with exception {e.Exception.GetType()} with message '{e.Exception.Message}'", ConsoleColor.Red);
-            Log.WriteLine("| Stack trace");
-            Log.WriteLine($"| {e.Exception.StackTrace}");
+            Log.WriteLine($"{e.Command} failed with exception {e.Exception.GetType()} with message '{e.Exception.Message}' after {e.Elapsed.TotalMilliseconds}ms", ConsoleColor.Red);
+            Log.WriteLine("| Stack trace", ConsoleColor.Red);
+            Log.WriteLine($"| {e.Exception.StackTrace}", ConsoleColor.Red);
         }
 
         private static int _stateCount = 0;

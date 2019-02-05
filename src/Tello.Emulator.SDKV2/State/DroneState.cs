@@ -9,7 +9,7 @@ namespace Tello.Emulator.SDKV2
     internal sealed class DroneState : IDroneState
     {
         internal Stopwatch MotorClock { get; private set; }
-        private int _motorTime;
+        private readonly int _motorTime;
 
         internal DroneState()
         {
@@ -19,23 +19,23 @@ namespace Tello.Emulator.SDKV2
 
         internal DroneState(IDroneState droneState)
         {
-                MotorClock = null;
-                _motorTime = droneState.MotorTimeInSeconds;
-                Pitch = droneState.Pitch;
-                Roll = droneState.Roll;
-                Yaw = droneState.Yaw;
-                SpeedX = droneState.SpeedX;
-                SpeedY = droneState.SpeedY;
-                SpeedZ = droneState.SpeedZ;
-                TemperatureLowC = droneState.TemperatureLowC;
-                TemperatureHighC = droneState.TemperatureHighC;
-                DistanceTraversedInCm = droneState.DistanceTraversedInCm;
-                HeightInCm = droneState.HeightInCm;
-                BatteryPercent = droneState.BatteryPercent;
-                BarometerInCm = droneState.BarometerInCm;
-                AccelerationX = droneState.AccelerationX;
-                AccelerationY = droneState.AccelerationY;
-                AccelerationZ = droneState.AccelerationZ;
+            MotorClock = null;
+            _motorTime = droneState.MotorTimeInSeconds;
+            Pitch = droneState.Pitch;
+            Roll = droneState.Roll;
+            Yaw = droneState.Yaw;
+            SpeedX = droneState.SpeedX;
+            SpeedY = droneState.SpeedY;
+            SpeedZ = droneState.SpeedZ;
+            TemperatureLowC = droneState.TemperatureLowC;
+            TemperatureHighC = droneState.TemperatureHighC;
+            DistanceTraversedInCm = droneState.DistanceTraversedInCm;
+            HeightInCm = droneState.HeightInCm;
+            BatteryPercent = droneState.BatteryPercent;
+            BarometerInCm = droneState.BarometerInCm;
+            AccelerationX = droneState.AccelerationX;
+            AccelerationY = droneState.AccelerationY;
+            AccelerationZ = droneState.AccelerationZ;
         }
 
         #region Mission Pad

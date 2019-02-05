@@ -46,14 +46,17 @@ namespace Tello.Udp
         {
             // sample from Tello
             // mid:64;x:0;y:0;z:0;mpry:0,0,0;pitch:0;roll:0;yaw:0;vgx:0;vgy:0;vgz:-7;templ:60;temph:63;tof:20;h:10;bat:89;baro:-67.44;time:0;agx:14.00;agy:-12.00;agz:-1094.00;
-
+            // mid: 0;x:0;y:0;z:0;mpry:0,0,0;pitch:0;roll:0;yaw:0;vgx:0;vgy:0;vgz:0; templ:55;temph:57;tof:10;h: 0;bat:74;baro:-42.72;time:0;agx:-8.00;agy: -1.00;agz:-1002.00;
             if (datagram == null)
             {
                 throw new ArgumentNullException(nameof(datagram));
             }
 
             var message = Encoding.UTF8.GetString(datagram);
-            var keyValues = message.Split(_delimiters, StringSplitOptions.RemoveEmptyEntries);
+            var keyValues = message
+                .Split(_delimiters, StringSplitOptions.RemoveEmptyEntries)
+                .Where((s) => !s.Contains("\r"))
+                .ToArray();
             var values = new object[_properties.Count];
 
             var result = new DroneState();
@@ -201,5 +204,36 @@ namespace Tello.Udp
         [DroneStateName("agz")]
         public double AccelerationZ { get; private set; }
         #endregion
+
+        public override string ToString()
+        {
+            //mid:64;x:0;y:0;z:0;mpry:0,0,0;pitch:0;roll:0;yaw:0;vgx:0;vgy:0;vgz:-7;templ:60;temph:63;tof:20;h:10;bat:89;baro:-67.44;time:0;agx:14.00;agy:-12.00;agz:-1094.00;
+            var builder = new StringBuilder();
+
+            builder.Append($"mid:{MissionPadId};");
+            builder.Append($"x:{MissionPadX};");
+            builder.Append($"y:{MissionPadY};");
+            builder.Append($"z:{MissionPadZ};");
+            builder.Append($"mpry:{MissionPadPitch},{MissionPadRoll},{MissionPadYaw};");
+            builder.Append($"pitch:{Pitch};");
+            builder.Append($"roll:{Roll};");
+            builder.Append($"yaw:{Yaw};");
+            builder.Append($"vgx:{SpeedX};");
+            builder.Append($"vgy:{SpeedY};");
+            builder.Append($"vgz:{SpeedZ};");
+            builder.Append($"templ:{TemperatureLowC};");
+            builder.Append($"temph:{TemperatureHighC};");
+            builder.Append($"tof:{DistanceTraversedInCm};");
+            builder.Append($"h:{HeightInCm};");
+            builder.Append($"bat:{BatteryPercent};");
+            builder.Append($"baro:{BarometerInCm.ToString("F2")};");
+            builder.Append($"time:{MotorTimeInSeconds};");
+            builder.Append($"agx:{AccelerationX.ToString("F2")};");
+            builder.Append($"agy:{AccelerationY.ToString("F2")};");
+            builder.Append($"agz:{AccelerationZ.ToString("F2")};");
+
+            return builder.ToString();
+        }
+
     }
 }

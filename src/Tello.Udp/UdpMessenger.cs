@@ -84,7 +84,7 @@ namespace Tello.Udp
 
                     if (_client.Available == 0)
                     {
-                        throw new TimeoutException(_telloEndPoint.ToString());
+                        throw new TimeoutException(timer.Elapsed.ToString());
                     }
 
                     var response = await _client.ReceiveAsync();
