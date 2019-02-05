@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Tello.Controller;
 
 namespace Tello.Udp.Demo
@@ -31,7 +32,7 @@ namespace Tello.Udp.Demo
             //_tello.PowerOn();
 
             Log.WriteLine("> enter sdk mode");
-            
+
             _controller.EnterSdkMode();
 
             Log.WriteLine("> take off");

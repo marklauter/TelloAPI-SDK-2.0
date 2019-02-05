@@ -1,19 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using Tello.Messaging;
 
 namespace Tello.Udp
 {
-    internal sealed class DroneState : IDroneState
+    internal class DroneStateNameAttribute : Attribute
     {
+        public DroneStateNameAttribute(string name)
+        {
+            Name = name;
+        }
+
+        public string Name { get; private set; }
+    }
+
+    public sealed class DroneState : IDroneState
+    {
+        static DroneState()
+        {
+            var type = typeof(DroneState);
+            var properties = type
+                .GetProperties()
+                .Where((pi) => pi.GetCustomAttribute<DroneStateNameAttribute>() != null)
+                .ToArray();
+
+            _properties = new Dictionary<string, PropertyInfo>();
+            for(var i = 0; i < properties.Length; ++i)
+            {
+                var property = properties[i];
+                var stateName = property.GetCustomAttribute<DroneStateNameAttribute>().Name;
+                _properties.Add(stateName, property);
+            }
+        }
+
         #region private static parsing helpers
+        private static readonly Dictionary<string, PropertyInfo> _properties;
         private static readonly char[] _delimiters = { ':', ';' };
         private static readonly HashSet<string> _doubles = new HashSet<string>(new string[] { "baro", "agx", "agy", "agz" });
         #endregion
 
-        //todo: the current implentation works from the order of the parameters and ignores the names - better to use the names to set the values - maybe a hashtable that points to the property or something
-        internal static DroneState FromDatagram(byte[] datagram)
+        public static DroneState FromDatagram(byte[] datagram)
         {
             // sample from Tello
             // mid:64;x:0;y:0;z:0;mpry:0,0,0;pitch:0;roll:0;yaw:0;vgx:0;vgy:0;vgz:-7;templ:60;temph:63;tof:20;h:10;bat:89;baro:-67.44;time:0;agx:14.00;agy:-12.00;agz:-1094.00;
@@ -24,66 +53,52 @@ namespace Tello.Udp
             }
 
             var message = Encoding.UTF8.GetString(datagram);
-            var keyValuePairs = message.Split(_delimiters);
-            var values = new object[23];
+            var keyValues = message.Split(_delimiters, StringSplitOptions.RemoveEmptyEntries);
+            var values = new object[_properties.Count];
 
-            var valueIndex = 0;
-            for (var i = 0; i < keyValuePairs.Length; i += 2)
+            var result = new DroneState();
+            for (var i = 0; i < keyValues.Length; i += 2)
             {
-                if (keyValuePairs[i] == "mpry")
+                var key = keyValues[i];
+                var value = keyValues[i + 1];
+                if (key != "mpry")
                 {
-                    var mpry = keyValuePairs[i + 1].Split(',');
-                    for (var j = 0; j < mpry.Length; ++j)
+                    var property = _properties[key];
+                    if (_doubles.Contains(key))
                     {
-                        if (Int32.TryParse(mpry[j], out var value))
+                        if (Double.TryParse(keyValues[i + 1], out var parsedValue))
                         {
-                            values[valueIndex++] = value;
+                            property.SetValue(result, parsedValue);
+                        }
+                    }
+                    else
+                    {
+                        if (Int32.TryParse(keyValues[i + 1], out var parsedValue))
+                        {
+                            property.SetValue(result, parsedValue);
                         }
                     }
                 }
-                else if (_doubles.Contains( keyValuePairs[i]))
-                {
-                    if (Double.TryParse(keyValuePairs[i + 1], out var value))
-                    {
-                        values[valueIndex++] = value;
-                    }
-                }
                 else
-                {
-                    if (Int32.TryParse(keyValuePairs[i + 1], out var value))
+                { 
+                    var mpry = keyValues[i + 1].Split(',');
+                    for (var j = 0; j < mpry.Length; ++j)
                     {
-                        values[valueIndex++] = value;
+                        var property = _properties[$"{key}.{j}"];
+                        if (Int32.TryParse(mpry[j], out var parsedValue))
+                        {
+                            property.SetValue(result, parsedValue);
+                        }
                     }
-                }
+                } 
             }
 
-            return new DroneState(
-                (int)values[0],
-                (int)values[1],
-                (int)values[2],
-                (int)values[3],
-                (int)values[4],
-                (int)values[5],
-                (int)values[6],
-                (int)values[7],
-                (int)values[8],
-                (int)values[9],
-                (int)values[10],
-                (int)values[11],
-                (int)values[12],
-                (int)values[13],
-                (int)values[14],
-                (int)values[15],
-                (int)values[16],
-                (int)values[17],
-                (double)values[18],
-                (int)values[19],
-                (double)values[20],
-                (double)values[21],
-                (double)values[22]);
+            return result;
         }
 
         #region ctor
+        private DroneState() { }
+
         private DroneState(
             int missionPadId,
             int missionPadX,
@@ -138,30 +153,53 @@ namespace Tello.Udp
         #region public properties
         #region mission pad
         public bool MissionPadDetected => MissionPadId != -1;
-        public int MissionPadId { get; }
-        public int MissionPadX { get; }
-        public int MissionPadY { get; }
-        public int MissionPadZ { get; }
-        public int MissionPadPitch { get; }
-        public int MissionPadRoll { get; }
-        public int MissionPadYaw { get; }
+        [DroneStateName("mid")]
+        public int MissionPadId { get; private set; }
+        [DroneStateName("x")]
+        public int MissionPadX { get; private set; }
+        [DroneStateName("y")]
+        public int MissionPadY { get; private set; }
+        [DroneStateName("z")]
+        public int MissionPadZ { get; private set; }
+        [DroneStateName("mpry.0")]
+        public int MissionPadPitch { get; private set; }
+        [DroneStateName("mpry.1")]
+        public int MissionPadRoll { get; private set; }
+        [DroneStateName("mpry.2")]
+        public int MissionPadYaw { get; private set; }
         #endregion
-        public int Pitch { get; }
-        public int Roll { get; }
-        public int Yaw { get; }
-        public int SpeedX { get; }
-        public int SpeedY { get; }
-        public int SpeedZ { get; }
-        public int TemperatureLowC { get; }
-        public int TemperatureHighC { get; }
-        public int DistanceTraversedInCm { get; }
-        public int HeightInCm { get; }
-        public int BatteryPercent { get; }
-        public int MotorTimeInSeconds { get; }
-        public double BarometerInCm { get; }
-        public double AccelerationX { get; }
-        public double AccelerationY { get; }
-        public double AccelerationZ { get; }
+        [DroneStateName("pitch")]
+        public int Pitch { get; private set; }
+        [DroneStateName("roll")]
+        public int Roll { get; private set; }
+        [DroneStateName("yaw")]
+        public int Yaw { get; private set; }
+        [DroneStateName("vgx")]
+        public int SpeedX { get; private set; }
+        [DroneStateName("vgy")]
+        public int SpeedY { get; private set; }
+        [DroneStateName("vgz")]
+        public int SpeedZ { get; private set; }
+        [DroneStateName("templ")]
+        public int TemperatureLowC { get; private set; }
+        [DroneStateName("temph")]
+        public int TemperatureHighC { get; private set; }
+        [DroneStateName("tof")]
+        public int DistanceTraversedInCm { get; private set; }
+        [DroneStateName("h")]
+        public int HeightInCm { get; private set; }
+        [DroneStateName("bat")]
+        public int BatteryPercent { get; private set; }
+        [DroneStateName("time")]
+        public int MotorTimeInSeconds { get; private set; }
+        [DroneStateName("baro")]
+        public double BarometerInCm { get; private set; }
+        [DroneStateName("agx")]
+        public double AccelerationX { get; private set; }
+        [DroneStateName("agy")]
+        public double AccelerationY { get; private set; }
+        [DroneStateName("agz")]
+        public double AccelerationZ { get; private set; }
         #endregion
     }
 }
