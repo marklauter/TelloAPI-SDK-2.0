@@ -26,6 +26,8 @@ namespace Tello.Emulator.SDKV2.Demo
             Log.WriteLine("> power up");
             _tello.PowerOn();
 
+            //_tello.
+
             Log.WriteLine("> enter sdk mode");
             _controller.EnterSdkMode();
 

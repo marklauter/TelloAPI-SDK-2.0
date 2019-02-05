@@ -7,7 +7,7 @@ namespace Tello.Messaging
     {
         private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
-        internal T WithReadLock<T>(Func<T> func)
+        public T WithReadLock<T>(Func<T> func)
         {
             _lock.EnterReadLock();
             try
@@ -20,7 +20,7 @@ namespace Tello.Messaging
             }
         }
 
-        internal void WithReadLock(Action action)
+        public void WithReadLock(Action action)
         {
             _lock.EnterReadLock();
             try
@@ -33,7 +33,7 @@ namespace Tello.Messaging
             }
         }
 
-        internal T WithUpgradeableReadLock<T>(Func<T> func)
+        public T WithUpgradeableReadLock<T>(Func<T> func)
         {
             _lock.EnterUpgradeableReadLock();
             try
@@ -46,7 +46,7 @@ namespace Tello.Messaging
             }
         }
 
-        internal void WithUpgradeableReadLock(Action action)
+        public void WithUpgradeableReadLock(Action action)
         {
             _lock.EnterUpgradeableReadLock();
             try
@@ -59,7 +59,7 @@ namespace Tello.Messaging
             }
         }
 
-        internal void WithWriteLock(Action action)
+        public void WithWriteLock(Action action)
         {
             _lock.EnterWriteLock();
             try
@@ -72,7 +72,7 @@ namespace Tello.Messaging
             }
         }
 
-        internal T WithWriteLock<T>(Func<T> func)
+        public T WithWriteLock<T>(Func<T> func)
         {
             _lock.EnterWriteLock();
             try

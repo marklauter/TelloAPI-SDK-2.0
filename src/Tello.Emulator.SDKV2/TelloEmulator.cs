@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using Tello.Messaging;
@@ -41,25 +42,29 @@ namespace Tello.Emulator.SDKV2
         }
 
         #region IMessengerService
-        private MessengerStates _messengerState = MessengerStates.Disconnected;
 
-        MessengerStates IMessengerService.State => _messengerState;
+        public MessengerStates State { get; private set; } = MessengerStates.Disconnected;
 
-        void IMessengerService.Connect()
+        public void Connect()
         {
-            if (_messengerState == MessengerStates.Disconnected)
+            if (State == MessengerStates.Disconnected)
             {
-                _messengerState = MessengerStates.Connected;
+                State = MessengerStates.Connected;
             }
         }
 
-        void IMessengerService.Disconnect()
+        public void Disconnect()
         {
-            _messengerState = MessengerStates.Disconnected;
+            State = MessengerStates.Disconnected;
         }
 
         public async Task<IResponse> SendAsync(IRequest request)
         {
+            if (State != MessengerStates.Connected)
+            {
+                return Response.FromException(request, new InvalidOperationException("Not connected."), TimeSpan.FromSeconds(0));
+            }
+
             var clock = Stopwatch.StartNew();
             var message = Encoding.UTF8.GetString(request.Data);
 
