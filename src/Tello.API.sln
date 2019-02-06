@@ -40,7 +40,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{623C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E47234EE-606A-4CA7-B825-2A62305E20A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tello.Conroller.Test", "..\tests\Tello.Conroller.Test\Tello.Conroller.Test.csproj", "{9E3276F7-EDD1-4BDA-B2EF-0B77C7CAF895}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tello.Controller.Test", "..\tests\Tello.Conroller.Test\Tello.Controller.Test.csproj", "{9E3276F7-EDD1-4BDA-B2EF-0B77C7CAF895}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

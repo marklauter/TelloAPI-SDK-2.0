@@ -30,6 +30,7 @@ namespace Tello.Emulator.SDKV2
         private readonly StateManager _stateManager;
         private readonly CommandInterpreter _commandInterpreter;
 
+        public bool IsPoweredUp => _stateManager.IsPoweredUp;
 
         public void PowerOn()
         {
