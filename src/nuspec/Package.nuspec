@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
     <metadata>
-        <id>Tello.API</id>
-        <version>1.0.0</version>
-        <title>Tello Flight Controller API for Tello SDK 2.0</title>
+        <id>Tello.2.0.API</id>
+        <version>0.0.1</version>
+        <title>Flight Controller API for Tello SDK 2.0</title>
         <authors>Mark Lauter</authors>
         <owners>Sumo Software Corporation</owners>
         <copyright>Copyright 2018 Sumo Software Corporation</copyright>
@@ -13,12 +13,12 @@
         <iconUrl>http://sumosoftware.com/media/nuget-sumo.png</iconUrl>
         <description>Tello Flight Controller API for Tello SDK 2.0</description>
         <releaseNotes></releaseNotes>
-        <tags>Tello Drone API Ryze</tags>
+        <tags>Tello Drone API Ryze DJI</tags>
         <repository type="git" url="https://github.com/marklauter/TelloAPI.git" />
 
         <dependencies>
           <group targetFramework="NETStandard2.0">
-            <dependency id="NetStandard.Library" version="2.0.3" exclude="Build,Analyzers" />
+            <dependency id="NetStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
           </group>
         </dependencies>
     </metadata>
