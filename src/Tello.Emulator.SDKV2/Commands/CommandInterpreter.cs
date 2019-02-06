@@ -38,7 +38,7 @@ namespace Tello.Emulator.SDKV2
                     case Commands.EnterSdkMode:
                         if (!_stateManager.IsSdkModeActivated)
                         {
-                            await _stateManager.EnterSdkMode();
+                            _stateManager.EnterSdkMode();
                             if (_stateManager.IsSdkModeActivated)
                             {
                                 return _ok;
@@ -50,77 +50,77 @@ namespace Tello.Emulator.SDKV2
                         }
                         return null;
                     case Commands.Takeoff:
-                        await _stateManager.TakeOff();
+                        _stateManager.TakeOff();
                         return _ok;
                     case Commands.Land:
-                        await _stateManager.Land();
+                        _stateManager.Land();
                         return _ok;
                     case Commands.StartVideo:
-                        await _stateManager.StartVideo();
+                        _stateManager.StartVideo();
                         return _ok;
                     case Commands.StopVideo:
-                        await _stateManager.StopVideo();
+                        _stateManager.StopVideo();
                         return _ok;
                     case Commands.Stop:
                         return _ok;
                     case Commands.EmergencyStop:
-                        await _stateManager.EmergencyStop();
+                        _stateManager.EmergencyStop();
                         return _ok;
                     case Commands.Up:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _stateManager.GoUp(Int32.Parse(args[0]));
+                        _stateManager.GoUp(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Down:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _stateManager.GoDown(Int32.Parse(args[0]));
+                        _stateManager.GoDown(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Left:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _stateManager.GoLeft(Int32.Parse(args[0]));
+                        _stateManager.GoLeft(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Right:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _stateManager.GoRight(Int32.Parse(args[0]));
+                        _stateManager.GoRight(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Forward:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _stateManager.GoForward(Int32.Parse(args[0]));
+                        _stateManager.GoForward(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Back:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _stateManager.GoBack(Int32.Parse(args[0]));
+                        _stateManager.GoBack(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.ClockwiseTurn:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _stateManager.TurnClockwise(Int32.Parse(args[0]));
+                        _stateManager.TurnClockwise(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.CounterClockwiseTurn:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
-                        await _stateManager.TurnCounterClockwise(Int32.Parse(args[0]));
+                        _stateManager.TurnCounterClockwise(Int32.Parse(args[0]));
                         return _ok;
                     case Commands.Flip:
                     {
@@ -137,7 +137,7 @@ namespace Tello.Emulator.SDKV2
                         {
                             return _error;
                         }
-                        await _stateManager.Go(
+                        _stateManager.Go(
                             Int32.Parse(args[0]),
                             Int32.Parse(args[1]),
                             Int32.Parse(args[2]),
@@ -159,7 +159,7 @@ namespace Tello.Emulator.SDKV2
                         {
                             return _error;
                         }
-                        await _stateManager.SetSpeed(Int32.Parse(args[0]));
+                        _stateManager.SetSpeed(Int32.Parse(args[0]));
                         return _ok;
                     }
                     case Commands.SetRemoteControl:
@@ -226,21 +226,21 @@ namespace Tello.Emulator.SDKV2
                     }
                     case Commands.GetSpeed:
                     {
-                        var value = await _stateManager.GetSpeed();
+                        var value = _stateManager.GetSpeed();
                         return value != -1
                             ? value.ToString()
                             : null;
                     }
                     case Commands.GetBattery:
                     {
-                        var value = await _stateManager.GetBattery();
+                        var value = _stateManager.GetBattery();
                         return value != -1
                             ? value.ToString()
                             : null;
                     }
                     case Commands.GetTime:
                     {
-                        var value = await _stateManager.GetTime();
+                        var value = _stateManager.GetTime();
                         return value != -1
                             ? value.ToString()
                             : null;
