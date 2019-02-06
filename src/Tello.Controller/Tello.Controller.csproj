@@ -2,6 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.5</TargetFramework>
+    <Authors>Mark Lauter</Authors>
+    <Company>Sumo Software Corporation</Company>
+    <PackageId>Tello.2.0.API</PackageId>
+    <Version>0.0.1</Version>
+    <Copyright>Copyright 2018 Sumo Software Corporation</Copyright>
+    <PackageLicenseUrl>https://github.com/marklauter/TelloAPI/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/marklauter/TelloAPI</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/marklauter/TelloAPI/master/art/drone.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/marklauter/TelloAPI.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Tello Drone API Ryze DJI</PackageTags>
+    <Description>Tello Flight Controller API for Tello SDK 2.</Description>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>

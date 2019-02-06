@@ -30,6 +30,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "art", "art", "{8D543EDC-102
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{A849398A-5600-4A72-B3B0-7E4A188629B7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{623C1565-EF2D-4C99-9009-B81B3E1CBAD8}"
+	ProjectSection(SolutionItems) = preProject
+		..\scripts\PackNPush_Local_Debug.ps1 = ..\scripts\PackNPush_Local_Debug.ps1
+		..\scripts\PackNPush_Local_Release.ps1 = ..\scripts\PackNPush_Local_Release.ps1
+		..\scripts\PackNPush_NugetOrg.ps1 = ..\scripts\PackNPush_NugetOrg.ps1
+		..\scripts\PackNPushAll.ps1 = ..\scripts\PackNPushAll.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

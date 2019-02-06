@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+<?xml version="1.0"?>
+<package >
   <metadata>
     <id>Tello.SDK20.API</id>
     <version>0.0.1</version>
@@ -15,11 +15,5 @@
     <releaseNotes></releaseNotes>
     <tags>tello sdk20 drone api ryze rji</tags>
     <repository type="git" url="https://github.com/marklauter/TelloAPI.git" />
-
-    <dependencies>
-      <group targetFramework="NETStandard2.0">
-        <dependency id="NetStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
-      </group>
-    </dependencies>
   </metadata>
 </package>
