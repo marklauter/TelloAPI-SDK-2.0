@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Tello.Messaging;
 
@@ -130,7 +129,6 @@ namespace Tello.Emulator.SDKV2
                             return _error;
                         }
                         // there's no state to manage for zero sum movements
-                        await Task.Delay(TimeSpan.FromSeconds(1));
                         return _ok;
                     }
                     case Commands.Go:
@@ -153,7 +151,6 @@ namespace Tello.Emulator.SDKV2
                             return _error;
                         }
                         //todo: implement curve in _flightController
-                        await Task.Delay(TimeSpan.FromSeconds(1));
                         return _ok;
                     }
                     case Commands.SetSpeed:
