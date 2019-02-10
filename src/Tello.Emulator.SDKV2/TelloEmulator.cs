@@ -44,35 +44,39 @@ namespace Tello.Emulator.SDKV2
 
         #region IMessengerService
 
-        public MessengerStates State { get; private set; } = MessengerStates.Disconnected;
+        public MessengerStates MessengerState { get; private set; } = MessengerStates.Disconnected;
 
         public void Connect()
         {
-            if (State == MessengerStates.Disconnected)
+            if (!_stateManager.IsPoweredUp)
             {
-                State = MessengerStates.Connected;
+                throw new TelloUnavailableException("Device must be connected to Tello's WIFI.");
+            }
+
+            if (MessengerState == MessengerStates.Disconnected)
+            {
+                MessengerState = MessengerStates.Connected;
             }
         }
 
         public void Disconnect()
         {
-            State = MessengerStates.Disconnected;
+            MessengerState = MessengerStates.Disconnected;
         }
 
-        public async Task<IResponse> SendAsync(IRequest request)
+        public Task<IResponse> SendAsync(IRequest request)
         {
-            if (State != MessengerStates.Connected)
+            if (MessengerState != MessengerStates.Connected)
             {
-                return Response.FromException(request, new InvalidOperationException("Not connected."), TimeSpan.FromSeconds(0));
+                return Task.FromResult(Response.FromException(request, new InvalidOperationException("Not connected."), TimeSpan.FromSeconds(0)));
             }
 
             var clock = Stopwatch.StartNew();
             var message = Encoding.UTF8.GetString(request.Data);
 
-            // command interpreter is the heart of the Tello emulator
-            var response = await _commandInterpreter.InterpretAsync(message);
-
-            return Response.FromData(request, Encoding.UTF8.GetBytes(response), clock.Elapsed);
+            var response = _commandInterpreter.Interpret(message);
+            
+            return Task.FromResult(Response.FromData(request, Encoding.UTF8.GetBytes(response), clock.Elapsed));
         }
         #endregion
     }

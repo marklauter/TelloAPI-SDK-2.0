@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using Tello.Controller;
 using Tello.Emulator.SDKV2;
 using Tello.Messaging;
@@ -6,7 +7,7 @@ using Tello.Messaging;
 namespace Tello.Conroller.Test
 {
     [TestClass]
-    public class MotorTimeInSeconds
+    public class FlightConrollerTest
     {
         //[ClassInitialize]
         //public void ClassInitialize()
@@ -20,7 +21,6 @@ namespace Tello.Conroller.Test
 
         //}
 
-
         [TestMethod]
         public void FlightController_EnterSdkMode()
         {
@@ -28,7 +28,7 @@ namespace Tello.Conroller.Test
             var controller = new FlightController(tello, tello.StateServer, tello.VideoServer);
 
             var actualCommand = default(Commands);
-            var actualResponse = string.Empty;
+            var actualResponse = String.Empty;
             controller.FlightControllerResponseReceived += delegate (object sender, FlightControllerResponseReceivedArgs e)
             {
                 actualCommand = e.Command;
@@ -49,29 +49,18 @@ namespace Tello.Conroller.Test
             var tello = new TelloEmulator();
             var controller = new FlightController(tello, tello.StateServer, tello.VideoServer);
 
-            var actualCommand = default(Commands);
-            var actualResponse = string.Empty;
-            
-            controller.FlightControllerResponseReceived += delegate (object sender, FlightControllerResponseReceivedArgs e)
-            {
-                actualCommand = e.Command;
-                actualResponse = e.Response;
-            };
-
             controller.FlightControllerExceptionThrown += delegate (object sender, FlightControllerExceptionThrownArgs e)
             {
-
+                Assert.IsNotNull(e.Exception.InnerException);
+                Assert.IsTrue(e.Exception.InnerException is TelloUnavailableException);
             };
 
             controller.FlightControllerCommandExceptionThrown += delegate (object sender, FlightControllerCommandExceptionThrownArgs e)
             {
-                //todo: this is throwing the wrong error - too tired to fix it right now
+                Assert.Fail("wrong event handler called");
             };
 
             controller.EnterSdkMode();
-
-            Assert.AreEqual(Commands.Unknown, actualCommand);
-            Assert.AreEqual(string.Empty, actualResponse);
         }
     }
 }

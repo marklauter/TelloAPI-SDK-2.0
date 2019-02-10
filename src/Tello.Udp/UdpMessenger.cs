@@ -22,34 +22,34 @@ namespace Tello.Udp
         public IRelayService<IDroneState> StateServer { get; }
         public IRelayService<IVideoSample> VideoServer { get; }
 
-        public MessengerStates State { get; private set; } = MessengerStates.Disconnected;
+        public MessengerStates MessengerState { get; private set; } = MessengerStates.Disconnected;
 
         private readonly IPEndPoint _telloEndPoint;
         private UdpClient _client = null;
 
         public void Connect()
         {
-            if (State == MessengerStates.Disconnected)
+            if (MessengerState == MessengerStates.Disconnected)
             {
-                State = MessengerStates.Connecting;
+                MessengerState = MessengerStates.Connecting;
 
                 if (!IsNetworkAvailable)
                 {
-                    throw new NetworkUnavailableException("Device must be connected to Tello's WIFI.");
+                    throw new TelloUnavailableException("Device must be connected to Tello's WIFI.");
                 }
 
                 _client?.Dispose();
                 _client = new UdpClient();
                 _client.Connect(_telloEndPoint);
-                State = MessengerStates.Connected;
+                MessengerState = MessengerStates.Connected;
             }
         }
 
         public void Disconnect()
         {
-            if (State != MessengerStates.Disconnected)
+            if (MessengerState != MessengerStates.Disconnected)
             {
-                State = MessengerStates.Disconnected;
+                MessengerState = MessengerStates.Disconnected;
                 if (_client != null)
                 {
                     _client.Close();
@@ -68,7 +68,7 @@ namespace Tello.Udp
                 var timer = Stopwatch.StartNew();
                 try
                 {
-                    if (State != MessengerStates.Connected)
+                    if (MessengerState != MessengerStates.Connected)
                     {
                         throw new InvalidOperationException("Not connected.");
                     }

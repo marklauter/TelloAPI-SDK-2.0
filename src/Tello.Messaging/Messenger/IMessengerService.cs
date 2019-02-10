@@ -11,7 +11,7 @@ namespace Tello.Messaging
 
     public interface IMessengerService 
     {
-        MessengerStates State { get; }
+        MessengerStates MessengerState { get; }
 
         void Connect();
         void Disconnect();

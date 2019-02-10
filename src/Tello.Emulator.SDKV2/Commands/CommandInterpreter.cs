@@ -15,7 +15,7 @@ namespace Tello.Emulator.SDKV2
         private readonly string _ok = "ok";
         private readonly string _error = "error";
 
-        public async Task<string> InterpretAsync(string message)
+        public string Interpret(string message)
         {
             try
             {
