@@ -113,7 +113,7 @@ namespace Tello.Controller
 
         private readonly ConcurrentQueue<Tuple<Commands, string, TimeSpan>> _messageQueue = new ConcurrentQueue<Tuple<Commands, string, TimeSpan>>();
 
-        private bool IsResponseOk(Commands command, string responseMessage)
+        internal bool IsResponseOk(Commands command, string responseMessage)
         {
             if (String.IsNullOrEmpty(responseMessage))
             {
@@ -430,8 +430,11 @@ namespace Tello.Controller
         /// </summary>
         public void TakeOff()
         {
-            FlightState = FlightStates.Takingoff;
-            EnqueueCommand(Commands.Takeoff);
+            if (FlightState == FlightStates.StandingBy || FlightState == FlightStates.EmergencyStop)
+            {
+                FlightState = FlightStates.Takingoff;
+                EnqueueCommand(Commands.Takeoff);
+            }
         }
 
         /// <summary>

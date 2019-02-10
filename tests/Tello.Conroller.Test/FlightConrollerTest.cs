@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using Tello.Controller;
 using Tello.Emulator.SDKV2;
@@ -85,6 +86,23 @@ namespace Tello.Conroller.Test
             controller.EnterSdkMode();
         }
 
+        private void AwaitCommand(FlightController controller, Action command)
+        {
+            var isOk = false;
+            void handler(object sender, FlightControllerResponseReceivedArgs e)
+            {
+                isOk = controller.IsResponseOk(e.Command, e.Response);
+            }
+            controller.FlightControllerResponseReceived += handler;
+            command?.Invoke();
+            var wait = new SpinWait();
+            while (isOk == false)
+            {
+                wait.SpinOnce();
+            }
+            controller.FlightControllerResponseReceived -= handler;
+        }
+
         [TestMethod]
         public void FlightController_TakeOff()
         {
@@ -133,6 +151,9 @@ namespace Tello.Conroller.Test
             try
             {
                 controller.EnterSdkMode();
+                AwaitCommand(controller, controller.TakeOff);
+                Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
+
                 controller.FlightControllerResponseReceived += delegate (object sender, FlightControllerResponseReceivedArgs e)
                 {
                     actualCommand = e.Command;
@@ -153,6 +174,166 @@ namespace Tello.Conroller.Test
             Assert.AreEqual(Commands.Land, actualCommand);
             Assert.AreEqual("ok", actualResponse);
             Assert.AreEqual(FlightStates.StandingBy, controller.FlightState);
+        }
+
+        private FlightControllerResponseReceivedArgs TestMovement(TelloEmulator tello, FlightController controller, Action<int> command, int arg)
+        {
+            var result = default(FlightControllerResponseReceivedArgs);
+
+            tello.PowerOn();
+            try
+            {
+                controller.EnterSdkMode();
+                AwaitCommand(controller, controller.TakeOff);
+                Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
+
+                controller.FlightControllerResponseReceived += delegate (object sender, FlightControllerResponseReceivedArgs e)
+                {
+                    result = e;
+                };
+                command?.Invoke(arg);
+                var wait = new SpinWait();
+                var clock = Stopwatch.StartNew();
+                while (result == default(FlightControllerResponseReceivedArgs) && clock.ElapsedMilliseconds < 5000)
+                {
+                    wait.SpinOnce();
+                }
+            }
+            finally
+            {
+                tello.PowerOff();
+            }
+            return result;
+        }
+
+        [TestMethod]
+        public void FlightController_Up()
+        {
+            var tello = new TelloEmulator();
+            var controller = new FlightController(tello, tello.StateServer, tello.VideoServer);
+            var e = TestMovement(tello, controller, controller.GoUp, 20);
+
+            Assert.IsNotNull(e);
+            Assert.AreEqual(Commands.Up, e.Command);
+            Assert.AreEqual("ok", e.Response);
+            Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
+        }
+
+        [TestMethod]
+        public void FlightController_Down()
+        {
+            var tello = new TelloEmulator();
+            var controller = new FlightController(tello, tello.StateServer, tello.VideoServer);
+            var e = TestMovement(tello, controller, controller.GoDown, 20);
+
+            Assert.IsNotNull(e);
+            Assert.AreEqual(Commands.Down, e.Command);
+            Assert.AreEqual("ok", e.Response);
+            Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
+        }
+
+        [TestMethod]
+        public void FlightController_Left()
+        {
+            var tello = new TelloEmulator();
+            var controller = new FlightController(tello, tello.StateServer, tello.VideoServer);
+            var e = TestMovement(tello, controller, controller.GoLeft, 20);
+
+            Assert.IsNotNull(e);
+            Assert.AreEqual(Commands.Left, e.Command);
+            Assert.AreEqual("ok", e.Response);
+            Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
+        }
+
+        [TestMethod]
+        public void FlightController_Right()
+        {
+            var tello = new TelloEmulator();
+            var controller = new FlightController(tello, tello.StateServer, tello.VideoServer);
+            var e = TestMovement(tello, controller, controller.GoRight, 20);
+
+            Assert.IsNotNull(e);
+            Assert.AreEqual(Commands.Right, e.Command);
+            Assert.AreEqual("ok", e.Response);
+            Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
+        }
+
+        [TestMethod]
+        public void FlightController_Forward()
+        {
+            var tello = new TelloEmulator();
+            var controller = new FlightController(tello, tello.StateServer, tello.VideoServer);
+            var e = TestMovement(tello, controller, controller.GoForward, 20);
+
+            Assert.IsNotNull(e);
+            Assert.AreEqual(Commands.Forward, e.Command);
+            Assert.AreEqual("ok", e.Response);
+            Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
+        }
+
+        [TestMethod]
+        public void FlightController_Back()
+        {
+            var tello = new TelloEmulator();
+            var controller = new FlightController(tello, tello.StateServer, tello.VideoServer);
+            var e = TestMovement(tello, controller, controller.GoBackward, 20);
+
+            Assert.IsNotNull(e);
+            Assert.AreEqual(Commands.Back, e.Command);
+            Assert.AreEqual("ok", e.Response);
+            Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
+        }
+
+        [TestMethod]
+        public void FlightController_Clockwise()
+        {
+            var tello = new TelloEmulator();
+            var controller = new FlightController(tello, tello.StateServer, tello.VideoServer);
+            var e = TestMovement(tello, controller, controller.TurnClockwise, 20);
+
+            Assert.IsNotNull(e);
+            Assert.AreEqual(Commands.ClockwiseTurn, e.Command);
+            Assert.AreEqual("ok", e.Response);
+            Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
+        }
+
+        [TestMethod]
+        public void FlightController_CounterClockwise()
+        {
+            var tello = new TelloEmulator();
+            var controller = new FlightController(tello, tello.StateServer, tello.VideoServer);
+            var e = TestMovement(tello, controller, controller.TurnCounterClockwise, 20);
+
+            Assert.IsNotNull(e);
+            Assert.AreEqual(Commands.CounterClockwiseTurn, e.Command);
+            Assert.AreEqual("ok", e.Response);
+            Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
+        }
+
+        [TestMethod]
+        public void FlightController_TurnRight()
+        {
+            var tello = new TelloEmulator();
+            var controller = new FlightController(tello, tello.StateServer, tello.VideoServer);
+            var e = TestMovement(tello, controller, controller.TurnRight, 20);
+
+            Assert.IsNotNull(e);
+            Assert.AreEqual(Commands.ClockwiseTurn, e.Command);
+            Assert.AreEqual("ok", e.Response);
+            Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
+        }
+
+        [TestMethod]
+        public void FlightController_TurnLeft()
+        {
+            var tello = new TelloEmulator();
+            var controller = new FlightController(tello, tello.StateServer, tello.VideoServer);
+            var e = TestMovement(tello, controller, controller.TurnLeft, 20);
+
+            Assert.IsNotNull(e);
+            Assert.AreEqual(Commands.CounterClockwiseTurn, e.Command);
+            Assert.AreEqual("ok", e.Response);
+            Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
         }
     }
 }
