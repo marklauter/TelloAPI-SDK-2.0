@@ -39,6 +39,14 @@ namespace Tello.Controller
         #endregion
 
         #region video
+        public enum VideoStates
+        {
+            Stopped,
+            Connecting,
+            Streaming,
+        }
+        public VideoStates VideoState { get; private set; } = VideoStates.Stopped;
+
         private readonly IRelayService<IVideoSample> _videoServer;
 
         private void _videoServer_RelayMessageReceived(object sender, RelayMessageReceivedArgs<IVideoSample> e)
@@ -70,7 +78,7 @@ namespace Tello.Controller
             CommandLinkEstablished,
             Disconnected
         }
-        public ConnectionStates ConnectionState = ConnectionStates.Disconnected;
+        public ConnectionStates ConnectionState { get; private set; } = ConnectionStates.Disconnected;
 
         public enum FlightStates
         {
@@ -81,14 +89,6 @@ namespace Tello.Controller
             EmergencyStop
         }
         public FlightStates FlightState { get; private set; } = FlightStates.StandingBy;
-
-        public enum VideoStates
-        {
-            Stopped,
-            Connecting,
-            Streaming,
-        }
-        public VideoStates VideoState { get; private set; } = VideoStates.Stopped;
 
         private IDroneState _droneState = null;
 

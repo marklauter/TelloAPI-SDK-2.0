@@ -28,6 +28,14 @@ namespace Tello.Emulator.SDKV2
         public bool IsSdkModeActivated { get; private set; } = false;
         public int Speed { get; private set; } = 10;
         public Position Position => new Position(_position);
+        public enum FlightStates
+        {
+            StandingBy,
+            Takingoff,
+            InFlight,
+            Landing,
+            EmergencyStop
+        }
         public FlightStates FlightState { get; private set; } = FlightStates.StandingBy;
 
         public void RechargeBattery()
@@ -42,6 +50,9 @@ namespace Tello.Emulator.SDKV2
                 IsPoweredUp = true;
                 _batteryClock.Start();
                 _stateServer.Start();
+                FlightState = FlightStates.StandingBy;
+                IsSdkModeActivated = false;
+                Speed = 10;
             }
         }
 
@@ -50,19 +61,13 @@ namespace Tello.Emulator.SDKV2
             if (IsPoweredUp)
             {
                 IsPoweredUp = false;
-                _batteryClock.Stop();
                 _stateServer.Stop();
+                _batteryClock.Stop();
                 StopVideo();
+                FlightState = FlightStates.StandingBy;
+                IsSdkModeActivated = false;
+                Speed = 10;
             }
-        }
-
-        public enum FlightStates
-        {
-            StandingBy,
-            Takingoff,
-            InFlight,
-            Landing,
-            EmergencyStop
         }
 
         public void EnterSdkMode()

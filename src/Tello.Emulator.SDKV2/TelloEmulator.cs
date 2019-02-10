@@ -34,12 +34,17 @@ namespace Tello.Emulator.SDKV2
 
         public void PowerOn()
         {
-            _stateManager.PowerOn();
+            if (!IsPoweredUp)
+            {
+                _stateManager.PowerOn();
+                MessengerState = MessengerStates.Disconnected;
+            }
         }
 
         public void PowerOff()
         {
             _stateManager.PowerOff();
+            MessengerState = MessengerStates.Disconnected;
         }
 
         #region IMessengerService
