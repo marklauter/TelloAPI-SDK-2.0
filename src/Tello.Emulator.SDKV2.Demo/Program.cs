@@ -30,8 +30,8 @@ namespace Tello.Emulator.SDKV2.Demo
             Log.WriteLine("> enter sdk mode");
             _controller.EnterSdkMode();
 
-            //Log.WriteLine("> get battery");
-            //_controller.GetBattery();
+            Log.WriteLine("> get battery");
+            _controller.GetBattery();
 
             var wait = new SpinWait();
             while (!_canTakeOff)
@@ -39,17 +39,17 @@ namespace Tello.Emulator.SDKV2.Demo
                 wait.SpinOnce();
             }
 
-            //Log.WriteLine("> take off");
-            //_controller.TakeOff();
-            //try
-            //{
-            //    Log.WriteLine("> go forward failure example");
-            //    _controller.GoForward(10);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.WriteLine($"GoForward failed with exception {ex.GetType()} and message '{ex.Message}'", ConsoleColor.Red);
-            //}
+            Log.WriteLine("> take off");
+            _controller.TakeOff();
+            try
+            {
+                Log.WriteLine("> go forward failure example");
+                _controller.GoForward(10);
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLine($"GoForward failed with exception {ex.GetType()} and message '{ex.Message}'", ConsoleColor.Red);
+            }
 
             //Log.WriteLine("> go forward");
             //_controller.GoForward(50);
@@ -87,8 +87,8 @@ namespace Tello.Emulator.SDKV2.Demo
 
         private static void Controller_FlightControllerResponseReceived(object sender, FlightControllerResponseReceivedArgs e)
         {
-            Log.WriteLine($"{e.Command} returned '{e.Response}' in {e.Elapsed.TotalMilliseconds}ms", ConsoleColor.Cyan);
-            Log.WriteLine($"Actual Position: { _tello.Position}", ConsoleColor.Blue);
+            Log.WriteLine($"{e.Command} returned '{e.Response}' in {e.Elapsed.TotalMilliseconds}ms", ConsoleColor.Magenta, false);
+            Log.WriteLine($"Actual Position: { _tello.Position}", ConsoleColor.Blue, false);
             Log.WriteLine($"Estimated Position: { _controller.Position}", ConsoleColor.Blue);
         }
 
@@ -115,7 +115,8 @@ namespace Tello.Emulator.SDKV2.Demo
             // state reporting interval is 5hz, so 25 should be once every 5 seconds
             if (_stateCount % 25 == 0)
             {
-                Log.WriteLine($"state: {e.State}", ConsoleColor.Green);
+                Log.WriteLine($"State: {e.State}", ConsoleColor.Green, false);
+                Log.WriteLine($"Estimated Position: { _controller.Position}", ConsoleColor.Blue);
             }
             _stateCount = _stateCount < Int32.MaxValue
                 ? _stateCount + 1

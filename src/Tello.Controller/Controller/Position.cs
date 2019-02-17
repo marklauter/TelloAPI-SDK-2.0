@@ -100,7 +100,7 @@ namespace Tello.Controller
             {
                 case Commands.ClockwiseTurn:
                     Heading += degrees;
-                    if (Heading > 360)
+                    if (Heading >= 360)
                     {
                         Heading -= 360;
                     }

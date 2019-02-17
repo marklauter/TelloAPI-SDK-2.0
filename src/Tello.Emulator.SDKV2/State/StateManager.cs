@@ -94,9 +94,8 @@ namespace Tello.Emulator.SDKV2
             {
                 _droneState.MotorClock.Start();
                 FlightState = FlightStates.Takingoff;
-                _droneState.HeightInCm = 20;
+                _position.Z = _droneState.HeightInCm = 20;
                 _droneState.BarometerInCm += _droneState.HeightInCm;
-                _position.Z = _droneState.HeightInCm;
                 FlightState = FlightStates.InFlight;
             }
         }
@@ -108,15 +107,12 @@ namespace Tello.Emulator.SDKV2
                 return;
             }
 
-            if (IsSdkModeActivated &&
-                (FlightState == FlightStates.InFlight
-                || FlightState == FlightStates.Takingoff))
+            if (IsSdkModeActivated && (FlightState == FlightStates.InFlight || FlightState == FlightStates.Takingoff))
             {
                 FlightState = FlightStates.Landing;
                 _droneState.MotorClock.Stop();
                 _droneState.BarometerInCm -= _droneState.HeightInCm;
-                _droneState.HeightInCm = 0;
-                _position.Z = _droneState.HeightInCm;
+                _position.Z = _droneState.HeightInCm = 0;
                 FlightState = FlightStates.StandingBy;
             }
         }
@@ -227,8 +223,7 @@ namespace Tello.Emulator.SDKV2
             }
 
             _droneState.BarometerInCm += cm;
-            _droneState.HeightInCm += cm;
-            _position.Z = _droneState.HeightInCm;
+            _position.Z = _droneState.HeightInCm += cm;
         }
 
         public void GoDown(int cm)
@@ -265,7 +260,7 @@ namespace Tello.Emulator.SDKV2
             }
 
             _position.Heading += degrees;
-            if (_position.Heading > 360)
+            if (_position.Heading >= 360)
             {
                 _position.Heading -= 360;
             }
