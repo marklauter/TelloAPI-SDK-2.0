@@ -153,6 +153,7 @@ namespace Tello.Emulator.SDKV2
         }
 
         //todo: set an approximate acceleration in the movement commands before the delay and reset to zero after
+        //todo: take heading into account - see Tello.Controller.Position.Move() for help
         public void GoForward(int cm)
         {
             if (!IsPoweredUp)
