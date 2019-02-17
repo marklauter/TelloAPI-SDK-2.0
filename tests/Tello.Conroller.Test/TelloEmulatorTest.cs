@@ -23,7 +23,7 @@ namespace Tello.Controller.Test
             Assert.AreEqual(0, tello.Position.Heading);
             Assert.AreEqual(0, tello.Position.X);
             Assert.AreEqual(0, tello.Position.Y);
-            Assert.AreEqual(0, tello.Position.Z);
+            Assert.AreEqual(0, tello.Position.Height);
         }
 
         [TestMethod]

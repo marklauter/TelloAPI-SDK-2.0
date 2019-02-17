@@ -140,7 +140,7 @@ namespace Tello.Controller
 
         private readonly ConcurrentQueue<Tuple<Commands, string, TimeSpan, object[]>> _messageQueue = new ConcurrentQueue<Tuple<Commands, string, TimeSpan, object[]>>();
 
-        internal bool IsResponseOk(Commands command, string responseMessage)
+        private bool IsResponseOk(Commands command, string responseMessage)
         {
             if (String.IsNullOrEmpty(responseMessage))
             {
@@ -259,10 +259,7 @@ namespace Tello.Controller
                         Position.Turn(command, (int)args[0]);
                         break;
                     case Commands.Go:
-                        // positive or negative value will work with front and right
-                        // because they're both expecting positive values
-                        Position.Move(Commands.Forward, (int)args[1]);
-                        Position.Move(Commands.Right, (int)args[0]);
+                        Position.Go((int)args[0], (int)args[1]);
                         break;
                 }
             }
@@ -323,6 +320,12 @@ namespace Tello.Controller
                     {
                         FlightControllerResponseReceived?.Invoke(this, new FlightControllerResponseReceivedArgs(command, responseValue, clock.Elapsed));
                     }
+                }
+                else
+                {
+                    Log.WriteLine($"'{message}' command received unexpected response - '{responseValue}'");
+
+                    throw new FlightControllerException($"'{message}' command received unexpected response '{responseValue}'");
                 }
             }
             else // udp receiver pooped

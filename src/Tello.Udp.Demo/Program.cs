@@ -45,30 +45,40 @@ namespace Tello.Udp.Demo
 
             Log.WriteLine("> take off");
             _controller.TakeOff();
-            try
-            {
-                Log.WriteLine("> go forward failure example");
-                _controller.GoForward(10);
-            }
-            catch (Exception ex)
-            {
-                Log.WriteLine($"GoForward failed with exception {ex.GetType()} and message '{ex.Message}'", ConsoleColor.Red);
-            }
 
             Log.WriteLine("> go forward");
             _controller.GoForward(50);
 
-            Log.WriteLine("> go up");
-            _controller.GoUp(50);
-
-            Log.WriteLine("> turn clockwise");
+            Log.WriteLine("> turn counter clockwise");
             _controller.TurnCounterClockwise(90);
 
-            Log.WriteLine("> turn counter clockwise");
-            _controller.TurnClockwise(45);
+            Log.WriteLine("> go 50, 50, 50");
+            _controller.Go(50, 50, -50, 50);
 
-            Log.WriteLine("> fly polygon");
-            _controller.FlyPolygon(4, 100, 50, ClockDirections.Clockwise, false);
+            //try
+            //{
+            //    Log.WriteLine("> go forward failure example");
+            //    _controller.GoForward(10);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.WriteLine($"GoForward failed with exception {ex.GetType()} and message '{ex.Message}'", ConsoleColor.Red);
+            //}
+
+            //Log.WriteLine("> go forward");
+            //_controller.GoForward(50);
+
+            //Log.WriteLine("> go up");
+            //_controller.GoUp(50);
+
+            //Log.WriteLine("> turn counter clockwise");
+            //_controller.TurnCounterClockwise(90);
+
+            //Log.WriteLine("> turn clockwise");
+            //_controller.TurnClockwise(45);
+
+            //Log.WriteLine("> fly polygon");
+            //_controller.FlyPolygon(4, 100, 50, ClockDirections.Clockwise, false);
 
             Log.WriteLine("> land");
             _controller.Land();

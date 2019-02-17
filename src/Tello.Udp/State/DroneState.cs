@@ -145,7 +145,7 @@ namespace Tello.Udp
             DistanceTraversedInCm = distanceTraversedInCm;
             HeightInCm = heightInCm;
             BatteryPercent = batteryPercent;
-            BarometerInCm = Math.Abs(barometerInCm);
+            BarometerInCm = barometerInCm;
             MotorTimeInSeconds = motorTimeInSeconds;
             AccelerationX = accelerationX;
             AccelerationY = accelerationY;
@@ -234,6 +234,5 @@ namespace Tello.Udp
 
             return builder.ToString();
         }
-
     }
 }

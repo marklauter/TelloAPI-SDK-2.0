@@ -94,8 +94,11 @@ namespace Tello.Emulator.SDKV2
             {
                 _droneState.MotorClock.Start();
                 FlightState = FlightStates.Takingoff;
-                _position.Z = _droneState.HeightInCm = 20;
-                _droneState.BarometerInCm += _droneState.HeightInCm;
+
+                var cm = 20;
+                _position.Height = _droneState.HeightInCm = cm;
+                _droneState.BarometerInCm += cm;
+
                 FlightState = FlightStates.InFlight;
             }
         }
@@ -111,8 +114,10 @@ namespace Tello.Emulator.SDKV2
             {
                 FlightState = FlightStates.Landing;
                 _droneState.MotorClock.Stop();
-                _droneState.BarometerInCm -= _droneState.HeightInCm;
-                _position.Z = _droneState.HeightInCm = 0;
+
+                _droneState.BarometerInCm -= _droneState.HeightInCm; // resets barometer to starting value
+                _position.Height = _droneState.HeightInCm = 0;
+
                 FlightState = FlightStates.StandingBy;
             }
         }
@@ -129,7 +134,7 @@ namespace Tello.Emulator.SDKV2
                 FlightState = FlightStates.EmergencyStop;
                 _droneState.MotorClock.Stop();
                 _droneState.HeightInCm = 0;
-                _position.Z = _droneState.HeightInCm;
+                _position.Height = _droneState.HeightInCm;
             }
         }
 
@@ -162,7 +167,7 @@ namespace Tello.Emulator.SDKV2
                 throw new ArgumentOutOfRangeException(nameof(cm));
             }
 
-            _position.Y += cm;
+            Position.Move(Commands.Forward, cm);
         }
 
         public void GoBack(int cm)
@@ -177,7 +182,7 @@ namespace Tello.Emulator.SDKV2
                 throw new ArgumentOutOfRangeException(nameof(cm));
             }
 
-            _position.Y -= cm;
+            Position.Move(Commands.Back, cm);
         }
 
         public void GoRight(int cm)
@@ -192,7 +197,7 @@ namespace Tello.Emulator.SDKV2
                 throw new ArgumentOutOfRangeException(nameof(cm));
             }
 
-            _position.X += cm;
+            Position.Move(Commands.Right, cm);
         }
 
         public void GoLeft(int cm)
@@ -207,7 +212,7 @@ namespace Tello.Emulator.SDKV2
                 throw new ArgumentOutOfRangeException(nameof(cm));
             }
 
-            _position.X -= cm;
+            Position.Move(Commands.Left, cm);
         }
 
         public void GoUp(int cm)
@@ -223,7 +228,7 @@ namespace Tello.Emulator.SDKV2
             }
 
             _droneState.BarometerInCm += cm;
-            _position.Z = _droneState.HeightInCm += cm;
+            _position.Height = _droneState.HeightInCm += cm;
         }
 
         public void GoDown(int cm)
@@ -238,13 +243,11 @@ namespace Tello.Emulator.SDKV2
                 throw new ArgumentOutOfRangeException(nameof(cm));
             }
 
-            _droneState.BarometerInCm -= cm;
-            _droneState.HeightInCm -= cm;
-            if (_droneState.HeightInCm < 0)
-            {
-                _droneState.HeightInCm = 0;
-            }
-            _position.Z = _droneState.HeightInCm;
+            var heightDelta = _droneState.HeightInCm - cm >= 0
+                ? cm
+                : _droneState.HeightInCm;
+            _droneState.BarometerInCm -= heightDelta;
+            _position.Height = _droneState.HeightInCm -= heightDelta;
         }
 
         public void TurnClockwise(int degrees)
@@ -259,11 +262,7 @@ namespace Tello.Emulator.SDKV2
                 throw new ArgumentOutOfRangeException(nameof(degrees));
             }
 
-            _position.Heading += degrees;
-            if (_position.Heading >= 360)
-            {
-                _position.Heading -= 360;
-            }
+            Position.Turn(Commands.ClockwiseTurn, degrees);
         }
 
         public void TurnCounterClockwise(int degrees)
@@ -278,11 +277,7 @@ namespace Tello.Emulator.SDKV2
                 throw new ArgumentOutOfRangeException(nameof(degrees));
             }
 
-            _position.Heading -= degrees;
-            if (_position.Heading < 0)
-            {
-                _position.Heading += 360;
-            }
+            Position.Turn(Commands.CounterClockwiseTurn, degrees);
         }
 
         public void Go(int x, int y, int z, int speed)
@@ -311,15 +306,13 @@ namespace Tello.Emulator.SDKV2
 
             var distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
 
-            _position.X += x;
-            _position.Y += y;
-            _droneState.BarometerInCm += z;
-            _droneState.HeightInCm += z;
-            if (_droneState.HeightInCm < 0)
-            {
-                _droneState.HeightInCm = 0;
-            }
-            _position.Z = _droneState.HeightInCm;
+            _position.Go(x, y);
+
+            var heightDelta = _droneState.HeightInCm + z >= 0
+                ? z
+                : -1 * _droneState.HeightInCm;
+            _droneState.BarometerInCm += heightDelta;
+            _position.Height = _droneState.HeightInCm += heightDelta;
         }
 
         public void StartVideo()

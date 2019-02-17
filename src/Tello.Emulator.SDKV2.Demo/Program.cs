@@ -41,6 +41,7 @@ namespace Tello.Emulator.SDKV2.Demo
 
             Log.WriteLine("> take off");
             _controller.TakeOff();
+
             try
             {
                 Log.WriteLine("> go forward failure example");
@@ -57,10 +58,10 @@ namespace Tello.Emulator.SDKV2.Demo
             //Log.WriteLine("> go up");
             //_controller.GoUp(50);
 
-            //Log.WriteLine("> turn clockwise");
+            //Log.WriteLine("> turn counter clockwise");
             //_controller.TurnCounterClockwise(90);
 
-            //Log.WriteLine("> turn counter clockwise");
+            //Log.WriteLine("> turn clockwise");
             //_controller.TurnClockwise(45);
 
             Log.WriteLine("> fly polygon");
