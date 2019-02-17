@@ -43,17 +43,17 @@ namespace Tello.Controller
             }
         }
 
-        internal static char ToChar(this FlipDirections direction)
+        internal static char ToChar(this CardinalDirections direction)
         {
             switch (direction)
             {
-                case FlipDirections.Left:
+                case CardinalDirections.Left:
                     return 'l';
-                case FlipDirections.Right:
+                case CardinalDirections.Right:
                     return 'r';
-                case FlipDirections.Front:
+                case CardinalDirections.Front:
                     return 'f';
-                case FlipDirections.Back:
+                case CardinalDirections.Back:
                     return 'b';
                 default:
                     throw new NotSupportedException(direction.ToString());

@@ -19,7 +19,7 @@ namespace Tello.Udp
             VideoServer = new VideoServer(30, 10, 11111);
         }
 
-        public IRelayService<IDroneState> StateServer { get; }
+        public IRelayService<IRawDroneState> StateServer { get; }
         public IRelayService<IVideoSample> VideoServer { get; }
 
         public MessengerStates MessengerState { get; private set; } = MessengerStates.Disconnected;

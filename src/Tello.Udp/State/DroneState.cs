@@ -17,7 +17,7 @@ namespace Tello.Udp
         public string Name { get; private set; }
     }
 
-    public sealed class DroneState : IDroneState
+    public sealed class DroneState : IRawDroneState
     {
         static DroneState()
         {

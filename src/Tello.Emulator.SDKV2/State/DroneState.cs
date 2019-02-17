@@ -6,7 +6,7 @@ namespace Tello.Emulator.SDKV2
 {
     //https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf
 
-    internal sealed class DroneState : IDroneState
+    internal sealed class DroneState : IRawDroneState
     {
         internal Stopwatch MotorClock { get; private set; }
         private readonly int _motorTime;
@@ -17,7 +17,7 @@ namespace Tello.Emulator.SDKV2
             BatteryPercent = 100;
         }
 
-        internal DroneState(IDroneState droneState)
+        internal DroneState(IRawDroneState droneState)
         {
             MotorClock = null;
             _motorTime = droneState.MotorTimeInSeconds;
@@ -89,7 +89,7 @@ namespace Tello.Emulator.SDKV2
             builder.Append($"tof:{DistanceTraversedInCm};");
             builder.Append($"h:{HeightInCm};");
             builder.Append($"bat:{BatteryPercent};");
-            builder.Append($"baro:{BarometerInCm.ToString("F2")};");
+            builder.Append($"alt:{BarometerInCm.ToString("F2")};");
             builder.Append($"time:{MotorTimeInSeconds};");
             builder.Append($"agx:{AccelerationX.ToString("F2")};");
             builder.Append($"agy:{AccelerationY.ToString("F2")};");

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Tello.Controller;
 
 namespace Tello.Emulator.SDKV2.Demo
@@ -26,34 +27,44 @@ namespace Tello.Emulator.SDKV2.Demo
             Log.WriteLine("> power up");
             _tello.PowerOn();
 
-            //_tello.
-
             Log.WriteLine("> enter sdk mode");
             _controller.EnterSdkMode();
 
-            Log.WriteLine("> take off");
-            _controller.TakeOff();
-            try
+            //Log.WriteLine("> get battery");
+            //_controller.GetBattery();
+
+            var wait = new SpinWait();
+            while (!_canTakeOff)
             {
-                Log.WriteLine("> go forward failure example");
-                _controller.GoForward(10);
-            }
-            catch (Exception ex)
-            {
-                Log.WriteLine($"GoForward failed with exception {ex.GetType()} and message '{ex.Message}'", ConsoleColor.Red);
+                wait.SpinOnce();
             }
 
-            Log.WriteLine("> go forward");
-            _controller.GoForward(50);
+            //Log.WriteLine("> take off");
+            //_controller.TakeOff();
+            //try
+            //{
+            //    Log.WriteLine("> go forward failure example");
+            //    _controller.GoForward(10);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.WriteLine($"GoForward failed with exception {ex.GetType()} and message '{ex.Message}'", ConsoleColor.Red);
+            //}
 
-            Log.WriteLine("> go up");
-            _controller.GoUp(50);
+            //Log.WriteLine("> go forward");
+            //_controller.GoForward(50);
 
-            Log.WriteLine("> turn clockwise");
-            _controller.TurnClockwise(90);
+            //Log.WriteLine("> go up");
+            //_controller.GoUp(50);
 
-            Log.WriteLine("> turn counter clockwise");
-            _controller.TurnCounterClockwise(45);
+            //Log.WriteLine("> turn clockwise");
+            //_controller.TurnCounterClockwise(90);
+
+            //Log.WriteLine("> turn counter clockwise");
+            //_controller.TurnClockwise(45);
+
+            Log.WriteLine("> fly polygon");
+            _controller.FlyPolygon(4, 100, 50, ClockDirections.Clockwise, false);
 
             Log.WriteLine("> land");
             _controller.Land();
@@ -77,7 +88,8 @@ namespace Tello.Emulator.SDKV2.Demo
         private static void Controller_FlightControllerResponseReceived(object sender, FlightControllerResponseReceivedArgs e)
         {
             Log.WriteLine($"{e.Command} returned '{e.Response}' in {e.Elapsed.TotalMilliseconds}ms", ConsoleColor.Cyan);
-            Log.WriteLine($"Position: { _tello.Position}", ConsoleColor.Blue);
+            Log.WriteLine($"Actual Position: { _tello.Position}", ConsoleColor.Blue);
+            Log.WriteLine($"Estimated Position: { _controller.Position}", ConsoleColor.Blue);
         }
 
         private static void Controller_FlightControllerExceptionThrown(object sender, FlightControllerExceptionThrownArgs e)
@@ -94,13 +106,16 @@ namespace Tello.Emulator.SDKV2.Demo
             Log.WriteLine($"| {e.Exception.StackTrace}", ConsoleColor.Red);
         }
 
+        private static bool _canTakeOff = false;
         private static int _stateCount = 0;
         private static void Controller_DroneStateReceived(object sender, DroneStateReceivedArgs e)
         {
+            _canTakeOff = true;
+
             // state reporting interval is 5hz, so 25 should be once every 5 seconds
             if (_stateCount % 25 == 0)
             {
-                Log.WriteLine($"state: {e.State}", ConsoleColor.Yellow);
+                Log.WriteLine($"state: {e.State}", ConsoleColor.Green);
             }
             _stateCount = _stateCount < Int32.MaxValue
                 ? _stateCount + 1

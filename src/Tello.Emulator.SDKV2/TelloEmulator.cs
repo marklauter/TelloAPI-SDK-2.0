@@ -22,11 +22,11 @@ namespace Tello.Emulator.SDKV2
             _commandInterpreter = new CommandInterpreter(_stateManager);
         }
 
-        public IRelayService<IDroneState> StateServer { get; }
+        public IRelayService<IRawDroneState> StateServer { get; }
         public IRelayService<IVideoSample> VideoServer { get; }
         public Position Position => _stateManager.Position;
 
-        private readonly IDroneState _droneState;
+        private readonly IRawDroneState _droneState;
         private readonly StateManager _stateManager;
         private readonly CommandInterpreter _commandInterpreter;
 

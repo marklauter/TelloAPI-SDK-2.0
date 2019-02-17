@@ -12,17 +12,22 @@ namespace Tello.Controller
     {
         // TimeSpan commandTimeout, string ip = "192.168.10.1", int commandPort = 8889, int statePort = 8890, int videoPort = 11111
 
-        public FlightController(IMessengerService messenger, IRelayService<IDroneState> stateServer, IRelayService<IVideoSample> videoServer)
+        public FlightController(
+            IMessengerService messenger,
+            IRelayService<IRawDroneState> stateServer,
+            IRelayService<IVideoSample> videoServer)
         {
             _messenger = messenger ?? throw new ArgumentNullException(nameof(messenger));
             _stateServer = stateServer ?? throw new ArgumentNullException(nameof(stateServer));
             _videoServer = videoServer ?? throw new ArgumentNullException(nameof(videoServer));
 
-            _stateServer.RelayExceptionThrown += _stateServer_RelayExceptionThrown;
-            _stateServer.RelayMessageReceived += _stateServer_RelayMessageReceived;
+            _stateServer.RelayExceptionThrown += StateServerRelayExceptionThrown;
+            _stateServer.RelayMessageReceived += StateServerRelayMessageReceived;
 
             _videoServer.RelayExceptionThrown += _videoServer_RelayExceptionThrown;
             _videoServer.RelayMessageReceived += _videoServer_RelayMessageReceived;
+
+            Position = Position.GetInstance();
         }
 
         #region events
@@ -63,7 +68,27 @@ namespace Tello.Controller
         #endregion
 
         #region flight controller and drone state
+        private double _altitudeMslInCm = 243.84; // 8FT MSL @ KTPF (my local FBO)
 
+        public void SetAltimeter(double altitudeMslInCm)
+        {
+            _altitudeMslInCm = altitudeMslInCm;
+        }
+
+        private bool _altZeroed = false;
+        private void ZeroAltimeter(double baromerInCm)
+        {
+            if (_altZeroed)
+            {
+                return;
+            }
+
+            _altZeroed = true;
+
+            Position.ZeroAltimeter(baromerInCm, _altitudeMslInCm);
+        }
+
+        public Position Position { get; }
         public int ReportedSpeed { get; private set; }
         public int ReportedBattery { get; private set; }
         public int ReportedTime { get; private set; }
@@ -90,17 +115,19 @@ namespace Tello.Controller
         }
         public FlightStates FlightState { get; private set; } = FlightStates.StandingBy;
 
-        private IDroneState _droneState = null;
+        private IRawDroneState _droneState = null;
 
-        private readonly IRelayService<IDroneState> _stateServer;
+        private readonly IRelayService<IRawDroneState> _stateServer;
 
-        private void _stateServer_RelayMessageReceived(object sender, RelayMessageReceivedArgs<IDroneState> e)
+        private void StateServerRelayMessageReceived(object sender, RelayMessageReceivedArgs<IRawDroneState> e)
         {
             _droneState = e.Message;
+            ZeroAltimeter(_droneState.BarometerInCm);
+            Position.Update(_droneState);
             DroneStateReceived?.Invoke(this, new DroneStateReceivedArgs(e.Message));
         }
 
-        private void _stateServer_RelayExceptionThrown(object sender, RelayExceptionThrownArgs e)
+        private void StateServerRelayExceptionThrown(object sender, RelayExceptionThrownArgs e)
         {
             FlightControllerExceptionThrown?.Invoke(this,
                 new FlightControllerExceptionThrownArgs(
@@ -111,7 +138,7 @@ namespace Tello.Controller
 
         #region command queue
 
-        private readonly ConcurrentQueue<Tuple<Commands, string, TimeSpan>> _messageQueue = new ConcurrentQueue<Tuple<Commands, string, TimeSpan>>();
+        private readonly ConcurrentQueue<Tuple<Commands, string, TimeSpan, object[]>> _messageQueue = new ConcurrentQueue<Tuple<Commands, string, TimeSpan, object[]>>();
 
         internal bool IsResponseOk(Commands command, string responseMessage)
         {
@@ -176,7 +203,7 @@ namespace Tello.Controller
             }
         }
 
-        private void HandleResponse(Commands command, string responseValue)
+        private void HandleResponse(Commands command, string responseValue, object[] args)
         {
             try
             {
@@ -221,6 +248,22 @@ namespace Tello.Controller
                     case Commands.GetSerialNumber:
                         ReportedSerialNumber = responseValue;
                         break;
+                    case Commands.Left:
+                    case Commands.Right:
+                    case Commands.Forward:
+                    case Commands.Back:
+                        Position.Move(command, (int)args[0]);
+                        break;
+                    case Commands.ClockwiseTurn:
+                    case Commands.CounterClockwiseTurn:
+                        Position.Turn(command, (int)args[0]);
+                        break;
+                    case Commands.Go:
+                        // positive or negative value will work with front and right
+                        // because they're both expecting positive values
+                        Position.Move(Commands.Forward, (int)args[1]);
+                        Position.Move(Commands.Right, (int)args[0]);
+                        break;
                 }
             }
             catch (Exception ex)
@@ -235,7 +278,7 @@ namespace Tello.Controller
         /// </summary>
         /// <param name="commandTuple"></param>
         /// <returns></returns>
-        private async Task SendMessage(Tuple<Commands, string, TimeSpan> commandTuple)
+        private async Task SendMessage(Tuple<Commands, string, TimeSpan, object[]> commandTuple)
         {
             if (commandTuple == null)
             {
@@ -245,6 +288,7 @@ namespace Tello.Controller
             var command = commandTuple.Item1;
             var message = commandTuple.Item2 ?? throw new ArgumentNullException(nameof(commandTuple.Item2));
             var timeout = commandTuple.Item3;
+            var args = commandTuple.Item4;
 
             var response = default(IResponse);
             var clock = Stopwatch.StartNew();
@@ -269,7 +313,7 @@ namespace Tello.Controller
 
                 if (IsResponseOk(command, responseValue))
                 {
-                    HandleResponse(command, responseValue);
+                    HandleResponse(command, responseValue, args);
 
                     if (IsValueCommand(command))
                     {
@@ -296,7 +340,7 @@ namespace Tello.Controller
         /// </summary>
         /// <param name="commandTuple"></param>
         /// <returns>true if no exceptions were encountered, else false</returns>
-        private async Task<bool> TrySendMessage(Tuple<Commands, string, TimeSpan> commandTuple)
+        private async Task<bool> TrySendMessage(Tuple<Commands, string, TimeSpan, object[]> commandTuple)
         {
             if (commandTuple == null)
             {
@@ -376,9 +420,9 @@ namespace Tello.Controller
         /// <param name="command"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        private Tuple<Commands, string, TimeSpan> CreateCommand(Commands command, params object[] args)
+        private Tuple<Commands, string, TimeSpan, object[]> CreateCommand(Commands command, params object[] args)
         {
-            return new Tuple<Commands, string, TimeSpan>(command, command.ToMessage(args), command.ToTimeout(args));
+            return new Tuple<Commands, string, TimeSpan, object[]>(command, command.ToMessage(args), command.ToTimeout(args), args);
         }
 
         private void EnqueueCommand(Commands command, params object[] args)
@@ -593,7 +637,7 @@ namespace Tello.Controller
         /// 
         /// </summary>
         /// <param name="FlipDirections">FlipDirections.Left, FlipDirections.Right, FlipDirections.Front, FlipDirections.Back</param>
-        public void Flip(FlipDirections direction)
+        public void Flip(CardinalDirections direction)
         {
             EnqueueCommand(Commands.Flip, direction.ToChar());
         }
@@ -623,12 +667,6 @@ namespace Tello.Controller
         public void Curve(int x1, int y1, int z1, int x2, int y2, int z2, int speed)
         {
             EnqueueCommand(Commands.Curve, x1, y1, z1, x2, y2, z2, speed);
-        }
-
-        public enum ClockDirections
-        {
-            Clockwise,
-            CounterClockwise
         }
 
         /// <summary>

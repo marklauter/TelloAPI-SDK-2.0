@@ -3,7 +3,7 @@ using Tello.Messaging;
 
 namespace Tello.Udp
 {
-    internal sealed class StateServer : IRelayService<IDroneState>
+    internal sealed class StateServer : IRelayService<IRawDroneState>
     {
         public StateServer(int port)
         {
@@ -14,7 +14,7 @@ namespace Tello.Udp
 
         private readonly UdpReceiver _receiver;
 
-        public event EventHandler<RelayMessageReceivedArgs<IDroneState>> RelayMessageReceived;
+        public event EventHandler<RelayMessageReceivedArgs<IRawDroneState>> RelayMessageReceived;
         public event EventHandler<RelayExceptionThrownArgs> RelayExceptionThrown;
 
         public ReceiverStates State => _receiver.State;
@@ -34,7 +34,7 @@ namespace Tello.Udp
             try
             {
                 var droneState = DroneState.FromDatagram(e.Message.Data);
-                var eventArgs = new RelayMessageReceivedArgs<IDroneState>(droneState);
+                var eventArgs = new RelayMessageReceivedArgs<IRawDroneState>(droneState);
                 RelayMessageReceived?.Invoke(this, eventArgs);
             }
             catch (Exception ex)

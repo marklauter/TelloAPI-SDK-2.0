@@ -5,11 +5,11 @@ namespace Tello.Controller
 {
     public class DroneStateReceivedArgs : EventArgs
     {
-        public DroneStateReceivedArgs(IDroneState state)
+        public DroneStateReceivedArgs(IRawDroneState state)
         {
             State = state;
         }
 
-        public IDroneState State { get; }
+        public IRawDroneState State { get; }
     }
 }

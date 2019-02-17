@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tello.Messaging
+namespace Tello.Emulator.SDKV2
 {
     public class Position
     {
@@ -19,10 +19,10 @@ namespace Tello.Messaging
             Heading = position.Heading;
         }
 
-        public int X { get; set; } = 0;
-        public int Y { get; set; } = 0;
-        public int Z { get; set; } = 0;
-        public int Heading { get; set; } = 0;
+        public int X { get; internal set; } = 0;
+        public int Y { get; internal set; } = 0;
+        public int Z { get; internal set; } = 0;
+        public int Heading { get; internal set; } = 0;
 
         public override string ToString()
         {

@@ -1,6 +1,6 @@
 ﻿namespace Tello.Messaging
 {
-    public interface IDroneState
+    public interface IRawDroneState
     {
         bool MissionPadDetected { get; }
         int MissionPadId { get; }

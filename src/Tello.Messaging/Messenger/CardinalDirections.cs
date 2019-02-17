@@ -1,6 +1,6 @@
 ﻿namespace Tello.Messaging
 {
-    public enum FlipDirections
+    public enum CardinalDirections
     {
         Left,
         Right,
