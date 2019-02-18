@@ -1,5 +1,5 @@
 # Tello API for SDK 2.0 in C#
-Includes Flight Controller, Tello Emulator, UDP Messenger, Script Builder, and two console samples.
+The project includes a flight controller, Tello emulator, UDP messenger, script builder, and two console samples.
 
 I started by playing with a fork of the TelloLib (aTello) project but abandoned it when Ryze upgraded their SDK. With the latest firmware updates and SDK 2.0, the drone communication is relatively reliable. However, the Tello sometimes responds to the SDK initialization command with gobbledygook instead of the expected 'ok'. When this happens, additional commands may be executed by the Tello, but won't always ACK. Rebooting the Tello and reconnecting to its network usually resolves the issue. I have yet to try attaching the Tello to my local network. Maybe that will solve the issue once and for all.
 
