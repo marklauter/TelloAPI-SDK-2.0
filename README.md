@@ -5,17 +5,17 @@ I started by playing with a fork of the TelloLib (aTello) project but abandoned 
 
 My goals for this project are to refine my dependency injection skills, experiment with machine learning and video processing, play with a thing that I can fly from my desk, and begin to iterate on the larger problem of programmable drone behavior.
 
-# Tello.Controller
+## Tello.Controller
 This is the core of the system. See the static Program class constructors in Tello.Emulator.SDKV2.Demo or Tello.Udp.Demo to see how to instantiate FlightController. Using it is a matter of wiring up the events and then calling command methods. The first command must be EnterSdkMode.
 
-# Tello.Messaging
+## Tello.Messaging
 Provides injectable messenger services for Tello. These are implemented by Tello.Udp and Tello.Emulator.SDKV2. The FlightController is coded to Tello.Messaging and is implmentation independent.
 
-# Tello.Udp
+## Tello.Udp
 Implements Tello.Messaging via UDP access to a live Tello drone. A connection to the Tello's WIFI is required.
 
-# Tello.Emulator.SDKV2
+## Tello.Emulator.SDKV2
 Implements Tello.Messaging by emulating Tello drone behavior. No network connection is required.
 
-# Tello.Scripting
+## Tello.Scripting
 Provides a ScriptBuilder to generate command scripts and a TelloScript class that can be used by the FlightController. The ScriptBuilder outputs JSON that can be parsed by the TelloScript. It isn't rocket science. Once you see how the scripts are generated, you can probably edit the JSON directly more easily than using the ScriptBuilder.
