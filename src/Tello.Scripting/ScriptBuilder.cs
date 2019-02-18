@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Tello.Messaging;
-using Newtonsoft.Json;
 
 namespace Tello.Scripting
 {
@@ -9,6 +10,23 @@ namespace Tello.Scripting
     {
         public ScriptBuilder() { _tokens = new Dictionary<string, Token>(); }
         public ScriptBuilder(int size) { _tokens = new Dictionary<string, Token>(size); }
+
+        public ScriptBuilder FromJson(string json)
+        {
+            if (String.IsNullOrEmpty(json))
+            {
+                throw new ArgumentNullException(nameof(json));
+            }
+
+            var tokens = JsonConvert.DeserializeObject<Token[]>(json);
+            var result = new ScriptBuilder();
+            for (var i = 0; i < tokens.Length; ++i)
+            {
+                var token = tokens[i];
+                _tokens.Add(token.Id, token);
+            }
+            return result;
+        }
 
         private int _order = 0;
         private readonly Dictionary<string, Token> _tokens;
