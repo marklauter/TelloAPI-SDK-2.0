@@ -2,15 +2,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Diagnostics;
 using System.Threading;
-using Tello.Controller;
 using Tello.Emulator.SDKV2;
 using Tello.Messaging;
 using static Tello.Controller.FlightController;
 
-namespace Tello.Conroller.Test
+namespace Tello.Controller.Test
 {
     [TestClass]
-    public class FlightConrollerTest
+    public class FlightControllerTest
     {
         //[ClassInitialize]
         //public void ClassInitialize()

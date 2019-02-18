@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Tello.Messaging;
+using Tello.Scripting;
 
 namespace Tello.Controller
 {
@@ -140,7 +141,7 @@ namespace Tello.Controller
 
         private readonly ConcurrentQueue<Tuple<Commands, string, TimeSpan, object[]>> _messageQueue = new ConcurrentQueue<Tuple<Commands, string, TimeSpan, object[]>>();
 
-        private bool IsResponseOk(Commands command, string responseMessage)
+        internal bool IsResponseOk(Commands command, string responseMessage)
         {
             if (String.IsNullOrEmpty(responseMessage))
             {
@@ -445,6 +446,21 @@ namespace Tello.Controller
         #endregion
 
         #region command methods
+
+        public void ExecuteScript(TelloScript script)
+        {
+            var token = script.NextToken();
+            while (token != null)
+            {
+                EnqueueCommand(token.Command, token.Args);
+                token = script.NextToken();
+            }
+        }
+
+        public void ExecuteScript(string json)
+        {
+            ExecuteScript(TelloScript.FromJson(json));
+        }
 
         /// <summary>
         /// establish a command link with Tello - validates network connection, connects to UDP, sends "command" to Tello

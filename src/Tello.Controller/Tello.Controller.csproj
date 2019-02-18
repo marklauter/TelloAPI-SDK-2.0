@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj" />
+    <ProjectReference Include="..\Tello.Scripting\Tello.Scripting.csproj" />
   </ItemGroup>
 
 </Project>

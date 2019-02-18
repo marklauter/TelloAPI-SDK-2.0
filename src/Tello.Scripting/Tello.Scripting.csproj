@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netstandard1.5</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,8 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj" />
-    <ProjectReference Include="..\Tello.Emulator.SDKV2\Tello.Emulator.SDKV2.csproj" />
     <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj" />
   </ItemGroup>
 

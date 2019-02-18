@@ -40,7 +40,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{623C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E47234EE-606A-4CA7-B825-2A62305E20A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tello.Controller.Test", "..\tests\Tello.Conroller.Test\Tello.Controller.Test.csproj", "{9E3276F7-EDD1-4BDA-B2EF-0B77C7CAF895}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.Controller.Test", "..\tests\Tello.Conroller.Test\Tello.Controller.Test.csproj", "{9E3276F7-EDD1-4BDA-B2EF-0B77C7CAF895}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tello.Scripting", "Tello.Scripting\Tello.Scripting.csproj", "{847FE59E-FC20-4B54-B512-3225EE11497D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,6 +78,10 @@ Global
 		{9E3276F7-EDD1-4BDA-B2EF-0B77C7CAF895}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E3276F7-EDD1-4BDA-B2EF-0B77C7CAF895}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E3276F7-EDD1-4BDA-B2EF-0B77C7CAF895}.Release|Any CPU.Build.0 = Release|Any CPU
+		{847FE59E-FC20-4B54-B512-3225EE11497D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{847FE59E-FC20-4B54-B512-3225EE11497D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{847FE59E-FC20-4B54-B512-3225EE11497D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{847FE59E-FC20-4B54-B512-3225EE11497D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +94,7 @@ Global
 		{04963A60-6721-4057-B3AE-2D97D025D127} = {27288A55-6761-4412-B2A5-EFAF635C4A30}
 		{AEC9444C-B8D6-468E-AF62-2E68C77321AC} = {A849398A-5600-4A72-B3B0-7E4A188629B7}
 		{9E3276F7-EDD1-4BDA-B2EF-0B77C7CAF895} = {E47234EE-606A-4CA7-B825-2A62305E20A7}
+		{847FE59E-FC20-4B54-B512-3225EE11497D} = {27288A55-6761-4412-B2A5-EFAF635C4A30}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E98F1454-9008-4490-9766-CA7CB4BD2A30}

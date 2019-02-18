@@ -6,6 +6,8 @@ namespace Tello.Udp.Demo
 {
     public static class Log
     {
+        private static readonly object _gate = new object();
+
         public static void WriteLine(string msg,
             ConsoleColor consoleColor = ConsoleColor.White,
             bool addSeperator = true,
@@ -16,17 +18,20 @@ namespace Tello.Udp.Demo
             var fileName = System.IO.Path.GetFileName(callerPath);
             var output = $"{DateTime.Now.ToString("HH:mm:ss zzzz")}: {fileName}::{callerMemberName} [{callerLineNumber}] - {msg}";
 
-            Console.ForegroundColor = consoleColor;
-            Console.WriteLine(output);
-            Debug.WriteLine(output);
-
-            if (addSeperator)
+            lock (_gate)
             {
-                Console.WriteLine("--------------------------------");
-                Debug.WriteLine("--------------------------------");
-            }
+                Console.ForegroundColor = consoleColor;
+                Console.WriteLine(output);
+                Debug.WriteLine(output);
 
-            Console.ResetColor();
+                if (addSeperator)
+                {
+                    Console.WriteLine("--------------------------------");
+                    Debug.WriteLine("--------------------------------");
+                }
+
+                Console.ResetColor();
+            }
         }
     }
 }
