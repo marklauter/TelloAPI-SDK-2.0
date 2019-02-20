@@ -6,7 +6,7 @@ I started by playing with a fork of the TelloLib (aTello) project but abandoned 
 My goals for this project are to refine my dependency injection skills, experiment with machine learning and video processing, play with a thing that I can fly from my desk, and begin to iterate on the larger problem of programmable drone behavior.
 
 ## SDK 2.0
-I have a first generation Tello. I've read in the forums that an EDU version is required to use the mission pad and some of the new commands. Since I can't test the Tello with the mission pad I don't know how to simulate it's behavior it in the emulator. If someone has an EDU and wants to uncomment the EDU commands in the Commands enum and implement them, I'd be happy to accept a solid pull request. If someone wants to donate an EDU model, I'd be happy to finish the mission pad commands.
+I have a first generation Tello. I've read in the forums that an EDU version is required to use the mission pad and some of the new commands. Since I can't test the Tello with the mission pad I don't know how to simulate it's behavior it in the emulator. If someone has an EDU and wants to uncomment the EDU commands in the Commands enum and implement them, I'd be happy to accept a solid pull request. If someone wants to donate an EDU model, I'd be happy to finish the mission pad commands myself.
 
 ## Tello.Controller
 This is the core of the system. See the static Program class constructors in Tello.Emulator.SDKV2.Demo or Tello.Udp.Demo to see how to instantiate FlightController. Using it is a matter of wiring up the events and then calling command methods. The first command must be EnterSdkMode.
