@@ -65,20 +65,20 @@ namespace Tello.Udp.Demo
             //    Log.WriteLine($"GoForward failed with exception {ex.GetType()} and message '{ex.Message}'", ConsoleColor.Red);
             //}
 
-            //Log.WriteLine("> go forward");
-            //_controller.GoForward(50);
+            Log.WriteLine("> go forward");
+            _controller.GoForward(50);
 
-            //Log.WriteLine("> go up");
-            //_controller.GoUp(50);
+            Log.WriteLine("> go up");
+            _controller.GoUp(50);
 
-            //Log.WriteLine("> turn counter clockwise");
-            //_controller.TurnCounterClockwise(90);
+            Log.WriteLine("> turn counter clockwise");
+            _controller.TurnCounterClockwise(90);
 
-            //Log.WriteLine("> turn clockwise");
-            //_controller.TurnClockwise(45);
+            Log.WriteLine("> turn clockwise");
+            _controller.TurnClockwise(45);
 
-            //Log.WriteLine("> fly polygon");
-            //_controller.FlyPolygon(4, 100, 50, ClockDirections.Clockwise, false);
+            Log.WriteLine("> fly polygon");
+            _controller.FlyPolygon(4, 100, 50, ClockDirections.Clockwise, false);
 
             Log.WriteLine("> land");
             _controller.Land();
