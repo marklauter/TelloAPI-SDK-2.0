@@ -414,7 +414,7 @@ namespace Tello.Controller
                 case Commands.Takeoff:
                     return TimeSpan.FromSeconds(20);
 
-                //todo: if I knew the actual speed in cm/s I could get a better timeout value
+                //todo: if I knew the set speed in cm/s I could get a better timeout value
                 case Commands.Left:
                 case Commands.Right:
                 case Commands.Forward:

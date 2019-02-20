@@ -11,6 +11,31 @@ namespace Tello.Controller
         private static IBattery _battery = new Battery();
         private static IHobbsMeter _hobbsMeter = new HobbsMeter();
 
+        public static IPosition GetPosition()
+        {
+            return new Position(_position);
+        }
+
+        public static IAirSpeed GetAirSpeed()
+        {
+            return new AirSpeed(_airSpeed);
+        }
+
+        public static IAttitude GetAttitude()
+        {
+            return new Attitude(_attitude);
+        }
+
+        public static IBattery GetBattery()
+        {
+            return new Battery(_battery);
+        }
+
+        public static IHobbsMeter GetHobbsMeter()
+        {
+            return new HobbsMeter(_hobbsMeter);
+        }
+
         public static IRefinedDroneState GetRefinedDroneState()
         {
             return new RefinedDroneState
@@ -71,6 +96,7 @@ namespace Tello.Controller
             });
         }
 
+        // note: X is forward
         internal static void Move(Commands direction, int distanceInCm)
         {
             _positionGate.WithWriteLock(() =>
@@ -90,11 +116,11 @@ namespace Tello.Controller
                 }
                 var radians = _heading * Math.PI / 180;
 
-                var yComponent = Math.Cos(radians) * distanceInCm;
-                var xComponent = Math.Sin(radians) * distanceInCm;
+                var adjacent = Math.Cos(radians) * distanceInCm;
+                var opposite = Math.Sin(radians) * distanceInCm;
 
-                _y += yComponent;
-                _x += xComponent;
+                _x += adjacent;
+                _y += opposite;
             });
         }
 

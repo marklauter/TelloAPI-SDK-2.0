@@ -3,6 +3,7 @@ using Tello.Messaging;
 
 namespace Tello.Emulator.SDKV2
 {
+    // note: X is forward
     public class Position
     {
         public Position() { }
@@ -38,8 +39,6 @@ namespace Tello.Emulator.SDKV2
 
         internal void Move(Commands direction, int distanceInCm)
         {
-            //Debug.WriteLine($"move {direction}, distance {distanceInCm}, heading {Heading}");
-
             var heading = Heading;
             switch (direction)
             {
@@ -55,13 +54,11 @@ namespace Tello.Emulator.SDKV2
             }
             var radians = Heading * Math.PI / 180;
 
-            var yComponent = Math.Cos(radians) * distanceInCm;
-            var xComponent = Math.Sin(radians) * distanceInCm;
-            //Debug.WriteLine($"components (X,Y): ({xComponent.ToString("F2")},{yComponent.ToString("F2")})");
+            var adjacent = Math.Cos(radians) * distanceInCm;
+            var opposite = Math.Sin(radians) * distanceInCm;
 
-            Y += yComponent;
-            X += xComponent;
-            //Debug.WriteLine($"New (X,Y): ({X.ToString("F2")},{Y.ToString("F2")})");
+            X += adjacent;
+            Y += opposite;
         }
 
         internal void Turn(Commands direction, int degrees)
