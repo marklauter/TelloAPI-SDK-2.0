@@ -7,21 +7,21 @@ using Tello.Messaging;
 
 namespace Tello.Udp
 {
-    internal class DroneStateNameAttribute : Attribute
+    public sealed class RawDroneStateUdp : IRawDroneState
     {
-        public DroneStateNameAttribute(string name)
+        private class DroneStateNameAttribute : Attribute
         {
-            Name = name;
+            public DroneStateNameAttribute(string name)
+            {
+                Name = name;
+            }
+
+            public string Name { get; private set; }
         }
 
-        public string Name { get; private set; }
-    }
-
-    public sealed class DroneState : IRawDroneState
-    {
-        static DroneState()
+        static RawDroneStateUdp()
         {
-            var type = typeof(DroneState);
+            var type = typeof(RawDroneStateUdp);
             var properties = type
                 .GetProperties()
                 .Where((pi) => pi.GetCustomAttribute<DroneStateNameAttribute>() != null)
@@ -42,7 +42,7 @@ namespace Tello.Udp
         private static readonly HashSet<string> _doubles = new HashSet<string>(new string[] { "baro", "agx", "agy", "agz" });
         #endregion
 
-        public static DroneState FromDatagram(byte[] datagram)
+        public static RawDroneStateUdp FromDatagram(byte[] datagram)
         {
             // sample from Tello
             // mid:64;x:0;y:0;z:0;mpry:0,0,0;pitch:0;roll:0;yaw:0;vgx:0;vgy:0;vgz:-7;templ:60;temph:63;tof:20;h:10;bat:89;baro:-67.44;time:0;agx:14.00;agy:-12.00;agz:-1094.00;
@@ -59,7 +59,7 @@ namespace Tello.Udp
                 .ToArray();
             var values = new object[_properties.Count];
 
-            var result = new DroneState();
+            var result = new RawDroneStateUdp();
             for (var i = 0; i < keyValues.Length; i += 2)
             {
                 var key = keyValues[i];
@@ -100,9 +100,9 @@ namespace Tello.Udp
         }
 
         #region ctor
-        private DroneState() { }
+        private RawDroneStateUdp() { }
 
-        private DroneState(
+        private RawDroneStateUdp(
             int missionPadId,
             int missionPadX,
             int missionPadY,

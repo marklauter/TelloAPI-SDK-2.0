@@ -15,20 +15,18 @@ namespace Tello.Controller
 
         public FlightController(
             IMessengerService messenger,
-            IRelayService<IRawDroneState> stateServer,
-            IRelayService<IVideoSample> videoServer)
+            IMessageRelayService<IRawDroneState> stateServer,
+            IMessageRelayService<IVideoSample> videoServer)
         {
             _messenger = messenger ?? throw new ArgumentNullException(nameof(messenger));
             _stateServer = stateServer ?? throw new ArgumentNullException(nameof(stateServer));
             _videoServer = videoServer ?? throw new ArgumentNullException(nameof(videoServer));
 
-            _stateServer.RelayExceptionThrown += StateServerRelayExceptionThrown;
-            _stateServer.RelayMessageReceived += StateServerRelayMessageReceived;
+            _stateServer.MessageRelayExceptionThrown += StateServerRelayExceptionThrown;
+            _stateServer.MessageReceived += StateServerRelayMessageReceived;
 
-            _videoServer.RelayExceptionThrown += _videoServer_RelayExceptionThrown;
-            _videoServer.RelayMessageReceived += _videoServer_RelayMessageReceived;
-
-            Position = Position.GetInstance();
+            _videoServer.MessageRelayExceptionThrown += _videoServer_RelayExceptionThrown;
+            _videoServer.MessageReceived += _videoServer_RelayMessageReceived;
         }
 
         #region events
@@ -53,14 +51,14 @@ namespace Tello.Controller
         }
         public VideoStates VideoState { get; private set; } = VideoStates.Stopped;
 
-        private readonly IRelayService<IVideoSample> _videoServer;
+        private readonly IMessageRelayService<IVideoSample> _videoServer;
 
-        private void _videoServer_RelayMessageReceived(object sender, RelayMessageReceivedArgs<IVideoSample> e)
+        private void _videoServer_RelayMessageReceived(object sender, MessageReceivedArgs<IVideoSample> e)
         {
             VideoSampleReady?.Invoke(this, new VideoSampleReadyArgs(e.Message));
         }
 
-        private void _videoServer_RelayExceptionThrown(object sender, RelayExceptionThrownArgs e)
+        private void _videoServer_RelayExceptionThrown(object sender, MessageRelayExceptionThrownArgs e)
         {
             FlightControllerExceptionThrown?.Invoke(this,
                 new FlightControllerExceptionThrownArgs(
@@ -89,7 +87,6 @@ namespace Tello.Controller
             Position.ZeroAltimeter(baromerInCm, _altitudeMslInCm);
         }
 
-        public Position Position { get; }
         public int ReportedSpeed { get; private set; }
         public int ReportedBattery { get; private set; }
         public int ReportedTime { get; private set; }
@@ -117,18 +114,19 @@ namespace Tello.Controller
         public FlightStates FlightState { get; private set; } = FlightStates.StandingBy;
 
         private IRawDroneState _droneState = null;
+        public IRefinedDroneState DroneState => RefinedStateFactory.GetRefinedDroneState();
 
-        private readonly IRelayService<IRawDroneState> _stateServer;
+        private readonly IMessageRelayService<IRawDroneState> _stateServer;
 
-        private void StateServerRelayMessageReceived(object sender, RelayMessageReceivedArgs<IRawDroneState> e)
+        private void StateServerRelayMessageReceived(object sender, MessageReceivedArgs<IRawDroneState> e)
         {
             _droneState = e.Message;
             ZeroAltimeter(_droneState.BarometerInCm);
-            Position.Update(_droneState);
+            RefinedStateFactory.Update(_droneState);
             DroneStateReceived?.Invoke(this, new DroneStateReceivedArgs(e.Message));
         }
 
-        private void StateServerRelayExceptionThrown(object sender, RelayExceptionThrownArgs e)
+        private void StateServerRelayExceptionThrown(object sender, MessageRelayExceptionThrownArgs e)
         {
             FlightControllerExceptionThrown?.Invoke(this,
                 new FlightControllerExceptionThrownArgs(
@@ -253,14 +251,14 @@ namespace Tello.Controller
                     case Commands.Right:
                     case Commands.Forward:
                     case Commands.Back:
-                        Position.Move(command, (int)args[0]);
+                        RefinedStateFactory.Move(command, (int)args[0]);
                         break;
                     case Commands.ClockwiseTurn:
                     case Commands.CounterClockwiseTurn:
-                        Position.Turn(command, (int)args[0]);
+                        RefinedStateFactory.Turn(command, (int)args[0]);
                         break;
                     case Commands.Go:
-                        Position.Go((int)args[0], (int)args[1]);
+                        RefinedStateFactory.Go((int)args[0], (int)args[1]);
                         break;
                 }
             }

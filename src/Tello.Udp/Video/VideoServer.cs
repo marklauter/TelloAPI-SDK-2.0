@@ -3,21 +3,21 @@ using Tello.Messaging;
 
 namespace Tello.Udp
 {
-    internal sealed class VideoServer : IRelayService<IVideoSample>
+    internal sealed class VideoServer : IMessageRelayService<IVideoSample>
     {
         public VideoServer(double frameRate, int secondsToBuffer, int port)
         {
             _frameComposer = new VideoFrameComposer(frameRate, secondsToBuffer);
             _receiver = new UdpReceiver(port);
-            _receiver.RelayMessageReceived += _receiver_RelayMessageReceived;
-            _receiver.RelayExceptionThrown += _receiver_RelayExceptionThrown;
+            _receiver.MessageReceived += _receiver_RelayMessageReceived;
+            _receiver.MessageRelayExceptionThrown += _receiver_RelayExceptionThrown;
         }
 
         private readonly UdpReceiver _receiver;
         private readonly VideoFrameComposer _frameComposer;
 
-        public event EventHandler<RelayMessageReceivedArgs<IVideoSample>> RelayMessageReceived;
-        public event EventHandler<RelayExceptionThrownArgs> RelayExceptionThrown;
+        public event EventHandler<MessageReceivedArgs<IVideoSample>> MessageReceived;
+        public event EventHandler<MessageRelayExceptionThrownArgs> MessageRelayExceptionThrown;
 
         public ReceiverStates State => _receiver.State;
 
@@ -41,25 +41,25 @@ namespace Tello.Udp
             return _frameComposer.TryGetFrame(out frame, timeout);
         }
 
-        private void _receiver_RelayMessageReceived(object sender, RelayMessageReceivedArgs<DataNotification> e)
+        private void _receiver_RelayMessageReceived(object sender, MessageReceivedArgs<DataNotification> e)
         {
             try
             {
                 var frame = _frameComposer.AddSample(e.Message.Data);
                 if (frame != null)
                 {
-                    RelayMessageReceived?.Invoke(this, new RelayMessageReceivedArgs<IVideoSample>(frame));
+                    MessageReceived?.Invoke(this, new MessageReceivedArgs<IVideoSample>(frame));
                 }
             }
             catch (Exception ex)
             {
-                RelayExceptionThrown?.Invoke(this, new RelayExceptionThrownArgs(ex));
+                MessageRelayExceptionThrown?.Invoke(this, new MessageRelayExceptionThrownArgs(ex));
             }
         }
 
-        private void _receiver_RelayExceptionThrown(object sender, RelayExceptionThrownArgs e)
+        private void _receiver_RelayExceptionThrown(object sender, MessageRelayExceptionThrownArgs e)
         {
-            RelayExceptionThrown?.Invoke(this, e);
+            MessageRelayExceptionThrown?.Invoke(this, e);
         }
     }
 }

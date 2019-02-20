@@ -104,7 +104,7 @@ namespace Tello.Udp.Demo
         private static void Controller_FlightControllerResponseReceived(object sender, FlightControllerResponseReceivedArgs e)
         {
             Log.WriteLine($"{e.Command} returned '{e.Response}' in {e.Elapsed.TotalMilliseconds}ms", ConsoleColor.Cyan);
-            Log.WriteLine($"Estimated Position: { _controller.Position}", ConsoleColor.Blue);
+            Log.WriteLine($"Estimated Position: { _controller.DroneState.Position}", ConsoleColor.Blue);
         }
 
         private static void Controller_FlightControllerExceptionThrown(object sender, FlightControllerExceptionThrownArgs e)

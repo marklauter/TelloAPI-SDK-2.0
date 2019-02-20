@@ -8,7 +8,7 @@ namespace Tello.Emulator.SDKV2
 {
     internal sealed class StateManager
     {
-        public StateManager(DroneState droneState, VideoServer videoServer, StateServer stateServer)
+        public StateManager(RawDroneStateEmulated droneState, VideoServer videoServer, StateServer stateServer)
         {
             _droneState = droneState ?? throw new ArgumentNullException(nameof(droneState));
             _videoServer = videoServer ?? throw new ArgumentNullException(nameof(videoServer));
@@ -17,7 +17,7 @@ namespace Tello.Emulator.SDKV2
         }
 
         //private readonly Gate _gate = new Gate();
-        private readonly DroneState _droneState;
+        private readonly RawDroneStateEmulated _droneState;
         private readonly VideoServer _videoServer;
         private readonly StateServer _stateServer;
         private readonly Position _position = new Position();

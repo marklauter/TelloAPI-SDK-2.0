@@ -13,17 +13,17 @@ namespace Tello.Emulator.SDKV2
     {
         public TelloEmulator()
         {
-            _droneState = new DroneState();
+            _droneState = new RawDroneStateEmulated();
 
             StateServer = new StateServer(_droneState);
             VideoServer = new VideoServer(30, 0);
 
-            _stateManager = new StateManager((DroneState)_droneState, (VideoServer)VideoServer, (StateServer)StateServer);
+            _stateManager = new StateManager((RawDroneStateEmulated)_droneState, (VideoServer)VideoServer, (StateServer)StateServer);
             _commandInterpreter = new CommandInterpreter(_stateManager);
         }
 
-        public IRelayService<IRawDroneState> StateServer { get; }
-        public IRelayService<IVideoSample> VideoServer { get; }
+        public IMessageRelayService<IRawDroneState> StateServer { get; }
+        public IMessageRelayService<IVideoSample> VideoServer { get; }
         public Position Position => _stateManager.Position;
 
         private readonly IRawDroneState _droneState;

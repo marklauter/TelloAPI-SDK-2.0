@@ -90,7 +90,7 @@ namespace Tello.Emulator.SDKV2.Demo
         {
             Log.WriteLine($"{e.Command} returned '{e.Response}' in {e.Elapsed.TotalMilliseconds}ms", ConsoleColor.Magenta, false);
             Log.WriteLine($"Actual Position: { _tello.Position}", ConsoleColor.Blue, false);
-            Log.WriteLine($"Estimated Position: { _controller.Position}", ConsoleColor.Blue);
+            Log.WriteLine($"Estimated Position: { _controller.DroneState.Position}", ConsoleColor.Blue);
         }
 
         private static void Controller_FlightControllerExceptionThrown(object sender, FlightControllerExceptionThrownArgs e)
@@ -117,7 +117,7 @@ namespace Tello.Emulator.SDKV2.Demo
             if (_stateCount % 25 == 0)
             {
                 Log.WriteLine($"State: {e.State}", ConsoleColor.Green, false);
-                Log.WriteLine($"Estimated Position: { _controller.Position}", ConsoleColor.Blue);
+                Log.WriteLine($"Estimated Position: { _controller.DroneState.Position}", ConsoleColor.Blue);
             }
             _stateCount = _stateCount < Int32.MaxValue
                 ? _stateCount + 1

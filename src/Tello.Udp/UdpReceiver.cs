@@ -6,7 +6,7 @@ using Tello.Messaging;
 
 namespace Tello.Udp
 {
-    internal sealed class UdpReceiver : IRelayService<DataNotification>
+    internal sealed class UdpReceiver : IMessageRelayService<DataNotification>
     {
         internal UdpReceiver(int port)
         {
@@ -15,8 +15,8 @@ namespace Tello.Udp
 
         private readonly int _port;
 
-        public event EventHandler<RelayMessageReceivedArgs<DataNotification>> RelayMessageReceived;
-        public event EventHandler<RelayExceptionThrownArgs> RelayExceptionThrown;
+        public event EventHandler<MessageReceivedArgs<DataNotification>> MessageReceived;
+        public event EventHandler<MessageRelayExceptionThrownArgs> MessageRelayExceptionThrown;
 
         public ReceiverStates State { get; private set; }
 
@@ -39,7 +39,7 @@ namespace Tello.Udp
                                 {
                                     var receiveResult = await client.ReceiveAsync();
                                     var message = DataNotification.FromData(receiveResult.Buffer);
-                                    RelayMessageReceived?.Invoke(this, new RelayMessageReceivedArgs<DataNotification>(message));
+                                    MessageReceived?.Invoke(this, new MessageReceivedArgs<DataNotification>(message));
                                     if (message.Reply != null)
                                     {
                                         await client.SendAsync(message.Reply, message.Reply.Length, receiveResult.RemoteEndPoint);
@@ -52,7 +52,7 @@ namespace Tello.Udp
                             }
                             catch (Exception ex)
                             {
-                                RelayExceptionThrown?.Invoke(this, new RelayExceptionThrownArgs(ex));
+                                MessageRelayExceptionThrown?.Invoke(this, new MessageRelayExceptionThrownArgs(ex));
                                 wait.SpinOnce();
                             }
                         }

@@ -6,18 +6,18 @@ namespace Tello.Emulator.SDKV2
 {
     //https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf
 
-    internal sealed class DroneState : IRawDroneState
+    internal sealed class RawDroneStateEmulated : IRawDroneState
     {
         internal Stopwatch MotorClock { get; private set; }
         private readonly int _motorTime;
 
-        internal DroneState()
+        internal RawDroneStateEmulated()
         {
             MotorClock = new Stopwatch();
             BatteryPercent = 100;
         }
 
-        internal DroneState(IRawDroneState droneState)
+        internal RawDroneStateEmulated(IRawDroneState droneState)
         {
             MotorClock = null;
             _motorTime = droneState.MotorTimeInSeconds;

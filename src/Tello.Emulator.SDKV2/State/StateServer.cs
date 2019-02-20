@@ -4,7 +4,7 @@ using Tello.Messaging;
 
 namespace Tello.Emulator.SDKV2
 {
-    internal sealed class StateServer : IRelayService<IRawDroneState>
+    internal sealed class StateServer : IMessageRelayService<IRawDroneState>
     {
         internal StateServer(IRawDroneState droneState)
         {
@@ -13,8 +13,8 @@ namespace Tello.Emulator.SDKV2
 
         private readonly IRawDroneState _droneState;
 
-        public event EventHandler<RelayMessageReceivedArgs<IRawDroneState>> RelayMessageReceived;
-        public event EventHandler<RelayExceptionThrownArgs> RelayExceptionThrown;
+        public event EventHandler<MessageReceivedArgs<IRawDroneState>> MessageReceived;
+        public event EventHandler<MessageRelayExceptionThrownArgs> MessageRelayExceptionThrown;
 
         public ReceiverStates State { get; private set; }
 
@@ -32,11 +32,11 @@ namespace Tello.Emulator.SDKV2
                         await Task.Delay(200);
                         try
                         {
-                            RelayMessageReceived?.Invoke(this, new RelayMessageReceivedArgs<IRawDroneState>(new DroneState(_droneState)));
+                            MessageReceived?.Invoke(this, new MessageReceivedArgs<IRawDroneState>(new RawDroneStateEmulated(_droneState)));
                         }
                         catch (Exception ex)
                         {
-                            RelayExceptionThrown?.Invoke(this, new RelayExceptionThrownArgs(ex));
+                            MessageRelayExceptionThrown?.Invoke(this, new MessageRelayExceptionThrownArgs(ex));
                         }
                     }
                 });

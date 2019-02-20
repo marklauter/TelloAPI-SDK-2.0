@@ -3,9 +3,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Tello.Messaging;
 
+//https://github.com/dji-sdk/Tello-Python/tree/master/Tello_Video/h264decoder
 namespace Tello.Emulator.SDKV2
 {
-    internal sealed class VideoServer : IRelayService<IVideoSample>
+    internal sealed class VideoServer : IMessageRelayService<IVideoSample>
     {
         public VideoServer(double frameRate, int secondsToBuffer)
         {
@@ -17,8 +18,8 @@ namespace Tello.Emulator.SDKV2
         private readonly double _frameRate;
         private readonly TimeSpan _sampleDuration;
 
-        public event EventHandler<RelayMessageReceivedArgs<IVideoSample>> RelayMessageReceived;
-        public event EventHandler<RelayExceptionThrownArgs> RelayExceptionThrown;
+        public event EventHandler<MessageReceivedArgs<IVideoSample>> MessageReceived;
+        public event EventHandler<MessageRelayExceptionThrownArgs> MessageRelayExceptionThrown;
 
         public ReceiverStates State { get; private set; }
 
@@ -37,13 +38,13 @@ namespace Tello.Emulator.SDKV2
                         try
                         {
                             var frame = new VideoFrame(_sample, frameCount, TimeSpan.FromSeconds(frameCount / _frameRate), _sampleDuration);
-                            var eventArgs = new RelayMessageReceivedArgs<IVideoSample>(frame);
-                            RelayMessageReceived?.Invoke(this, eventArgs);
+                            var eventArgs = new MessageReceivedArgs<IVideoSample>(frame);
+                            MessageReceived?.Invoke(this, eventArgs);
                             ++frameCount;
                         }
                         catch (Exception ex)
                         {
-                            RelayExceptionThrown?.Invoke(this, new RelayExceptionThrownArgs(ex));
+                            MessageRelayExceptionThrown?.Invoke(this, new MessageRelayExceptionThrownArgs(ex));
                         }
                     }
                 });
