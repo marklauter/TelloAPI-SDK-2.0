@@ -2,49 +2,49 @@
 {
     public interface IPosition
     {
-        int AlititudeAGL { get; }
-        int AltitudeMSL { get; }
-        int Heading { get; }
-        double X { get; }
-        double Y { get; }
+        int AltitudeAGLInCm { get; set; }
+        double AltitudeMSLInCm { get; set; }
+        int Heading { get; set; }
+        double X { get; set; }
+        double Y { get; set; }
     }
 
     public interface IAttitude
     {
-        int Pitch { get; }
-        int Roll { get; }
-        int Yaw { get; }
+        int Pitch { get; set; }
+        int Roll { get; set; }
+        int Yaw { get; set; }
     }
 
     public interface IAirSpeed
     {
-        int SpeedX { get; }
-        int SpeedY { get; }
-        int SpeedZ { get; }
-        double AccelerationX { get; }
-        double AccelerationY { get; }
-        double AccelerationZ { get; }
+        int SpeedX { get; set; }
+        int SpeedY { get; set; }
+        int SpeedZ { get; set; }
+        double AccelerationX { get; set; }
+        double AccelerationY { get; set; }
+        double AccelerationZ { get; set; }
     }
 
     public interface IBattery
     {
-        int TemperatureLowC { get; }
-        int TemperatureHighC { get; }
-        int BatteryPercent { get; }
+        int TemperatureLowC { get; set; }
+        int TemperatureHighC { get; set; }
+        int PercentRemaining { get; set; }
     }
 
     public interface IHobbsMeter
     {
-        int DistanceTraversedInCm { get; }
-        int MotorTimeInSeconds { get; }
+        int DistanceTraversedInCm { get; set; }
+        int MotorTimeInSeconds { get; set; }
     }
 
     public interface IRefinedDroneState
     {
-        IPosition Position { get; }
-        IAttitude Attitude { get; }
-        IAirSpeed AirSpeed { get; }
-        IBattery Battery { get; }
-        IHobbsMeter HobbsMeter { get; }
+        IPosition Position { get; set; }
+        IAttitude Attitude { get; set; }
+        IAirSpeed AirSpeed { get; set; }
+        IBattery Battery { get; set; }
+        IHobbsMeter HobbsMeter { get; set; }
     }
 }

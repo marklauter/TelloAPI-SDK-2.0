@@ -2,9 +2,9 @@
 
 namespace Tello.Messaging
 {
-    public class RelayExceptionThrownArgs : EventArgs
+    public class MessageRelayExceptionThrownArgs : EventArgs
     {
-        public RelayExceptionThrownArgs(Exception exception)
+        public MessageRelayExceptionThrownArgs(Exception exception)
         {
             Exception = exception;
         }
