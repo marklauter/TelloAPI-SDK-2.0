@@ -16,25 +16,22 @@ namespace Tello.Controller
             AccelerationZ = airSpeed.AccelerationZ;
         }
 
-        public static AirSpeed FromRawDroneState(IRawDroneState rawDroneState)
+        public AirSpeed(IRawDroneState rawDroneState)
         {
-            return new AirSpeed
-            {
-                AccelerationX = rawDroneState.AccelerationX,
-                AccelerationY = rawDroneState.AccelerationY,
-                AccelerationZ = rawDroneState.AccelerationZ,
-                SpeedX = rawDroneState.SpeedX,
-                SpeedY = rawDroneState.SpeedY,
-                SpeedZ = rawDroneState.SpeedZ,
-            };
+            AccelerationX = rawDroneState.AccelerationX;
+            AccelerationY = rawDroneState.AccelerationY;
+            AccelerationZ = rawDroneState.AccelerationZ;
+            SpeedX = rawDroneState.SpeedX;
+            SpeedY = rawDroneState.SpeedY;
+            SpeedZ = rawDroneState.SpeedZ;
         }
 
-        public int SpeedX { get; set; }
-        public int SpeedY { get; set; }
-        public int SpeedZ { get; set; }
-        public double AccelerationX { get; set; }
-        public double AccelerationY { get; set; }
-        public double AccelerationZ { get; set; }
+        public int SpeedX { get; }
+        public int SpeedY { get; }
+        public int SpeedZ { get; }
+        public double AccelerationX { get; }
+        public double AccelerationY { get; }
+        public double AccelerationZ { get; }
 
         public override string ToString()
         {

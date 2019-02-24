@@ -2,49 +2,49 @@
 {
     public interface IPosition
     {
-        int AltitudeAGLInCm { get; set; }
-        double AltitudeMSLInCm { get; set; }
-        int Heading { get; set; }
-        double X { get; set; }
-        double Y { get; set; }
+        int AltitudeAGLInCm { get; }
+        double AltitudeMSLInCm { get; }
+        int Heading { get; }
+        double X { get; }
+        double Y { get; }
     }
 
     public interface IAttitude
     {
-        int Pitch { get; set; }
-        int Roll { get; set; }
-        int Yaw { get; set; }
+        int Pitch { get; }
+        int Roll { get; }
+        int Yaw { get; }
     }
 
     public interface IAirSpeed
     {
-        int SpeedX { get; set; }
-        int SpeedY { get; set; }
-        int SpeedZ { get; set; }
-        double AccelerationX { get; set; }
-        double AccelerationY { get; set; }
-        double AccelerationZ { get; set; }
+        int SpeedX { get; }
+        int SpeedY { get; }
+        int SpeedZ { get; }
+        double AccelerationX { get; }
+        double AccelerationY { get; }
+        double AccelerationZ { get; }
     }
 
     public interface IBattery
     {
-        int TemperatureLowC { get; set; }
-        int TemperatureHighC { get; set; }
-        int PercentRemaining { get; set; }
+        int TemperatureLowC { get; }
+        int TemperatureHighC { get; }
+        int PercentRemaining { get; }
     }
 
     public interface IHobbsMeter
     {
-        int DistanceTraversedInCm { get; set; }
-        int MotorTimeInSeconds { get; set; }
+        int DistanceTraversedInCm { get; }
+        int MotorTimeInSeconds { get; }
     }
 
     public interface IRefinedDroneState
     {
-        IPosition Position { get; set; }
-        IAttitude Attitude { get; set; }
-        IAirSpeed AirSpeed { get; set; }
-        IBattery Battery { get; set; }
-        IHobbsMeter HobbsMeter { get; set; }
+        IPosition Position { get; }
+        IAttitude Attitude { get; }
+        IAirSpeed AirSpeed { get; }
+        IBattery Battery { get; }
+        IHobbsMeter HobbsMeter { get; }
     }
 }

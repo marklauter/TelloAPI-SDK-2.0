@@ -14,7 +14,7 @@ namespace Tello.Controller
             Yaw = attitude.Yaw;
         }
 
-        public static Attitude FromRawDroneState(IRawDroneState rawDroneState, bool useMissionPad = false)
+        public Attitude(IRawDroneState rawDroneState, bool useMissionPad = false)
         {
             if (useMissionPad)
             {
@@ -23,27 +23,21 @@ namespace Tello.Controller
                     throw new ArgumentException($"{nameof(rawDroneState)}.{nameof(IRawDroneState.MissionPadDetected)} == false");
                 }
 
-                return new Attitude
-                {
-                    Pitch = rawDroneState.MissionPadPitch,
-                    Roll = rawDroneState.MissionPadRoll,
-                    Yaw = rawDroneState.MissionPadYaw,
-                };
+                Pitch = rawDroneState.MissionPadPitch;
+                Roll = rawDroneState.MissionPadRoll;
+                Yaw = rawDroneState.MissionPadYaw;
             }
             else
             {
-                return new Attitude
-                {
-                    Pitch = rawDroneState.Pitch,
-                    Roll = rawDroneState.Roll,
-                    Yaw = rawDroneState.Yaw,
-                };
+                Pitch = rawDroneState.Pitch;
+                Roll = rawDroneState.Roll;
+                Yaw = rawDroneState.Yaw;
             }
         }
 
-        public int Pitch { get; set; }
-        public int Roll { get; set; }
-        public int Yaw { get; set; }
+        public int Pitch { get; }
+        public int Roll { get; }
+        public int Yaw { get; }
 
         public override string ToString()
         {

@@ -12,17 +12,14 @@ namespace Tello.Controller
             MotorTimeInSeconds = hobbsMeter.MotorTimeInSeconds;
         }
 
-        public static HobbsMeter FromRawDroneState(IRawDroneState rawDroneState)
+        public HobbsMeter(IRawDroneState rawDroneState)
         {
-            return new HobbsMeter
-            {
-                DistanceTraversedInCm = rawDroneState.DistanceTraversedInCm,
-                MotorTimeInSeconds = rawDroneState.MotorTimeInSeconds,
-            };
+            DistanceTraversedInCm = rawDroneState.DistanceTraversedInCm;
+            MotorTimeInSeconds = rawDroneState.MotorTimeInSeconds;
         }
 
-        public int DistanceTraversedInCm { get; set; }
-        public int MotorTimeInSeconds { get; set; }
+        public int DistanceTraversedInCm { get; }
+        public int MotorTimeInSeconds { get; }
 
         public override string ToString()
         {

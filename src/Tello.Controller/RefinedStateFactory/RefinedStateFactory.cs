@@ -38,14 +38,12 @@ namespace Tello.Controller
 
         public static IRefinedDroneState GetRefinedDroneState()
         {
-            return new RefinedDroneState
-            {
-                Position = new Position(_position),
-                AirSpeed = new AirSpeed(_airSpeed),
-                Attitude = new Attitude(_attitude),
-                Battery = new Battery(_battery),
-                HobbsMeter = new HobbsMeter(_hobbsMeter),
-            };
+            return new RefinedDroneState(
+                new Position(_position),
+                new Attitude(_attitude),
+                new AirSpeed(_airSpeed),
+                new Battery(_battery),
+                new HobbsMeter(_hobbsMeter));
         }
 
         public static void Update(IRawDroneState rawDroneState, bool useMissionPad = false)
@@ -64,21 +62,21 @@ namespace Tello.Controller
 
                 _positionGate.WithReadLock(() =>
                 {
-                    _position = Position.FromRawDroneState(rawDroneState, _heading);
+                    _position = new Position(rawDroneState, _heading);
                 });
             }
             else
             {
                 _positionGate.WithReadLock(() =>
                 {
-                    _position = Position.FromRawDroneState(rawDroneState, _x, _y, _heading);
+                    _position = new Position(rawDroneState, _x, _y, _heading);
                 });
             }
 
-            _airSpeed = AirSpeed.FromRawDroneState(rawDroneState);
-            _attitude = Attitude.FromRawDroneState(rawDroneState, useMissionPad);
-            _battery = Battery.FromRawDroneState(rawDroneState);
-            _hobbsMeter = HobbsMeter.FromRawDroneState(rawDroneState);
+            _airSpeed = new AirSpeed(rawDroneState);
+            _attitude = new Attitude(rawDroneState, useMissionPad);
+            _battery = new Battery(rawDroneState);
+            _hobbsMeter = new HobbsMeter(rawDroneState);
         }
 
         #region Position State

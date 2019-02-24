@@ -13,19 +13,16 @@ namespace Tello.Controller
             PercentRemaining = battery.PercentRemaining;
         }
 
-        public static Battery FromRawDroneState(IRawDroneState rawDroneState)
+        public Battery(IRawDroneState rawDroneState)
         {
-            return new Battery
-            {
-                TemperatureLowC = rawDroneState.TemperatureLowC,
-                TemperatureHighC = rawDroneState.TemperatureHighC,
-                PercentRemaining = rawDroneState.BatteryPercent,
-            };
+            TemperatureLowC = rawDroneState.TemperatureLowC;
+            TemperatureHighC = rawDroneState.TemperatureHighC;
+            PercentRemaining = rawDroneState.BatteryPercent;
         }
 
-        public int TemperatureLowC { get; set; }
-        public int TemperatureHighC { get; set; }
-        public int PercentRemaining { get; set; }
+        public int TemperatureLowC { get; }
+        public int TemperatureHighC { get; }
+        public int PercentRemaining { get; }
 
         public override string ToString()
         {
