@@ -29,9 +29,9 @@ namespace Tello.Controller
             };
         }
 
-        public int SpeedX { get; set; };
-        public int SpeedY { get; set; };
-        public int SpeedZ { get; set; };
+        public int SpeedX { get; set; }
+        public int SpeedY { get; set; }
+        public int SpeedZ { get; set; }
         public double AccelerationX { get; set; }
         public double AccelerationY { get; set; }
         public double AccelerationZ { get; set; }
