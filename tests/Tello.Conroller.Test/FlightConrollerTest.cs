@@ -44,7 +44,7 @@ namespace Tello.Controller.Test
 
             var actualCommand = default(Commands);
             var actualResponse = String.Empty;
-            controller.FlightControllerResponseReceived += delegate (object sender, FlightControllerResponseReceivedArgs e)
+            controller.TelloControllerResponseReceived += delegate (object sender, TelloControllerResponseReceivedArgs e)
             {
                 actualCommand = e.Command;
                 actualResponse = e.Response;
@@ -71,13 +71,13 @@ namespace Tello.Controller.Test
             var tello = new TelloEmulator();
             var controller = new FlightController(tello, tello.StateServer, tello.VideoServer);
 
-            controller.FlightControllerExceptionThrown += delegate (object sender, FlightControllerExceptionThrownArgs e)
+            controller.TelloControllerExceptionThrown += delegate (object sender, TelloControllerExceptionThrownArgs e)
             {
                 Assert.IsNotNull(e.Exception.InnerException);
                 Assert.IsTrue(e.Exception.InnerException is TelloUnavailableException);
             };
 
-            controller.FlightControllerCommandExceptionThrown += delegate (object sender, FlightControllerCommandExceptionThrownArgs e)
+            controller.TelloControllerCommandExceptionThrown += delegate (object sender, FlightControllerCommandExceptionThrownArgs e)
             {
                 Assert.Fail("wrong event handler called");
             };
@@ -88,18 +88,18 @@ namespace Tello.Controller.Test
         private void AwaitCommand(FlightController controller, Action command)
         {
             var isOk = false;
-            void handler(object sender, FlightControllerResponseReceivedArgs e)
+            void handler(object sender, TelloControllerResponseReceivedArgs e)
             {
                 isOk = controller.IsResponseOk(e.Command, e.Response);
             }
-            controller.FlightControllerResponseReceived += handler;
+            controller.TelloControllerResponseReceived += handler;
             command?.Invoke();
             var wait = new SpinWait();
             while (isOk == false)
             {
                 wait.SpinOnce();
             }
-            controller.FlightControllerResponseReceived -= handler;
+            controller.TelloControllerResponseReceived -= handler;
         }
 
         [TestMethod]
@@ -115,7 +115,7 @@ namespace Tello.Controller.Test
             try
             {
                 controller.EnterSdkMode();
-                controller.FlightControllerResponseReceived += delegate (object sender, FlightControllerResponseReceivedArgs e)
+                controller.TelloControllerResponseReceived += delegate (object sender, TelloControllerResponseReceivedArgs e)
                 {
                     actualCommand = e.Command;
                     actualResponse = e.Response;
@@ -153,7 +153,7 @@ namespace Tello.Controller.Test
                 AwaitCommand(controller, controller.TakeOff);
                 Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
 
-                controller.FlightControllerResponseReceived += delegate (object sender, FlightControllerResponseReceivedArgs e)
+                controller.TelloControllerResponseReceived += delegate (object sender, TelloControllerResponseReceivedArgs e)
                 {
                     actualCommand = e.Command;
                     actualResponse = e.Response;
@@ -175,9 +175,9 @@ namespace Tello.Controller.Test
             Assert.AreEqual(FlightStates.StandingBy, controller.FlightState);
         }
 
-        private FlightControllerResponseReceivedArgs TestMovement(TelloEmulator tello, FlightController controller, Action<int> command, int arg)
+        private TelloControllerResponseReceivedArgs TestMovement(TelloEmulator tello, FlightController controller, Action<int> command, int arg)
         {
-            var result = default(FlightControllerResponseReceivedArgs);
+            var result = default(TelloControllerResponseReceivedArgs);
 
             tello.PowerOn();
             try
@@ -186,14 +186,14 @@ namespace Tello.Controller.Test
                 AwaitCommand(controller, controller.TakeOff);
                 Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
 
-                controller.FlightControllerResponseReceived += delegate (object sender, FlightControllerResponseReceivedArgs e)
+                controller.TelloControllerResponseReceived += delegate (object sender, TelloControllerResponseReceivedArgs e)
                 {
                     result = e;
                 };
                 command?.Invoke(arg);
                 var wait = new SpinWait();
                 var clock = Stopwatch.StartNew();
-                while (result == default(FlightControllerResponseReceivedArgs) && clock.ElapsedMilliseconds < 5000)
+                while (result == default(TelloControllerResponseReceivedArgs) && clock.ElapsedMilliseconds < 5000)
                 {
                     wait.SpinOnce();
                 }

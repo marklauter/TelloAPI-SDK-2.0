@@ -3,7 +3,7 @@ using Tello.Messaging;
 
 namespace Tello.Controller
 {
-    internal static class RefinedStateFactory
+    internal static class TelloStateFactory
     {
         private static IPosition _position = new Position();
         private static IAirSpeed _airSpeed = new AirSpeed();
@@ -36,9 +36,9 @@ namespace Tello.Controller
             return new HobbsMeter(_hobbsMeter);
         }
 
-        public static IRefinedDroneState GetRefinedDroneState()
+        public static ITelloState GetState()
         {
-            return new RefinedDroneState(
+            return new TelloState(
                 new Position(_position),
                 new Attitude(_attitude),
                 new AirSpeed(_airSpeed),

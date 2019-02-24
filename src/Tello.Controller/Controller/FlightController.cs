@@ -9,7 +9,7 @@ using Tello.Scripting;
 
 namespace Tello.Controller
 {
-    public class FlightController
+    public class FlightController : ITelloController, ITelloStateChangedNotifier, IVideoSampleReadyNotifier
     {
         // TimeSpan commandTimeout, string ip = "192.168.10.1", int commandPort = 8889, int statePort = 8890, int videoPort = 11111
 
@@ -31,15 +31,12 @@ namespace Tello.Controller
 
         #region events
         public event EventHandler<VideoSampleReadyArgs> VideoSampleReady;
-        public event EventHandler<DroneStateReceivedArgs> DroneStateReceived;
-        public event EventHandler<FlightControllerValueReceivedArgs> FlightControllerValueReceived;
-        public event EventHandler<FlightControllerExceptionThrownArgs> FlightControllerExceptionThrown;
-        public event EventHandler<FlightControllerResponseReceivedArgs> FlightControllerResponseReceived;
-        public event EventHandler<FlightControllerCommandExceptionThrownArgs> FlightControllerCommandExceptionThrown;
-        #endregion
+        public event EventHandler<TelloStateChangedArgs> DroneStateChanged;
 
-        #region messenger
-        private readonly IMessengerService _messenger;
+        public event EventHandler<TelloControllerValueReceivedArgs> TelloControllerValueReceived;
+        public event EventHandler<TelloControllerExceptionThrownArgs> TelloControllerExceptionThrown;
+        public event EventHandler<TelloControllerResponseReceivedArgs> TelloControllerResponseReceived;
+        public event EventHandler<FlightControllerCommandExceptionThrownArgs> TelloControllerCommandExceptionThrown;
         #endregion
 
         #region video
@@ -60,9 +57,9 @@ namespace Tello.Controller
 
         private void _videoServer_RelayExceptionThrown(object sender, MessageRelayExceptionThrownArgs e)
         {
-            FlightControllerExceptionThrown?.Invoke(this,
-                new FlightControllerExceptionThrownArgs(
-                    new FlightControllerException($"VideoReceiver reported an exception of type '{e.Exception.GetType()}' with message '{e.Exception.Message}'", e.Exception)));
+            TelloControllerExceptionThrown?.Invoke(this,
+                new TelloControllerExceptionThrownArgs(
+                    new TelloControllerException($"VideoReceiver reported an exception of type '{e.Exception.GetType()}' with message '{e.Exception.Message}'", e.Exception)));
         }
         #endregion
 
@@ -114,7 +111,7 @@ namespace Tello.Controller
         public FlightStates FlightState { get; private set; } = FlightStates.StandingBy;
 
         private IRawDroneState _droneState = null;
-        public IRefinedDroneState DroneState => RefinedStateFactory.GetRefinedDroneState();
+        public ITelloState DroneState => TelloStateFactory.GetState();
 
         private readonly IMessageRelayService<IRawDroneState> _stateServer;
 
@@ -122,20 +119,22 @@ namespace Tello.Controller
         {
             _droneState = e.Message;
             ZeroAltimeter(_droneState.BarometerInCm);
-            RefinedStateFactory.Update(_droneState);
-            DroneStateReceived?.Invoke(this, new DroneStateReceivedArgs(e.Message));
+            TelloStateFactory.Update(_droneState);            
+            DroneStateChanged?.Invoke(this, new TelloStateChangedArgs(TelloStateFactory.GetState()));
         }
 
         private void StateServerRelayExceptionThrown(object sender, MessageRelayExceptionThrownArgs e)
         {
-            FlightControllerExceptionThrown?.Invoke(this,
-                new FlightControllerExceptionThrownArgs(
-                    new FlightControllerException($"StateReceiver reported an exception of type '{e.Exception.GetType()}' with message '{e.Exception.Message}'", e.Exception)));
+            TelloControllerExceptionThrown?.Invoke(this,
+                new TelloControllerExceptionThrownArgs(
+                    new TelloControllerException($"StateReceiver reported an exception of type '{e.Exception.GetType()}' with message '{e.Exception.Message}'", e.Exception)));
         }
 
         #endregion
 
         #region command queue
+
+        private readonly IMessengerService _messenger;
 
         private readonly ConcurrentQueue<Tuple<Commands, string, TimeSpan, object[]>> _messageQueue = new ConcurrentQueue<Tuple<Commands, string, TimeSpan, object[]>>();
 
@@ -251,20 +250,20 @@ namespace Tello.Controller
                     case Commands.Right:
                     case Commands.Forward:
                     case Commands.Back:
-                        RefinedStateFactory.Move(command, (int)args[0]);
+                        TelloStateFactory.Move(command, (int)args[0]);
                         break;
                     case Commands.ClockwiseTurn:
                     case Commands.CounterClockwiseTurn:
-                        RefinedStateFactory.Turn(command, (int)args[0]);
+                        TelloStateFactory.Turn(command, (int)args[0]);
                         break;
                     case Commands.Go:
-                        RefinedStateFactory.Go((int)args[0], (int)args[1]);
+                        TelloStateFactory.Go((int)args[0], (int)args[1]);
                         break;
                 }
             }
             catch (Exception ex)
             {
-                throw new FlightControllerException($"Handle response failed with message '{ex.Message}'", ex);
+                throw new TelloControllerException($"Handle response failed with message '{ex.Message}'", ex);
             }
         }
 
@@ -298,7 +297,7 @@ namespace Tello.Controller
             }
             catch (Exception ex)
             {
-                throw new FlightControllerException($"'{message}' command failed with message '{ex.Message}'", ex);
+                throw new TelloControllerException($"'{message}' command failed with message '{ex.Message}'", ex);
             }
 
             if (response.Successful)
@@ -313,25 +312,25 @@ namespace Tello.Controller
 
                     if (IsValueCommand(command))
                     {
-                        FlightControllerValueReceived?.Invoke(this, new FlightControllerValueReceivedArgs(command.ToReponse(), responseValue, clock.Elapsed));
+                        TelloControllerValueReceived?.Invoke(this, new TelloControllerValueReceivedArgs(command.ToReponse(), responseValue, clock.Elapsed));
                     }
                     else
                     {
-                        FlightControllerResponseReceived?.Invoke(this, new FlightControllerResponseReceivedArgs(command, responseValue, clock.Elapsed));
+                        TelloControllerResponseReceived?.Invoke(this, new TelloControllerResponseReceivedArgs(command, responseValue, clock.Elapsed));
                     }
                 }
                 else
                 {
                     Log.WriteLine($"'{message}' command received unexpected response - '{responseValue}'");
 
-                    throw new FlightControllerException($"'{message}' command received unexpected response '{responseValue}'");
+                    throw new TelloControllerException($"'{message}' command received unexpected response '{responseValue}'");
                 }
             }
             else // udp receiver pooped
             {
                 Log.WriteLine($"'{message}' command failed with message - '{response.ErrorMessage}'");
 
-                throw new FlightControllerException(
+                throw new TelloControllerException(
                     $"'{message}' command failed with message '{response.ErrorMessage}'",
                     response.Exception);
             }
@@ -358,16 +357,16 @@ namespace Tello.Controller
                 await SendMessage(commandTuple);
                 result = true;
             }
-            catch (FlightControllerException ex)
+            catch (TelloControllerException ex)
             {
-                FlightControllerCommandExceptionThrown?.Invoke(this, new FlightControllerCommandExceptionThrownArgs(command, ex, clock.Elapsed));
+                TelloControllerCommandExceptionThrown?.Invoke(this, new FlightControllerCommandExceptionThrownArgs(command, ex, clock.Elapsed));
             }
             catch (Exception ex)
             {
-                FlightControllerCommandExceptionThrown?.Invoke(this,
+                TelloControllerCommandExceptionThrown?.Invoke(this,
                     new FlightControllerCommandExceptionThrownArgs(
                         command,
-                        new FlightControllerException($"SendMessage failed with message '{ex.Message}'", ex),
+                        new TelloControllerException($"SendMessage failed with message '{ex.Message}'", ex),
                         clock.Elapsed));
             }
             return result;
@@ -437,7 +436,7 @@ namespace Tello.Controller
                 }
                 catch (Exception ex)
                 {
-                    throw new FlightControllerException($"Failed to enqueue command '{command}' because {ex.GetType()} - '{ex.Message}'", ex);
+                    throw new TelloControllerException($"Failed to enqueue command '{command}' because {ex.GetType()} - '{ex.Message}'", ex);
                 }
             }
         }
@@ -480,9 +479,9 @@ namespace Tello.Controller
             {
                 _stateServer.Stop();
                 ConnectionState = ConnectionStates.Disconnected;
-                FlightControllerExceptionThrown?.Invoke(this,
-                    new FlightControllerExceptionThrownArgs(
-                        new FlightControllerException($"Connection failed with message '{ex.Message}'", ex)));
+                TelloControllerExceptionThrown?.Invoke(this,
+                    new TelloControllerExceptionThrownArgs(
+                        new TelloControllerException($"Connection failed with message '{ex.Message}'", ex)));
             }
         }
 

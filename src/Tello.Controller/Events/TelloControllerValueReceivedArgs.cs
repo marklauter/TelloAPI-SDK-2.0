@@ -3,9 +3,9 @@ using Tello.Messaging;
 
 namespace Tello.Controller
 {
-    public class FlightControllerValueReceivedArgs : EventArgs
+    public class TelloControllerValueReceivedArgs : EventArgs
     {
-        public FlightControllerValueReceivedArgs(Responses responseType, string value, TimeSpan elapsed)
+        public TelloControllerValueReceivedArgs(Responses responseType, string value, TimeSpan elapsed)
         {
             ResponseType = responseType;
             Value = value?.TrimEnd();

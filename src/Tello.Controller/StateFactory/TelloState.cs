@@ -3,11 +3,11 @@ using Tello.Messaging;
 
 namespace Tello.Controller
 {
-    public class RefinedDroneState : IRefinedDroneState
+    public class TelloState : ITelloState
     {
-        public RefinedDroneState() { }
+        public TelloState() { }
 
-        public RefinedDroneState(IPosition position, IAttitude attitude, IAirSpeed airSpeed, IBattery battery, IHobbsMeter hobbsMeter) {
+        public TelloState(IPosition position, IAttitude attitude, IAirSpeed airSpeed, IBattery battery, IHobbsMeter hobbsMeter) {
             Position = position ?? throw new ArgumentNullException(nameof(position));
             Attitude = attitude ?? throw new ArgumentNullException(nameof(attitude));
             AirSpeed = airSpeed ?? throw new ArgumentNullException(nameof(airSpeed));

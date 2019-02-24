@@ -17,11 +17,11 @@ namespace Tello.Emulator.SDKV2.Demo
 
         private static void Main(string[] args)
         {
-            _controller.DroneStateReceived += Controller_DroneStateReceived;
-            _controller.FlightControllerExceptionThrown += Controller_FlightControllerExceptionThrown;
-            _controller.FlightControllerCommandExceptionThrown += Controller_FlightControllerCommandExceptionThrown;
-            _controller.FlightControllerResponseReceived += Controller_FlightControllerResponseReceived;
-            _controller.FlightControllerValueReceived += Controller_FlightControllerValueReceived;
+            _controller.DroneStateChanged += Controller_DroneStateReceived;
+            _controller.TelloControllerExceptionThrown += Controller_FlightControllerExceptionThrown;
+            _controller.TelloControllerCommandExceptionThrown += Controller_FlightControllerCommandExceptionThrown;
+            _controller.TelloControllerResponseReceived += Controller_FlightControllerResponseReceived;
+            _controller.TelloControllerValueReceived += Controller_FlightControllerValueReceived;
             _controller.VideoSampleReady += Controller_VideoSampleReady;
 
             Log.WriteLine("> power up");
@@ -81,19 +81,19 @@ namespace Tello.Emulator.SDKV2.Demo
             //throw new NotImplementedException();
         }
 
-        private static void Controller_FlightControllerValueReceived(object sender, FlightControllerValueReceivedArgs e)
+        private static void Controller_FlightControllerValueReceived(object sender, TelloControllerValueReceivedArgs e)
         {
             Log.WriteLine($"{e.ResponseType} == '{e.Value}' in {e.Elapsed.TotalMilliseconds}ms", ConsoleColor.Green);
         }
 
-        private static void Controller_FlightControllerResponseReceived(object sender, FlightControllerResponseReceivedArgs e)
+        private static void Controller_FlightControllerResponseReceived(object sender, TelloControllerResponseReceivedArgs e)
         {
             Log.WriteLine($"{e.Command} returned '{e.Response}' in {e.Elapsed.TotalMilliseconds}ms", ConsoleColor.Magenta, false);
             Log.WriteLine($"Actual Position: { _tello.Position}", ConsoleColor.Blue, false);
             Log.WriteLine($"Estimated Position: { _controller.DroneState.Position}", ConsoleColor.Blue);
         }
 
-        private static void Controller_FlightControllerExceptionThrown(object sender, FlightControllerExceptionThrownArgs e)
+        private static void Controller_FlightControllerExceptionThrown(object sender, TelloControllerExceptionThrownArgs e)
         {
             Log.WriteLine($"Exception {e.Exception.GetType()} with message '{e.Exception.Message}'", ConsoleColor.Red, false);
             Log.WriteLine("| Stack trace", ConsoleColor.Red, false);
@@ -109,7 +109,7 @@ namespace Tello.Emulator.SDKV2.Demo
 
         private static bool _canTakeOff = false;
         private static int _stateCount = 0;
-        private static void Controller_DroneStateReceived(object sender, DroneStateReceivedArgs e)
+        private static void Controller_DroneStateReceived(object sender, TelloStateChangedArgs e)
         {
             _canTakeOff = true;
 

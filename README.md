@@ -21,7 +21,8 @@ Implements Tello.Messaging via UDP access to a live Tello drone. A connection to
 Implements Tello.Messaging by emulating Tello drone behavior. No network connection is required.
 
 ## Tello.Scripting
-Provides a ScriptBuilder to generate command scripts and a TelloScript class that can be used by the FlightController. The ScriptBuilder outputs JSON that can be parsed by the TelloScript. It isn't rocket science. Once you see how the scripts are generated, you can probably edit the JSON directly more easily than using the ScriptBuilder.
+For now a script is a simple JSON list of commands and parameters. The commands are based on the Tello.Messaging.Commands enum. There's a ScriptBuilder to generate command scripts and a TelloScript class that can be used by the FlightController. The ScriptBuilder outputs JSON that can be parsed by the TelloScript. It isn't rocket science. Once you see how the scripts are generated, you can probably edit the JSON directly more easily than using the ScriptBuilder.
+I'll add more complex script support once I have the UWP demo working. 
 
 ## Tests
 Writing tests is boring. When I feel really professional and high speed I'll add to them, but I'm not in a hurry. If someone wants to round them out they would have my eternal gratitude and a gift certificate to Taco Bell.

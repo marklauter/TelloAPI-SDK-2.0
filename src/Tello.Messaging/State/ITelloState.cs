@@ -39,7 +39,7 @@
         int MotorTimeInSeconds { get; }
     }
 
-    public interface IRefinedDroneState
+    public interface ITelloState
     {
         IPosition Position { get; }
         IAttitude Attitude { get; }
