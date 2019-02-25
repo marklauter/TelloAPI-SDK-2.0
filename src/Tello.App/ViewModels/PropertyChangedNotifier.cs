@@ -19,6 +19,7 @@ namespace Tello.App.ViewModels
         public void SetProperty<T>(ref T storage, T value, [CallerMemberName]string callerMemberName = null)
         {
             //todo: the property name needs to be extracted from the callerMemberName 
+            throw new NotImplementedException();
             if (!EqualityComparer<T>.Default.Equals(storage, value))
             {
                 storage = value;
