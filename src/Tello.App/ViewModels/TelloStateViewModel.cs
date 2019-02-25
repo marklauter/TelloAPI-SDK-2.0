@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Tello.Controller;
 using Tello.Messaging;
@@ -14,12 +15,12 @@ namespace Tello.App.ViewModels
             _telloStateChangedNotifier = telloStateChangedNotifier ?? throw new ArgumentNullException(nameof(telloStateChangedNotifier));
         }
 
-        protected override void Start(params object[] args)
+        protected override void OnOpen(OpenEventArgs args)
         {
             _telloStateChangedNotifier.StateChanged += OnTelloStateChanged;
         }
 
-        protected override void Finish()
+        protected override void OnClosing(ClosingEventArgs args)
         {
             _telloStateChangedNotifier.StateChanged -= OnTelloStateChanged;
         }

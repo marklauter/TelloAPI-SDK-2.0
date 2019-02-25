@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using Tello.Controller;
 
 namespace Tello.App.ViewModels
@@ -12,7 +13,7 @@ namespace Tello.App.ViewModels
             _telloController = telloController;
         }
 
-        protected override void Start(params object[] args)
+        protected override void OnOpen(OpenEventArgs args)
         {
             _telloController.ExceptionThrown += OnExceptionThrown;
             _telloController.CommandExceptionThrown += OnCommandExceptionThrown;
@@ -20,7 +21,7 @@ namespace Tello.App.ViewModels
             _telloController.CommandResponseReceived += OnCommandResponseReceived;
         }
 
-        protected override void Finish()
+        protected override void OnClosing(ClosingEventArgs args)
         {
             _telloController.ExceptionThrown -= OnExceptionThrown;
             _telloController.CommandExceptionThrown -= OnCommandExceptionThrown;

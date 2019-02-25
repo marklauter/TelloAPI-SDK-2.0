@@ -17,12 +17,12 @@ namespace Tello.App.ViewModels
             _videoSampleProvider = videoSampleProvider ?? throw new ArgumentNullException(nameof(videoSampleProvider));
         }
 
-        protected override void Start(params object[] args)
+        protected override void OnOpen(OpenEventArgs args)
         {
             _videoSampleReadyNotifier.VideoSampleReady += OnVideoSampleReady;
         }
 
-        protected override void Finish()
+        protected override void OnClosing(ClosingEventArgs args)
         {
             _videoSampleReadyNotifier.VideoSampleReady -= OnVideoSampleReady;
         }

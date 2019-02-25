@@ -1,26 +1,57 @@
-﻿namespace Tello.App.ViewModels
-{
-    public class ViewModel : PropertyChangedNotifier
-    {
-        public ViewModel(IUIDispatcher dispatcher) : base(dispatcher) { }
+﻿using System;
+using System.Collections.Generic;
 
-        public void Open(params object[] args)
+namespace Tello.App.ViewModels
+{
+    public class OpenEventArgs : EventArgs
+    {
+        public OpenEventArgs() : this(null)
         {
-            Start(args);
         }
 
-        public void Close()
+        public OpenEventArgs(Dictionary<string, object> args)
         {
+            Args = args != null
+                ? new Dictionary<string, object>(args)
+                : new Dictionary<string, object>();
+        }
+
+        public Dictionary<string, object> Args { get; }
+    }
+
+    public class ClosingEventArgs : EventArgs
+    {
+        public bool CanClose { get; set; }
+    }
+
+    public class ViewModel : PropertyChangedNotifier
+    {
+        public ViewModel(IUIDispatcher dispatcher) : base(dispatcher)
+        {
+            DisplayName = $"#{GetType().Name}#";
+        }
+
+        public string DisplayName { get; set; }
+
+        public void Open(OpenEventArgs args)
+        {
+            OnOpen(args);
+        }
+
+        public bool Close()
+        {
+            var args = new ClosingEventArgs { CanClose = CanClose };
             if (CanClose)
             {
-                Finish();
+                OnClosing(args);
             }
+            return args.CanClose;
         }
 
         private bool _canClose = true;
         public bool CanClose { get => _canClose; set => SetProperty(ref _canClose, value); }
 
-        protected virtual void Start(params object[] args) { }
-        protected virtual void Finish() { }
+        protected virtual void OnOpen(OpenEventArgs args) { }
+        protected virtual void OnClosing(ClosingEventArgs args) { }
     }
 }
