@@ -8,6 +8,10 @@ namespace Tello.Messaging
         Listening
     }
 
+    // todo: this would be better if it implemented IObservalbe<T>
+    // https://docs.microsoft.com/en-us/dotnet/api/system.iobservable-1?view=netframework-4.7.2
+    // then a more natural observed, observer pattern could be implemented
+
     /// <summary>
     /// Listens for messages, signals, or state changes and relays them to subscribers via the MessageReceived event.
     /// </summary>
