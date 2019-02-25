@@ -47,7 +47,24 @@ namespace Tello.App.ViewModels
                 : Enabled;
         }
 
-        public abstract void Execute(object parameter);
+        public void Execute(object paramter)
+        {
+            if (CanExecute(paramter))
+            {
+                var enabled = Enabled;
+                Enabled = false;
+                try
+                {
+                    ExecuteInternal(paramter);
+                }
+                finally
+                {
+                    Enabled = enabled;
+                }
+            }
+        }
+
+        public abstract void ExecuteInternal(object parameter);
     }
 
     public class InputCommand : Command
@@ -61,12 +78,9 @@ namespace Tello.App.ViewModels
 
         private readonly Action _action;
 
-        public override void Execute(object parameter = null)
+        public override void ExecuteInternal(object parameter = null)
         {
-            if (CanExecute(parameter))
-            {
-                _action.Invoke();
-            }
+            _action();
         }
     }
 
@@ -81,12 +95,9 @@ namespace Tello.App.ViewModels
 
         private readonly Action<T> _action;
 
-        public override void Execute(object parameter)
+        public override void ExecuteInternal(object parameter)
         {
-            if (CanExecute(parameter))
-            {
-                _action.Invoke((T)parameter);
-            }
+            _action((T)parameter);
         }
     }
 
@@ -101,12 +112,9 @@ namespace Tello.App.ViewModels
 
         private readonly Func<Task> _func;
 
-        public override async void Execute(object parameter = null)
+        public override async void ExecuteInternal(object parameter = null)
         {
-            if (CanExecute(parameter))
-            {
-               await _func();
-            }
+            await _func();
         }
     }
 
@@ -121,12 +129,9 @@ namespace Tello.App.ViewModels
 
         private readonly Func<T, Task> _func;
 
-        public override async void Execute(object parameter)
+        public override async void ExecuteInternal(object parameter)
         {
-            if (CanExecute(parameter))
-            {
-                await _func((T)parameter);
-            }
+            await _func((T)parameter);
         }
     }
 }
