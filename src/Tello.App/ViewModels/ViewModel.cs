@@ -1,20 +1,26 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-
-namespace Tello.App.ViewModels
+﻿namespace Tello.App.ViewModels
 {
-    public class ViewModel : INotifyPropertyChanged
+    public class ViewModel : PropertyChangedNotifier
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public ViewModel(IUIDispatcher dispatcher) : base(dispatcher) { }
 
-        public void SetProperty<T>(ref T storage, T value, [CallerMemberName]string callerMemberName = null)
+        public void Open(params object[] args)
         {
-            if (!EqualityComparer<T>.Default.Equals(storage, value))
+            Start(args);
+        }
+
+        public void Close()
+        {
+            if (CanClose)
             {
-                storage = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(callerMemberName));
+                Finish();
             }
         }
+
+        private bool _canClose = true;
+        public bool CanClose { get => _canClose; set => SetProperty(ref _canClose, value); }
+
+        protected virtual void Start(params object[] args) { }
+        protected virtual void Finish() { }
     }
 }

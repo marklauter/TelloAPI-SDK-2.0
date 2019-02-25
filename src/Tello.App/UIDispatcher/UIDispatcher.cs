@@ -1,0 +1,34 @@
+﻿using System;
+using System.Threading;
+
+namespace Tello.App
+{
+    //todo: i have no idea if this will work
+    internal class UIDispatcher : IUIDispatcher
+    {
+        private readonly SynchronizationContext _context;
+
+        private UIDispatcher()
+        {
+        }
+
+        /// <summary>
+        /// pass main thread context
+        /// </summary>
+        /// <param name="context"></param>
+        public UIDispatcher(SynchronizationContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
+        public void Invoke(Action<object> action, object state = null)
+        {
+            _context.Post(new SendOrPostCallback(action), state);
+        }
+
+        public void Invoke(Action action)
+        {
+            _context.Post(new SendOrPostCallback((state) => { action.Invoke(); }), null);
+        }
+    }
+}
