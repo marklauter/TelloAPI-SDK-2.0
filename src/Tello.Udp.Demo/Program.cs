@@ -17,7 +17,7 @@ namespace Tello.Udp.Demo
 
         private static void Main(string[] args)
         {
-            _controller.DroneStateChanged += Controller_DroneStateReceived;
+            _controller.TelloStateChanged += Controller_DroneStateReceived;
             _controller.TelloControllerExceptionThrown += Controller_FlightControllerExceptionThrown;
             _controller.TelloControllerCommandExceptionThrown += Controller_FlightControllerCommandExceptionThrown;
             _controller.TelloControllerResponseReceived += Controller_FlightControllerResponseReceived;

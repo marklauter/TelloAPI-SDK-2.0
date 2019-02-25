@@ -31,7 +31,7 @@ namespace Tello.Controller
 
         #region events
         public event EventHandler<VideoSampleReadyArgs> VideoSampleReady;
-        public event EventHandler<TelloStateChangedArgs> DroneStateChanged;
+        public event EventHandler<TelloStateChangedArgs> TelloStateChanged;
 
         public event EventHandler<TelloControllerValueReceivedArgs> TelloControllerValueReceived;
         public event EventHandler<TelloControllerExceptionThrownArgs> TelloControllerExceptionThrown;
@@ -120,7 +120,7 @@ namespace Tello.Controller
             _droneState = e.Message;
             ZeroAltimeter(_droneState.BarometerInCm);
             TelloStateFactory.Update(_droneState);            
-            DroneStateChanged?.Invoke(this, new TelloStateChangedArgs(TelloStateFactory.GetState()));
+            TelloStateChanged?.Invoke(this, new TelloStateChangedArgs(TelloStateFactory.GetState()));
         }
 
         private void StateServerRelayExceptionThrown(object sender, MessageRelayExceptionThrownArgs e)
