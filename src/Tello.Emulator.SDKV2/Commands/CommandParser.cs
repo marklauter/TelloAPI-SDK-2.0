@@ -6,7 +6,7 @@ namespace Tello.Emulator.SDKV2
     //todo: add mission padd commands
     internal static class CommandParser
     {
-        public static Commands GetCommand(string message)
+        public static TelloCommands GetCommand(string message)
         {
             var firstSpace = message.IndexOf(' ');
             if (firstSpace > 0)
@@ -36,39 +36,39 @@ namespace Tello.Emulator.SDKV2
             return result;
         }
 
-        private static Dictionary<string, Commands> _commands { get; } = new Dictionary<string, Commands>()
+        private static Dictionary<string, TelloCommands> _commands { get; } = new Dictionary<string, TelloCommands>()
         {
-            { "command", Commands.EnterSdkMode },
-            { "takeoff", Commands.Takeoff },
-            { "land", Commands.Land },
-            { "streamon", Commands.StartVideo },
-            { "streamoff", Commands.StopVideo },
-            { "emergency", Commands.EmergencyStop },
-            { "up", Commands.Up },
-            { "down", Commands.Down },
-            { "left", Commands.Left },
-            { "right", Commands.Right },
-            { "forward", Commands.Forward },
-            { "back", Commands.Back },
-            { "cw", Commands.ClockwiseTurn },
-            { "ccw", Commands.CounterClockwiseTurn },
-            { "flip", Commands.Flip },
-            { "go", Commands.Go },
-            { "stop", Commands.Stop },
-            { "curve", Commands.Curve },
-            { "speed", Commands.SetSpeed },
-            { "rc", Commands.SetRemoteControl },
-            { "wifi", Commands.SetWiFiPassword },
+            { "command", TelloCommands.EnterSdkMode },
+            { "takeoff", TelloCommands.Takeoff },
+            { "land", TelloCommands.Land },
+            { "streamon", TelloCommands.StartVideo },
+            { "streamoff", TelloCommands.StopVideo },
+            { "emergency", TelloCommands.EmergencyStop },
+            { "up", TelloCommands.Up },
+            { "down", TelloCommands.Down },
+            { "left", TelloCommands.Left },
+            { "right", TelloCommands.Right },
+            { "forward", TelloCommands.Forward },
+            { "back", TelloCommands.Back },
+            { "cw", TelloCommands.ClockwiseTurn },
+            { "ccw", TelloCommands.CounterClockwiseTurn },
+            { "flip", TelloCommands.Flip },
+            { "go", TelloCommands.Go },
+            { "stop", TelloCommands.Stop },
+            { "curve", TelloCommands.Curve },
+            { "speed", TelloCommands.SetSpeed },
+            { "rc", TelloCommands.SetRemoteControl },
+            { "wifi", TelloCommands.SetWiFiPassword },
             //{ "mon", Messages.SetMissionPadOn },
             //{ "moff", Messages.SetMissionPadOff },
             //{ "mdirection", Messages.SetMissionPadDirection },
-            { "ap", Commands.SetStationMode },
-            { "speed?", Commands.GetSpeed },
-            { "battery?", Commands.GetBattery },
-            { "time?", Commands.GetTime },
-            { "wifi?", Commands.GetWiFiSnr },
-            { "sdk?", Commands.GetSdkVersion },
-            { "sn?", Commands.GetSerialNumber },
+            { "ap", TelloCommands.SetStationMode },
+            { "speed?", TelloCommands.GetSpeed },
+            { "battery?", TelloCommands.GetBattery },
+            { "time?", TelloCommands.GetTime },
+            { "wifi?", TelloCommands.GetWiFiSnr },
+            { "sdk?", TelloCommands.GetSdkVersion },
+            { "sn?", TelloCommands.GetSerialNumber },
         };
     }
 }

@@ -31,7 +31,7 @@ namespace Tello.Scripting
         private int _order = 0;
         private readonly Dictionary<string, Token> _tokens;
 
-        public Token AddToken(string id, Commands command, params object[] args)
+        public Token AddToken(string id, TelloCommands command, params object[] args)
         {
             if (_tokens.ContainsKey(id))
             {

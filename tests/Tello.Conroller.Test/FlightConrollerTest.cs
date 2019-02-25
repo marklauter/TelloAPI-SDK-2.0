@@ -42,7 +42,7 @@ namespace Tello.Controller.Test
             var tello = new TelloEmulator();
             var controller = new FlightController(tello, tello.StateServer, tello.VideoServer, tello.VideoSampleProvider);
 
-            var actualCommand = default(Commands);
+            var actualCommand = default(TelloCommands);
             var actualResponse = String.Empty;
             controller.CommandResponseReceived += delegate (object sender, CommandResponseReceivedArgs e)
             {
@@ -61,7 +61,7 @@ namespace Tello.Controller.Test
                 tello.PowerOff();
             }
 
-            Assert.AreEqual(Commands.EnterSdkMode, actualCommand);
+            Assert.AreEqual(TelloCommands.EnterSdkMode, actualCommand);
             Assert.AreEqual("ok", actualResponse);
         }
 
@@ -108,7 +108,7 @@ namespace Tello.Controller.Test
             var tello = new TelloEmulator();
             var controller = new FlightController(tello, tello.StateServer, tello.VideoServer, tello.VideoSampleProvider);
 
-            var actualCommand = default(Commands);
+            var actualCommand = default(TelloCommands);
             var actualResponse = String.Empty;
 
             tello.PowerOn();
@@ -122,7 +122,7 @@ namespace Tello.Controller.Test
                 };
                 controller.TakeOff();
                 var wait = new SpinWait();
-                while (actualCommand == default(Commands))
+                while (actualCommand == default(TelloCommands))
                 {
                     wait.SpinOnce();
                 }
@@ -132,7 +132,7 @@ namespace Tello.Controller.Test
                 tello.PowerOff();
             }
 
-            Assert.AreEqual(Commands.Takeoff, actualCommand);
+            Assert.AreEqual(TelloCommands.Takeoff, actualCommand);
             Assert.AreEqual("ok", actualResponse);
             Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
         }
@@ -143,7 +143,7 @@ namespace Tello.Controller.Test
             var tello = new TelloEmulator();
             var controller = new FlightController(tello, tello.StateServer, tello.VideoServer, tello.VideoSampleProvider);
 
-            var actualCommand = default(Commands);
+            var actualCommand = default(TelloCommands);
             var actualResponse = String.Empty;
 
             tello.PowerOn();
@@ -160,7 +160,7 @@ namespace Tello.Controller.Test
                 };
                 controller.Land();
                 var wait = new SpinWait();
-                while (actualCommand == default(Commands))
+                while (actualCommand == default(TelloCommands))
                 {
                     wait.SpinOnce();
                 }
@@ -170,7 +170,7 @@ namespace Tello.Controller.Test
                 tello.PowerOff();
             }
 
-            Assert.AreEqual(Commands.Land, actualCommand);
+            Assert.AreEqual(TelloCommands.Land, actualCommand);
             Assert.AreEqual("ok", actualResponse);
             Assert.AreEqual(FlightStates.StandingBy, controller.FlightState);
         }
@@ -213,7 +213,7 @@ namespace Tello.Controller.Test
             var e = TestMovement(tello, controller, controller.GoUp, 20);
 
             Assert.IsNotNull(e);
-            Assert.AreEqual(Commands.Up, e.Command);
+            Assert.AreEqual(TelloCommands.Up, e.Command);
             Assert.AreEqual("ok", e.Response);
             Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
         }
@@ -226,7 +226,7 @@ namespace Tello.Controller.Test
             var e = TestMovement(tello, controller, controller.GoDown, 20);
 
             Assert.IsNotNull(e);
-            Assert.AreEqual(Commands.Down, e.Command);
+            Assert.AreEqual(TelloCommands.Down, e.Command);
             Assert.AreEqual("ok", e.Response);
             Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
         }
@@ -239,7 +239,7 @@ namespace Tello.Controller.Test
             var e = TestMovement(tello, controller, controller.GoLeft, 20);
 
             Assert.IsNotNull(e);
-            Assert.AreEqual(Commands.Left, e.Command);
+            Assert.AreEqual(TelloCommands.Left, e.Command);
             Assert.AreEqual("ok", e.Response);
             Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
         }
@@ -252,7 +252,7 @@ namespace Tello.Controller.Test
             var e = TestMovement(tello, controller, controller.GoRight, 20);
 
             Assert.IsNotNull(e);
-            Assert.AreEqual(Commands.Right, e.Command);
+            Assert.AreEqual(TelloCommands.Right, e.Command);
             Assert.AreEqual("ok", e.Response);
             Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
         }
@@ -265,7 +265,7 @@ namespace Tello.Controller.Test
             var e = TestMovement(tello, controller, controller.GoForward, 20);
 
             Assert.IsNotNull(e);
-            Assert.AreEqual(Commands.Forward, e.Command);
+            Assert.AreEqual(TelloCommands.Forward, e.Command);
             Assert.AreEqual("ok", e.Response);
             Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
         }
@@ -278,7 +278,7 @@ namespace Tello.Controller.Test
             var e = TestMovement(tello, controller, controller.GoBackward, 20);
 
             Assert.IsNotNull(e);
-            Assert.AreEqual(Commands.Back, e.Command);
+            Assert.AreEqual(TelloCommands.Back, e.Command);
             Assert.AreEqual("ok", e.Response);
             Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
         }
@@ -291,7 +291,7 @@ namespace Tello.Controller.Test
             var e = TestMovement(tello, controller, controller.TurnClockwise, 20);
 
             Assert.IsNotNull(e);
-            Assert.AreEqual(Commands.ClockwiseTurn, e.Command);
+            Assert.AreEqual(TelloCommands.ClockwiseTurn, e.Command);
             Assert.AreEqual("ok", e.Response);
             Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
         }
@@ -304,7 +304,7 @@ namespace Tello.Controller.Test
             var e = TestMovement(tello, controller, controller.TurnCounterClockwise, 20);
 
             Assert.IsNotNull(e);
-            Assert.AreEqual(Commands.CounterClockwiseTurn, e.Command);
+            Assert.AreEqual(TelloCommands.CounterClockwiseTurn, e.Command);
             Assert.AreEqual("ok", e.Response);
             Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
         }
@@ -317,7 +317,7 @@ namespace Tello.Controller.Test
             var e = TestMovement(tello, controller, controller.TurnRight, 20);
 
             Assert.IsNotNull(e);
-            Assert.AreEqual(Commands.ClockwiseTurn, e.Command);
+            Assert.AreEqual(TelloCommands.ClockwiseTurn, e.Command);
             Assert.AreEqual("ok", e.Response);
             Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
         }
@@ -330,7 +330,7 @@ namespace Tello.Controller.Test
             var e = TestMovement(tello, controller, controller.TurnLeft, 20);
 
             Assert.IsNotNull(e);
-            Assert.AreEqual(Commands.CounterClockwiseTurn, e.Command);
+            Assert.AreEqual(TelloCommands.CounterClockwiseTurn, e.Command);
             Assert.AreEqual("ok", e.Response);
             Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
         }

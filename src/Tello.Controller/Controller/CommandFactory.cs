@@ -65,37 +65,37 @@ namespace Tello.Controller
         /// </summary>
         /// <param name="command"></param>
         /// <param name="args"></param>
-        private static void Validate(Commands command, params object[] args)
+        private static void Validate(TelloCommands command, params object[] args)
         {
             var expectedLength = 0;
 
             switch (command)
             {
-                case Commands.EnterSdkMode:
-                case Commands.Takeoff:
-                case Commands.Land:
-                case Commands.Stop:
-                case Commands.StartVideo:
-                case Commands.StopVideo:
-                case Commands.EmergencyStop:
-                case Commands.GetSpeed:
-                case Commands.GetBattery:
-                case Commands.GetTime:
-                case Commands.GetWiFiSnr:
-                case Commands.GetSdkVersion:
-                case Commands.GetSerialNumber:
+                case TelloCommands.EnterSdkMode:
+                case TelloCommands.Takeoff:
+                case TelloCommands.Land:
+                case TelloCommands.Stop:
+                case TelloCommands.StartVideo:
+                case TelloCommands.StopVideo:
+                case TelloCommands.EmergencyStop:
+                case TelloCommands.GetSpeed:
+                case TelloCommands.GetBattery:
+                case TelloCommands.GetTime:
+                case TelloCommands.GetWiFiSnr:
+                case TelloCommands.GetSdkVersion:
+                case TelloCommands.GetSerialNumber:
                     if (args.Length != expectedLength)
                     {
                         throw new ArgumentException($"{command} expected {nameof(args)}.Length == {expectedLength}");
                     }
                     break;
 
-                case Commands.Up:
-                case Commands.Down:
-                case Commands.Left:
-                case Commands.Right:
-                case Commands.Forward:
-                case Commands.Back:
+                case TelloCommands.Up:
+                case TelloCommands.Down:
+                case TelloCommands.Left:
+                case TelloCommands.Right:
+                case TelloCommands.Forward:
+                case TelloCommands.Back:
                     expectedLength = 1;
                     if (args.Length != expectedLength)
                     {
@@ -111,8 +111,8 @@ namespace Tello.Controller
                     }
                     break;
 
-                case Commands.ClockwiseTurn:
-                case Commands.CounterClockwiseTurn:
+                case TelloCommands.ClockwiseTurn:
+                case TelloCommands.CounterClockwiseTurn:
                     expectedLength = 1;
                     if (args.Length != expectedLength)
                     {
@@ -128,7 +128,7 @@ namespace Tello.Controller
                     }
                     break;
 
-                case Commands.Flip:
+                case TelloCommands.Flip:
                     expectedLength = 1;
                     if (args.Length != expectedLength)
                     {
@@ -148,7 +148,7 @@ namespace Tello.Controller
                     }
                     break;
 
-                case Commands.Go:
+                case TelloCommands.Go:
                     expectedLength = 4;
                     if (args.Length != expectedLength)
                     {
@@ -179,7 +179,7 @@ namespace Tello.Controller
                     }
                     break;
 
-                case Commands.Curve:
+                case TelloCommands.Curve:
                     expectedLength = 7;
                     if (args.Length != expectedLength)
                     {
@@ -202,7 +202,7 @@ namespace Tello.Controller
                     }
                     break;
 
-                case Commands.SetSpeed:
+                case TelloCommands.SetSpeed:
                     expectedLength = 1;
                     if (args.Length != expectedLength)
                     {
@@ -220,7 +220,7 @@ namespace Tello.Controller
                         }
                     }
                     break;
-                case Commands.SetRemoteControl:
+                case TelloCommands.SetRemoteControl:
                     expectedLength = 4;
                     if (args.Length != expectedLength)
                     {
@@ -238,7 +238,7 @@ namespace Tello.Controller
                         }
                     }
                     break;
-                case Commands.SetWiFiPassword:
+                case TelloCommands.SetWiFiPassword:
                     expectedLength = 2;
                     if (args.Length != expectedLength)
                     {
@@ -253,7 +253,7 @@ namespace Tello.Controller
                 //case Commands.SetMissionPadDirection:
                 //    break;
 
-                case Commands.SetStationMode:
+                case TelloCommands.SetStationMode:
                     expectedLength = 2;
                     if (args.Length != expectedLength)
                     {
@@ -273,7 +273,7 @@ namespace Tello.Controller
         /// <param name="command"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        internal static string ToMessage(this Commands command, params object[] args)
+        internal static string ToMessage(this TelloCommands command, params object[] args)
         {
             Validate(command, args);
 
@@ -281,37 +281,37 @@ namespace Tello.Controller
             switch (command)
             {
                 // no args
-                case Commands.EnterSdkMode:
+                case TelloCommands.EnterSdkMode:
                     return "command";
-                case Commands.Takeoff:
+                case TelloCommands.Takeoff:
                     return "takeoff";
-                case Commands.Land:
+                case TelloCommands.Land:
                     return "land";
-                case Commands.Stop:
+                case TelloCommands.Stop:
                     return "stop";
-                case Commands.StartVideo:
+                case TelloCommands.StartVideo:
                     return "streamon";
-                case Commands.StopVideo:
+                case TelloCommands.StopVideo:
                     return "streamoff";
-                case Commands.EmergencyStop:
+                case TelloCommands.EmergencyStop:
                     return "emergency";
 
                 // 1 arg
-                case Commands.Up:
-                case Commands.Down:
-                case Commands.Left:
-                case Commands.Right:
-                case Commands.Forward:
-                case Commands.Back:
-                case Commands.Flip:
+                case TelloCommands.Up:
+                case TelloCommands.Down:
+                case TelloCommands.Left:
+                case TelloCommands.Right:
+                case TelloCommands.Forward:
+                case TelloCommands.Back:
+                case TelloCommands.Flip:
                     return $"{command.ToString().ToLowerInvariant()} {args[0]}";
-                case Commands.ClockwiseTurn:
+                case TelloCommands.ClockwiseTurn:
                     return $"cw {args[0]}";
-                case Commands.CounterClockwiseTurn:
+                case TelloCommands.CounterClockwiseTurn:
                     return $"ccw {args[0]}";
 
-                case Commands.Go:
-                case Commands.Curve:
+                case TelloCommands.Go:
+                case TelloCommands.Curve:
                     message = $"{command.ToString().ToLowerInvariant()}";
                     for (var i = 0; i < args.Length; ++i)
                     {
@@ -320,7 +320,7 @@ namespace Tello.Controller
 
                     return message;
 
-                case Commands.SetSpeed:
+                case TelloCommands.SetSpeed:
                     message = "speed";
                     for (var i = 0; i < args.Length; ++i)
                     {
@@ -329,7 +329,7 @@ namespace Tello.Controller
 
                     return message;
 
-                case Commands.SetRemoteControl:
+                case TelloCommands.SetRemoteControl:
                     message = "rc";
                     for (var i = 0; i < args.Length; ++i)
                     {
@@ -338,7 +338,7 @@ namespace Tello.Controller
 
                     return message;
 
-                case Commands.SetWiFiPassword:
+                case TelloCommands.SetWiFiPassword:
                     message = "wifi";
                     for (var i = 0; i < args.Length; ++i)
                     {
@@ -354,7 +354,7 @@ namespace Tello.Controller
                 //case Commands.SetMissionPadDirection:
                 //    return "mdirection";
 
-                case Commands.SetStationMode:
+                case TelloCommands.SetStationMode:
                     message = "ap";
                     for (var i = 0; i < args.Length; ++i)
                     {
@@ -363,17 +363,17 @@ namespace Tello.Controller
 
                     return message;
 
-                case Commands.GetSpeed:
+                case TelloCommands.GetSpeed:
                     return "speed?";
-                case Commands.GetBattery:
+                case TelloCommands.GetBattery:
                     return "battery?";
-                case Commands.GetTime:
+                case TelloCommands.GetTime:
                     return "time?";
-                case Commands.GetWiFiSnr:
+                case TelloCommands.GetWiFiSnr:
                     return "wifi?";
-                case Commands.GetSdkVersion:
+                case TelloCommands.GetSdkVersion:
                     return "sdk?";
-                case Commands.GetSerialNumber:
+                case TelloCommands.GetSerialNumber:
                     return "sn?";
 
                 default:
@@ -381,7 +381,7 @@ namespace Tello.Controller
             }
         }
 
-        internal static TimeSpan ToTimeout(this Commands command, params object[] args)
+        internal static TimeSpan ToTimeout(this TelloCommands command, params object[] args)
         {
             Validate(command, args);
 
@@ -391,80 +391,80 @@ namespace Tello.Controller
 
             switch (command)
             {
-                case Commands.EnterSdkMode:
-                case Commands.EmergencyStop:
+                case TelloCommands.EnterSdkMode:
+                case TelloCommands.EmergencyStop:
                     return TimeSpan.FromSeconds(5);
 
-                case Commands.SetSpeed:
-                case Commands.SetRemoteControl:
-                case Commands.SetWiFiPassword:
-                case Commands.SetStationMode:
-                case Commands.StartVideo:
-                case Commands.StopVideo:
+                case TelloCommands.SetSpeed:
+                case TelloCommands.SetRemoteControl:
+                case TelloCommands.SetWiFiPassword:
+                case TelloCommands.SetStationMode:
+                case TelloCommands.StartVideo:
+                case TelloCommands.StopVideo:
                     return TimeSpan.FromSeconds(60);
 
-                case Commands.GetSpeed:
-                case Commands.GetBattery:
-                case Commands.GetTime:
-                case Commands.GetWiFiSnr:
-                case Commands.GetSdkVersion:
-                case Commands.GetSerialNumber:
+                case TelloCommands.GetSpeed:
+                case TelloCommands.GetBattery:
+                case TelloCommands.GetTime:
+                case TelloCommands.GetWiFiSnr:
+                case TelloCommands.GetSdkVersion:
+                case TelloCommands.GetSerialNumber:
                     return TimeSpan.FromSeconds(5);
 
-                case Commands.Takeoff:
+                case TelloCommands.Takeoff:
                     return TimeSpan.FromSeconds(20);
 
                 //todo: if I knew the set speed in cm/s I could get a better timeout value
-                case Commands.Left:
-                case Commands.Right:
-                case Commands.Forward:
-                case Commands.Back:
+                case TelloCommands.Left:
+                case TelloCommands.Right:
+                case TelloCommands.Forward:
+                case TelloCommands.Back:
                     distance = (int)args[0]; //cm
                     return TimeSpan.FromSeconds(distance / avgspeed);
 
-                case Commands.Go:
+                case TelloCommands.Go:
                     var x = (int)args[0];
                     var y = (int)args[1];
                     distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
                     return TimeSpan.FromSeconds(distance / avgspeed);
 
-                case Commands.ClockwiseTurn:
-                case Commands.CounterClockwiseTurn:
+                case TelloCommands.ClockwiseTurn:
+                case TelloCommands.CounterClockwiseTurn:
                     var degrees = (int)args[0];
                     return TimeSpan.FromSeconds(degrees / arcspeed);
 
-                case Commands.Flip:
+                case TelloCommands.Flip:
                 //todo: I don't know how to take the args for this command to generate an arc from which I can determin distance
-                case Commands.Curve:
-                case Commands.Land:
-                case Commands.Stop:
-                case Commands.Up:
-                case Commands.Down:
+                case TelloCommands.Curve:
+                case TelloCommands.Land:
+                case TelloCommands.Stop:
+                case TelloCommands.Up:
+                case TelloCommands.Down:
                 default:
                     return TimeSpan.FromSeconds(60);
             }
         }
 
-        internal static Responses ToReponse(this Commands command)
+        internal static Responses ToReponse(this TelloCommands command)
         {
             switch (command)
             {
-                case Commands.GetSpeed:
+                case TelloCommands.GetSpeed:
                     return Responses.Speed;
 
-                case Commands.GetBattery:
+                case TelloCommands.GetBattery:
                     return Responses.Battery;
 
-                case Commands.GetTime:
+                case TelloCommands.GetTime:
                     return Responses.Time;
 
-                case Commands.GetWiFiSnr:
+                case TelloCommands.GetWiFiSnr:
                     return Responses.WiFiSnr;
 
-                case Commands.GetSdkVersion:
+                case TelloCommands.GetSdkVersion:
                     return Responses.SdkVersion;
 
-                case Commands.GetSerialNumber:
+                case TelloCommands.GetSerialNumber:
                     return Responses.SerialNumber;
 
                 default:

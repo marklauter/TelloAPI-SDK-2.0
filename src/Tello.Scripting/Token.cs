@@ -11,7 +11,7 @@ namespace Tello.Scripting
         public object[] Args { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public Commands Command { get; set; }
+        public TelloCommands Command { get; set; }
 
         public string Id { get; set; }
     }

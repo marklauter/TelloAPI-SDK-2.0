@@ -167,7 +167,7 @@ namespace Tello.Emulator.SDKV2
                 throw new ArgumentOutOfRangeException(nameof(cm));
             }
 
-            Position.Move(Commands.Forward, cm);
+            Position.Move(TelloCommands.Forward, cm);
         }
 
         public void GoBack(int cm)
@@ -182,7 +182,7 @@ namespace Tello.Emulator.SDKV2
                 throw new ArgumentOutOfRangeException(nameof(cm));
             }
 
-            Position.Move(Commands.Back, cm);
+            Position.Move(TelloCommands.Back, cm);
         }
 
         public void GoRight(int cm)
@@ -197,7 +197,7 @@ namespace Tello.Emulator.SDKV2
                 throw new ArgumentOutOfRangeException(nameof(cm));
             }
 
-            Position.Move(Commands.Right, cm);
+            Position.Move(TelloCommands.Right, cm);
         }
 
         public void GoLeft(int cm)
@@ -212,7 +212,7 @@ namespace Tello.Emulator.SDKV2
                 throw new ArgumentOutOfRangeException(nameof(cm));
             }
 
-            Position.Move(Commands.Left, cm);
+            Position.Move(TelloCommands.Left, cm);
         }
 
         public void GoUp(int cm)
@@ -262,7 +262,7 @@ namespace Tello.Emulator.SDKV2
                 throw new ArgumentOutOfRangeException(nameof(degrees));
             }
 
-            Position.Turn(Commands.ClockwiseTurn, degrees);
+            Position.Turn(TelloCommands.ClockwiseTurn, degrees);
         }
 
         public void TurnCounterClockwise(int degrees)
@@ -277,7 +277,7 @@ namespace Tello.Emulator.SDKV2
                 throw new ArgumentOutOfRangeException(nameof(degrees));
             }
 
-            Position.Turn(Commands.CounterClockwiseTurn, degrees);
+            Position.Turn(TelloCommands.CounterClockwiseTurn, degrees);
         }
 
         public void Go(int x, int y, int z, int speed)

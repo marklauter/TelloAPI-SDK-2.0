@@ -95,20 +95,20 @@ namespace Tello.Controller
         }
 
         // note: X is forward
-        internal static void Move(Commands direction, int distanceInCm)
+        internal static void Move(TelloCommands direction, int distanceInCm)
         {
             _positionGate.WithWriteLock(() =>
             {
                 var heading = _heading;
                 switch (direction)
                 {
-                    case Commands.Right:
+                    case TelloCommands.Right:
                         heading += 90;
                         break;
-                    case Commands.Back:
+                    case TelloCommands.Back:
                         heading += 180;
                         break;
-                    case Commands.Left:
+                    case TelloCommands.Left:
                         heading += 270;
                         break;
                 }
@@ -123,7 +123,7 @@ namespace Tello.Controller
         }
 
         //todo: need to experiment with yaw vs expected heading - is yaw a dynamic value?
-        internal static void Turn(Commands direction, int degrees)
+        internal static void Turn(TelloCommands direction, int degrees)
         {
             if (degrees < 1 || degrees > 360)
             {
@@ -134,14 +134,14 @@ namespace Tello.Controller
             {
                 switch (direction)
                 {
-                    case Commands.ClockwiseTurn:
+                    case TelloCommands.ClockwiseTurn:
                         _heading += degrees;
                         if (_heading >= 360)
                         {
                             _heading -= 360;
                         }
                         break;
-                    case Commands.CounterClockwiseTurn:
+                    case TelloCommands.CounterClockwiseTurn:
                         _heading -= degrees;
                         if (_heading < 0)
                         {

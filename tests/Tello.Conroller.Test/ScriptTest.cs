@@ -11,22 +11,22 @@ namespace Tello.Controller.Test
         public void ScriptBuilder_Test()
         {
             var builder = new ScriptBuilder();
-            var takeoff = builder.AddToken("takeoff", Commands.Takeoff);
+            var takeoff = builder.AddToken("takeoff", TelloCommands.Takeoff);
             Assert.AreEqual("takeoff", takeoff.Id);
-            Assert.AreEqual(Commands.Takeoff, takeoff.Command);
+            Assert.AreEqual(TelloCommands.Takeoff, takeoff.Command);
             Assert.AreEqual(1, takeoff.Order);
 
-            var forward = builder.AddToken("forward", Commands.Forward, 20);
+            var forward = builder.AddToken("forward", TelloCommands.Forward, 20);
             Assert.AreEqual("forward", forward.Id);
-            Assert.AreEqual(Commands.Forward, forward.Command);
+            Assert.AreEqual(TelloCommands.Forward, forward.Command);
             Assert.IsNotNull(forward.Args);
             Assert.AreEqual(1, forward.Args.Length);
             Assert.AreEqual(20, forward.Args[0]);
             Assert.AreEqual(2, forward.Order);
 
-            var backward = builder.AddToken("backward", Commands.Back, 20);
+            var backward = builder.AddToken("backward", TelloCommands.Back, 20);
             Assert.AreEqual("backward", backward.Id);
-            Assert.AreEqual(Commands.Back, backward.Command);
+            Assert.AreEqual(TelloCommands.Back, backward.Command);
             Assert.IsNotNull(backward.Args);
             Assert.AreEqual(1, backward.Args.Length);
             Assert.AreEqual(20, backward.Args[0]);
@@ -47,9 +47,9 @@ namespace Tello.Controller.Test
         public void CommandScript_Test()
         {
             var builder = new ScriptBuilder();
-            var takeoff = builder.AddToken("takeoff", Commands.Takeoff);
-            var forward = builder.AddToken("forward", Commands.Forward, 20);
-            var backward = builder.AddToken("backward", Commands.Back, 20);
+            var takeoff = builder.AddToken("takeoff", TelloCommands.Takeoff);
+            var forward = builder.AddToken("forward", TelloCommands.Forward, 20);
+            var backward = builder.AddToken("backward", TelloCommands.Back, 20);
 
             var json = builder.ToJson();
 

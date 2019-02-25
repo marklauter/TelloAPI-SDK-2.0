@@ -37,18 +37,18 @@ namespace Tello.Emulator.SDKV2
             Y += y;
         }
 
-        internal void Move(Commands direction, int distanceInCm)
+        internal void Move(TelloCommands direction, int distanceInCm)
         {
             var heading = Heading;
             switch (direction)
             {
-                case Commands.Right:
+                case TelloCommands.Right:
                     heading += 90;
                     break;
-                case Commands.Back:
+                case TelloCommands.Back:
                     heading += 180;
                     break;
-                case Commands.Left:
+                case TelloCommands.Left:
                     heading += 270;
                     break;
             }
@@ -61,7 +61,7 @@ namespace Tello.Emulator.SDKV2
             Y += opposite;
         }
 
-        internal void Turn(Commands direction, int degrees)
+        internal void Turn(TelloCommands direction, int degrees)
         {
             if (degrees < 1 || degrees > 360)
             {
@@ -71,14 +71,14 @@ namespace Tello.Emulator.SDKV2
             //Debug.WriteLine($"Old Heading: {Heading}");
             switch (direction)
             {
-                case Commands.ClockwiseTurn:
+                case TelloCommands.ClockwiseTurn:
                     Heading += degrees;
                     if (Heading >= 360)
                     {
                         Heading -= 360;
                     }
                     break;
-                case Commands.CounterClockwiseTurn:
+                case TelloCommands.CounterClockwiseTurn:
                     Heading -= degrees;
                     if (Heading < 0)
                     {

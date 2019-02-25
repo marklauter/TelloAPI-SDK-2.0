@@ -15,13 +15,13 @@ namespace Tello.Controller
 
     public class CommandExceptionThrownArgs : ExceptionThrownArgs
     {
-        public CommandExceptionThrownArgs(Commands command, TelloControllerException ex, TimeSpan elapsed) : base(ex)
+        public CommandExceptionThrownArgs(TelloCommands command, TelloControllerException ex, TimeSpan elapsed) : base(ex)
         {
             Command = command;
             Elapsed = elapsed;
         }
 
-        public Commands Command { get; }
+        public TelloCommands Command { get; }
         public TimeSpan Elapsed { get; }
     }
 }

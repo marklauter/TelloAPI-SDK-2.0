@@ -25,7 +25,7 @@ namespace Tello.Emulator.SDKV2
                     Log.WriteLine($"not powered up. Message ignored: {message}");
                     return null;
                 }
-                if (!_stateManager.IsSdkModeActivated && command != Commands.EnterSdkMode)
+                if (!_stateManager.IsSdkModeActivated && command != TelloCommands.EnterSdkMode)
                 {
                     Log.WriteLine($"not in SDK mode. Message ignored: {message}");
                     return null;
@@ -35,7 +35,7 @@ namespace Tello.Emulator.SDKV2
                 var args = CommandParser.GetArgs(message);
                 switch (command)
                 {
-                    case Commands.EnterSdkMode:
+                    case TelloCommands.EnterSdkMode:
                         if (!_stateManager.IsSdkModeActivated)
                         {
                             _stateManager.EnterSdkMode();
@@ -49,80 +49,80 @@ namespace Tello.Emulator.SDKV2
                             }
                         }
                         return null;
-                    case Commands.Takeoff:
+                    case TelloCommands.Takeoff:
                         _stateManager.TakeOff();
                         return _ok;
-                    case Commands.Land:
+                    case TelloCommands.Land:
                         _stateManager.Land();
                         return _ok;
-                    case Commands.StartVideo:
+                    case TelloCommands.StartVideo:
                         _stateManager.StartVideo();
                         return _ok;
-                    case Commands.StopVideo:
+                    case TelloCommands.StopVideo:
                         _stateManager.StopVideo();
                         return _ok;
-                    case Commands.Stop:
+                    case TelloCommands.Stop:
                         return _ok;
-                    case Commands.EmergencyStop:
+                    case TelloCommands.EmergencyStop:
                         _stateManager.EmergencyStop();
                         return _ok;
-                    case Commands.Up:
+                    case TelloCommands.Up:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
                         _stateManager.GoUp(Int32.Parse(args[0]));
                         return _ok;
-                    case Commands.Down:
+                    case TelloCommands.Down:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
                         _stateManager.GoDown(Int32.Parse(args[0]));
                         return _ok;
-                    case Commands.Left:
+                    case TelloCommands.Left:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
                         _stateManager.GoLeft(Int32.Parse(args[0]));
                         return _ok;
-                    case Commands.Right:
+                    case TelloCommands.Right:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
                         _stateManager.GoRight(Int32.Parse(args[0]));
                         return _ok;
-                    case Commands.Forward:
+                    case TelloCommands.Forward:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
                         _stateManager.GoForward(Int32.Parse(args[0]));
                         return _ok;
-                    case Commands.Back:
+                    case TelloCommands.Back:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
                         _stateManager.GoBack(Int32.Parse(args[0]));
                         return _ok;
-                    case Commands.ClockwiseTurn:
+                    case TelloCommands.ClockwiseTurn:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
                         _stateManager.TurnClockwise(Int32.Parse(args[0]));
                         return _ok;
-                    case Commands.CounterClockwiseTurn:
+                    case TelloCommands.CounterClockwiseTurn:
                         if (args.Length != 1)
                         {
                             return _error;
                         }
                         _stateManager.TurnCounterClockwise(Int32.Parse(args[0]));
                         return _ok;
-                    case Commands.Flip:
+                    case TelloCommands.Flip:
                     {
                         if (args.Length != 1)
                         {
@@ -131,7 +131,7 @@ namespace Tello.Emulator.SDKV2
                         // there's no state to manage for zero sum movements
                         return _ok;
                     }
-                    case Commands.Go:
+                    case TelloCommands.Go:
                     {
                         if (args.Length != 4)
                         {
@@ -144,7 +144,7 @@ namespace Tello.Emulator.SDKV2
                             Int32.Parse(args[3]));
                         return _ok;
                     }
-                    case Commands.Curve:
+                    case TelloCommands.Curve:
                     {
                         if (args.Length != 7)
                         {
@@ -153,7 +153,7 @@ namespace Tello.Emulator.SDKV2
                         //todo: implement curve in _flightController
                         return _ok;
                     }
-                    case Commands.SetSpeed:
+                    case TelloCommands.SetSpeed:
                     {
                         if (args.Length != 1)
                         {
@@ -162,7 +162,7 @@ namespace Tello.Emulator.SDKV2
                         _stateManager.SetSpeed(Int32.Parse(args[0]));
                         return _ok;
                     }
-                    case Commands.SetRemoteControl:
+                    case TelloCommands.SetRemoteControl:
                     {
                         if (args.Length != 4)
                         {
@@ -177,7 +177,7 @@ namespace Tello.Emulator.SDKV2
                         }
                         return _ok;
                     }
-                    case Commands.SetWiFiPassword:
+                    case TelloCommands.SetWiFiPassword:
                     {
                         if (args.Length != 2)
                         {
@@ -216,7 +216,7 @@ namespace Tello.Emulator.SDKV2
                     //        return _ok;
                     //    }
                     #endregion
-                    case Commands.SetStationMode:
+                    case TelloCommands.SetStationMode:
                     {
                         if (args.Length != 2)
                         {
@@ -224,36 +224,36 @@ namespace Tello.Emulator.SDKV2
                         }
                         return _ok;
                     }
-                    case Commands.GetSpeed:
+                    case TelloCommands.GetSpeed:
                     {
                         var value = _stateManager.GetSpeed();
                         return value != -1
                             ? value.ToString()
                             : null;
                     }
-                    case Commands.GetBattery:
+                    case TelloCommands.GetBattery:
                     {
                         var value = _stateManager.GetBattery();
                         return value != -1
                             ? value.ToString()
                             : null;
                     }
-                    case Commands.GetTime:
+                    case TelloCommands.GetTime:
                     {
                         var value = _stateManager.GetTime();
                         return value != -1
                             ? value.ToString()
                             : null;
                     }
-                    case Commands.GetWiFiSnr:
+                    case TelloCommands.GetWiFiSnr:
                         return _stateManager.IsPoweredUp
                             ? "snr"
                             : null;
-                    case Commands.GetSdkVersion:
+                    case TelloCommands.GetSdkVersion:
                         return _stateManager.IsPoweredUp
                             ? "SDK 2.0-E"
                             : null;
-                    case Commands.GetSerialNumber:
+                    case TelloCommands.GetSerialNumber:
                         return _stateManager.IsPoweredUp
                             ? "Tello SDK 2.0 Emulator"
                             : null;

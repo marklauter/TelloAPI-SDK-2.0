@@ -1,6 +1,6 @@
 ﻿namespace Tello.Messaging
 {
-    public enum Commands
+    public enum TelloCommands
     {
         Unknown,
         EnterSdkMode,
