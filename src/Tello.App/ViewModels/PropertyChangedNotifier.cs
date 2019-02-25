@@ -23,7 +23,7 @@ namespace Tello.App.ViewModels
             if (!EqualityComparer<T>.Default.Equals(storage, value))
             {
                 storage = value;
-                Dispatcher.Invoke((args) => { PropertyChanged?.Invoke(this, args as PropertyChangedEventArgs); }, new PropertyChangedEventArgs(callerMemberName));
+                Dispatcher.Invoke(args => { PropertyChanged?.Invoke(this, args as PropertyChangedEventArgs); }, new PropertyChangedEventArgs(callerMemberName));
             }
         }
     }

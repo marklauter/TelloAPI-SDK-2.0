@@ -74,8 +74,8 @@ namespace Tello.Scripting
                     if (rightToken.Order > 0)
                     {
                         var leftToken = _tokens.Values
-                           .Where((t) => t.Order == rightToken.Order - 1)
-                           .First();
+                            .Where(t => t.Order == rightToken.Order - 1)
+                            .First();
 
                         rightToken.Order -= 1;
                         leftToken.Order += 1;
@@ -102,8 +102,8 @@ namespace Tello.Scripting
                     if (leftToken.Order < _tokens.Count)
                     {
                         var rightToken = _tokens.Values
-                           .Where((t) => t.Order == leftToken.Order + 1)
-                           .First();
+                            .Where(t => t.Order == leftToken.Order + 1)
+                            .First();
 
                         rightToken.Order -= 1;
                         leftToken.Order += 1;
@@ -122,7 +122,7 @@ namespace Tello.Scripting
         {
             var tokens = _tokens
                 .Values
-                .OrderBy((t) => t.Order)
+                .OrderBy(t => t.Order)
                 .ToArray();
             return JsonConvert.SerializeObject(tokens, _settings);
         }

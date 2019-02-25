@@ -38,7 +38,7 @@ namespace Tello.App
                 throw new ArgumentNullException(nameof(action));
             }
 
-            _context.Post(new SendOrPostCallback((state) => { action.Invoke(); }), null);
+            _context.Post(new SendOrPostCallback(state => { action(); }), null);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Tello.Udp
             var type = typeof(RawDroneStateUdp);
             var properties = type
                 .GetProperties()
-                .Where((pi) => pi.GetCustomAttribute<DroneStateNameAttribute>() != null)
+                .Where(pi => pi.GetCustomAttribute<DroneStateNameAttribute>() != null)
                 .ToArray();
 
             _properties = new Dictionary<string, PropertyInfo>();
@@ -55,7 +55,7 @@ namespace Tello.Udp
             var message = Encoding.UTF8.GetString(datagram);
             var keyValues = message
                 .Split(_delimiters, StringSplitOptions.RemoveEmptyEntries)
-                .Where((s) => !s.Contains("\r"))
+                .Where(s => !s.Contains("\r"))
                 .ToArray();
             var values = new object[_properties.Count];
 

@@ -22,7 +22,7 @@ namespace Tello.Scripting
             }
 
             var tokens = JsonConvert.DeserializeObject<Token[]>(json)
-                .OrderBy((t) => t.Order)
+                .OrderBy(t => t.Order)
                 .ToArray();
             return new TelloScript(tokens);
         }
