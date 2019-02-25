@@ -5,6 +5,11 @@ using System.Runtime.CompilerServices;
 
 namespace Tello.App.ViewModels
 {
+    //todo: here are two ideas on INotifyPropertyChanged proxies
+    // http://jonas.follesoe.no/oldblog/2009-12-23-automatic-inotifypropertychanged-using-dynamic-proxy/
+    // https://ayende.com/blog/4106/nhibernate-inotifypropertychanged
+
+
     public class PropertyChangedNotifier : INotifyPropertyChanged
     {
         protected IUIDispatcher Dispatcher { get; }
@@ -18,8 +23,7 @@ namespace Tello.App.ViewModels
 
         public void SetProperty<T>(ref T storage, T value, [CallerMemberName]string callerMemberName = null)
         {
-            //todo: the property name needs to be extracted from the callerMemberName 
-            throw new NotImplementedException();
+            //todo: the property name might need to be extracted from the callerMemberName - test this to see what the value of callerMemberName before publishing to nuget
             if (!EqualityComparer<T>.Default.Equals(storage, value))
             {
                 storage = value;

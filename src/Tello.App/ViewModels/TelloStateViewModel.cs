@@ -35,5 +35,6 @@ namespace Tello.App.ViewModels
 
         private ITelloState _state;
         public ITelloState State { get => _state; set => SetProperty(ref _state, value); }
+
     }
 }
