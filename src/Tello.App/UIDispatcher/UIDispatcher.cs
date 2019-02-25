@@ -21,13 +21,23 @@ namespace Tello.App
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public void Invoke(Action<object> action, object state = null)
+        public void Invoke(Action<object> action, object state)
         {
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
             _context.Post(new SendOrPostCallback(action), state);
         }
 
         public void Invoke(Action action)
         {
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
             _context.Post(new SendOrPostCallback((state) => { action.Invoke(); }), null);
         }
     }

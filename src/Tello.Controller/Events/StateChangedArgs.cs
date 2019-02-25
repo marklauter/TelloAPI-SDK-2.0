@@ -3,9 +3,9 @@ using Tello.Messaging;
 
 namespace Tello.Controller
 {
-    public class TelloStateChangedArgs : EventArgs
+    public class StateChangedArgs : EventArgs
     {
-        public TelloStateChangedArgs(ITelloState state)
+        public StateChangedArgs(ITelloState state)
         {
             State = state;
         }

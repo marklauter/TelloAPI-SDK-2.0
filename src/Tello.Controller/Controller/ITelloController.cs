@@ -6,10 +6,11 @@ namespace Tello.Controller
 {
     public interface ITelloController
     {
-        event EventHandler<TelloControllerValueReceivedArgs> TelloControllerValueReceived;
-        event EventHandler<TelloControllerExceptionThrownArgs> TelloControllerExceptionThrown;
-        event EventHandler<TelloControllerResponseReceivedArgs> TelloControllerResponseReceived;
-        event EventHandler<FlightControllerCommandExceptionThrownArgs> TelloControllerCommandExceptionThrown;
+        event EventHandler<QueryResponseReceivedArgs> QueryResponseReceived;
+        event EventHandler<CommandResponseReceivedArgs> CommandResponseReceived;
+
+        event EventHandler<ExceptionThrownArgs> ExceptionThrown;
+        event EventHandler<CommandExceptionThrownArgs> CommandExceptionThrown;
 
         void ExecuteScript(TelloScript script);
 

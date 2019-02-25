@@ -85,7 +85,7 @@ namespace Tello.Udp
             return ComposeFrame(sample);
         }
 
-        internal bool TryGetSample(out IVideoSample sample, TimeSpan timeout)
+        public bool TryGetSample(out IVideoSample sample, TimeSpan timeout)
         {
             var wait = new SpinWait();
             var clock = Stopwatch.StartNew();
@@ -101,7 +101,7 @@ namespace Tello.Udp
             return sample != null;
         }
 
-        internal bool TryGetFrame(out IVideoFrame frame, TimeSpan timeout)
+        public bool TryGetFrame(out IVideoFrame frame, TimeSpan timeout)
         {
             var wait = new SpinWait();
             var clock = Stopwatch.StartNew();

@@ -16,7 +16,9 @@ namespace Tello.Emulator.SDKV2
             _droneState = new RawDroneStateEmulated();
 
             StateServer = new StateServer(_droneState);
-            VideoServer = new VideoServer(30, 0);
+            var videoServer = new VideoServer(30, 0);
+            VideoServer = videoServer;
+            VideoSampleProvider = videoServer;
 
             _stateManager = new StateManager((RawDroneStateEmulated)_droneState, (VideoServer)VideoServer, (StateServer)StateServer);
             _commandInterpreter = new CommandInterpreter(_stateManager);
@@ -24,6 +26,8 @@ namespace Tello.Emulator.SDKV2
 
         public IMessageRelayService<IRawDroneState> StateServer { get; }
         public IMessageRelayService<IVideoSample> VideoServer { get; }
+        public IVideoSampleProvider VideoSampleProvider { get; }
+
         public Position Position => _stateManager.Position;
 
         private readonly IRawDroneState _droneState;

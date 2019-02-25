@@ -6,7 +6,7 @@ using Tello.Messaging;
 //https://github.com/dji-sdk/Tello-Python/tree/master/Tello_Video/h264decoder
 namespace Tello.Emulator.SDKV2
 {
-    internal sealed class VideoServer : IMessageRelayService<IVideoSample>
+    internal sealed class VideoServer : IMessageRelayService<IVideoSample>, IVideoSampleProvider
     {
         public VideoServer(double frameRate, int secondsToBuffer)
         {
@@ -14,7 +14,7 @@ namespace Tello.Emulator.SDKV2
             _sampleDuration = TimeSpan.FromSeconds(1 / _frameRate);
         }
 
-        private readonly byte[] _sample = Encoding.UTF8.GetBytes("This is fake frame data.");
+        private readonly byte[] _sample = Encoding.UTF8.GetBytes("This is fake video sample data.");
         private readonly double _frameRate;
         private readonly TimeSpan _sampleDuration;
 
@@ -23,24 +23,25 @@ namespace Tello.Emulator.SDKV2
 
         public ReceiverStates State { get; private set; }
 
+        private int _frameCount;
         public async void Start()
         {
             if (State != ReceiverStates.Listening)
             {
                 State = ReceiverStates.Listening;
 
+                _frameCount = 0;
                 await Task.Run(async () =>
                 {
-                    var frameCount = 0;
                     while (State == ReceiverStates.Listening)
                     {
                         await Task.Delay(_sampleDuration);
                         try
                         {
-                            var frame = new VideoFrame(_sample, frameCount, TimeSpan.FromSeconds(frameCount / _frameRate), _sampleDuration);
+                            var frame = new VideoFrame(_sample, _frameCount, TimeSpan.FromSeconds(_frameCount / _frameRate), _sampleDuration);
                             var eventArgs = new MessageReceivedArgs<IVideoSample>(frame);
                             MessageReceived?.Invoke(this, eventArgs);
-                            ++frameCount;
+                            ++_frameCount;
                         }
                         catch (Exception ex)
                         {
@@ -54,6 +55,22 @@ namespace Tello.Emulator.SDKV2
         public void Stop()
         {
             State = ReceiverStates.Stopped;
+        }
+
+        public bool TryGetSample(out IVideoSample sample, TimeSpan timeout)
+        {
+            sample = State == ReceiverStates.Listening
+                ? new VideoFrame(_sample, _frameCount, TimeSpan.FromSeconds(_frameCount / _frameRate), _sampleDuration)
+                : null;
+            return sample != null;
+        }
+
+        public bool TryGetFrame(out IVideoFrame frame, TimeSpan timeout)
+        {
+            frame = State == ReceiverStates.Listening
+                ? new VideoFrame(_sample, _frameCount, TimeSpan.FromSeconds(_frameCount / _frameRate), _sampleDuration)
+                : null;
+            return frame != null;
         }
     }
 

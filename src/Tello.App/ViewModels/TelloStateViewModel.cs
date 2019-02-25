@@ -7,26 +7,26 @@ namespace Tello.App.ViewModels
 {
     public class TelloStateViewModel : ViewModel
     {
-        private readonly ITelloStateChangedNotifier _telloStateChangedNotifier;
+        private readonly IStateChangedNotifier _telloStateChangedNotifier;
 
-        public TelloStateViewModel(IUIDispatcher dispatcher, ITelloStateChangedNotifier telloStateChangedNotifier) : base(dispatcher)
+        public TelloStateViewModel(IUIDispatcher dispatcher, IStateChangedNotifier telloStateChangedNotifier) : base(dispatcher)
         {
             _telloStateChangedNotifier = telloStateChangedNotifier ?? throw new ArgumentNullException(nameof(telloStateChangedNotifier));
         }
 
         protected override void Start(params object[] args)
         {
-            _telloStateChangedNotifier.TelloStateChanged += OnTelloStateChanged;
+            _telloStateChangedNotifier.StateChanged += OnTelloStateChanged;
         }
 
         protected override void Finish()
         {
-            _telloStateChangedNotifier.TelloStateChanged -= OnTelloStateChanged;
+            _telloStateChangedNotifier.StateChanged -= OnTelloStateChanged;
         }
 
-        private void OnTelloStateChanged(object sender, TelloStateChangedArgs e)
+        private void OnTelloStateChanged(object sender, StateChangedArgs e)
         {
-            Dispatcher.Invoke(() => { _stateHistory.Add(State); });
+            Dispatcher.Invoke((state)=> { _stateHistory.Add(state as ITelloState); }, State);
             State = e.State;
         }
 

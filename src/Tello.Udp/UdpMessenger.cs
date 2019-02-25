@@ -16,11 +16,14 @@ namespace Tello.Udp
             _telloEndPoint = new IPEndPoint(IPAddress.Parse("192.168.10.1"), 8889);
 
             StateServer = new StateServer(8890);
-            VideoServer = new VideoServer(30, 10, 11111);
+            var videoServer = new VideoServer(30, 10, 11111);
+            VideoServer = videoServer;
+            VideoSampleProvider = videoServer;
         }
 
         public IMessageRelayService<IRawDroneState> StateServer { get; }
         public IMessageRelayService<IVideoSample> VideoServer { get; }
+        public IVideoSampleProvider VideoSampleProvider { get; }
 
         public MessengerStates MessengerState { get; private set; } = MessengerStates.Disconnected;
 

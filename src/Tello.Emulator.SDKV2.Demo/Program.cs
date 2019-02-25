@@ -9,7 +9,7 @@ namespace Tello.Emulator.SDKV2.Demo
         static Program()
         {
             _tello = new TelloEmulator();
-            _controller = new FlightController(_tello, _tello.StateServer, _tello.VideoServer);
+            _controller = new FlightController(_tello, _tello.StateServer, _tello.VideoServer, _tello.VideoSampleProvider);
         }
 
         private static readonly TelloEmulator _tello;
@@ -17,11 +17,11 @@ namespace Tello.Emulator.SDKV2.Demo
 
         private static void Main(string[] args)
         {
-            _controller.TelloStateChanged += Controller_DroneStateReceived;
-            _controller.TelloControllerExceptionThrown += Controller_FlightControllerExceptionThrown;
-            _controller.TelloControllerCommandExceptionThrown += Controller_FlightControllerCommandExceptionThrown;
-            _controller.TelloControllerResponseReceived += Controller_FlightControllerResponseReceived;
-            _controller.TelloControllerValueReceived += Controller_FlightControllerValueReceived;
+            _controller.StateChanged += Controller_DroneStateReceived;
+            _controller.ExceptionThrown += Controller_FlightControllerExceptionThrown;
+            _controller.CommandExceptionThrown += Controller_FlightControllerCommandExceptionThrown;
+            _controller.CommandResponseReceived += Controller_FlightControllerResponseReceived;
+            _controller.QueryResponseReceived += Controller_FlightControllerValueReceived;
             _controller.VideoSampleReady += Controller_VideoSampleReady;
 
             Log.WriteLine("> power up");
@@ -81,26 +81,26 @@ namespace Tello.Emulator.SDKV2.Demo
             //throw new NotImplementedException();
         }
 
-        private static void Controller_FlightControllerValueReceived(object sender, TelloControllerValueReceivedArgs e)
+        private static void Controller_FlightControllerValueReceived(object sender, QueryResponseReceivedArgs e)
         {
             Log.WriteLine($"{e.ResponseType} == '{e.Value}' in {e.Elapsed.TotalMilliseconds}ms", ConsoleColor.Green);
         }
 
-        private static void Controller_FlightControllerResponseReceived(object sender, TelloControllerResponseReceivedArgs e)
+        private static void Controller_FlightControllerResponseReceived(object sender, CommandResponseReceivedArgs e)
         {
             Log.WriteLine($"{e.Command} returned '{e.Response}' in {e.Elapsed.TotalMilliseconds}ms", ConsoleColor.Magenta, false);
             Log.WriteLine($"Actual Position: { _tello.Position}", ConsoleColor.Blue, false);
             Log.WriteLine($"Estimated Position: { _controller.DroneState.Position}", ConsoleColor.Blue);
         }
 
-        private static void Controller_FlightControllerExceptionThrown(object sender, TelloControllerExceptionThrownArgs e)
+        private static void Controller_FlightControllerExceptionThrown(object sender, ExceptionThrownArgs e)
         {
             Log.WriteLine($"Exception {e.Exception.GetType()} with message '{e.Exception.Message}'", ConsoleColor.Red, false);
             Log.WriteLine("| Stack trace", ConsoleColor.Red, false);
             Log.WriteLine($"| {e.Exception.StackTrace}", ConsoleColor.Red);
         }
 
-        private static void Controller_FlightControllerCommandExceptionThrown(object sender, FlightControllerCommandExceptionThrownArgs e)
+        private static void Controller_FlightControllerCommandExceptionThrown(object sender, CommandExceptionThrownArgs e)
         {
             Log.WriteLine($"{e.Command} failed with exception {e.Exception.GetType()} with message '{e.Exception.Message}' after {e.Elapsed.TotalMilliseconds}ms", ConsoleColor.Red, false);
             Log.WriteLine("| Stack trace", ConsoleColor.Red, false);
@@ -109,7 +109,7 @@ namespace Tello.Emulator.SDKV2.Demo
 
         private static bool _canTakeOff = false;
         private static int _stateCount = 0;
-        private static void Controller_DroneStateReceived(object sender, TelloStateChangedArgs e)
+        private static void Controller_DroneStateReceived(object sender, StateChangedArgs e)
         {
             _canTakeOff = true;
 

@@ -3,7 +3,7 @@ using Tello.Messaging;
 
 namespace Tello.Udp
 {
-    internal sealed class VideoServer : IMessageRelayService<IVideoSample>
+    internal sealed class VideoServer : IMessageRelayService<IVideoSample>, IVideoSampleProvider
     {
         public VideoServer(double frameRate, int secondsToBuffer, int port)
         {
@@ -33,12 +33,14 @@ namespace Tello.Udp
 
         public bool TryGetSample(out IVideoSample sample, TimeSpan timeout)
         {
-            return _frameComposer.TryGetSample(out sample, timeout);
+            sample = null;
+            return _receiver.State == ReceiverStates.Listening && _frameComposer.TryGetSample(out sample, timeout);
         }
 
         public bool TryGetFrame(out IVideoFrame frame, TimeSpan timeout)
         {
-            return _frameComposer.TryGetFrame(out frame, timeout);
+            frame = null;
+            return _receiver.State == ReceiverStates.Listening && _frameComposer.TryGetFrame(out frame, timeout);
         }
 
         private void _receiver_RelayMessageReceived(object sender, MessageReceivedArgs<DataNotification> e)
