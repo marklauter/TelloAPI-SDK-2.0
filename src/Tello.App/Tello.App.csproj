@@ -10,4 +10,8 @@
     <ProjectReference Include="..\Tello.Udp\Tello.Udp.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Reflection.DispatchProxy" Version="4.5.1" />
+  </ItemGroup>
+
 </Project>

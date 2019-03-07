@@ -6,6 +6,7 @@ using Tello.Messaging;
 
 namespace Tello.App.ViewModels
 {
+    //https://www.actiprosoftware.com/products/controls/wpf/gauge
     public class TelloStateViewModel : ViewModel
     {
         private readonly IStateChangedNotifier _telloStateChangedNotifier;
