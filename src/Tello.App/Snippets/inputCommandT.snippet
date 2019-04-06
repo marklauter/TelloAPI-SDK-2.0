@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CodeSnippet Format="1.0.0" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <Header>
+    <Title>IInputCommand of T Code Snippet</Title>
+    <Author>mlauter</Author>
+    <Shortcut>icomt</Shortcut>
+    <Description>Declare IInputCommand of T</Description>
+    <SnippetTypes>
+      <SnippetType>Expansion</SnippetType>
+    </SnippetTypes>
+  </Header>
+  <Snippet>
+    <Declarations>
+      <Literal>
+        <ID>CommandName</ID>
+        <Default>CommandName</Default>
+      </Literal>
+      <Literal>
+        <ID>Type</ID>
+        <Default>int</Default>
+      </Literal>
+    </Declarations>
+    <Code Language="CSharp">
+      <![CDATA[
+        private IInputCommand<$Type$> _$CommandName$Command;
+        public IInputCommand<$Type$> $CommandName$Command => _$CommandName$Command = _$CommandName$Command ?? new InputCommand<$Type$>(_telloController.$CommandName$);
+      ]]>
+    </Code>
+  </Snippet>
+</CodeSnippet>
