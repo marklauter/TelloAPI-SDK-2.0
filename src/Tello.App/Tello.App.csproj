@@ -7,11 +7,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj" />
     <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj" />
+    <ProjectReference Include="..\Tello.Repository\Tello.Repository.csproj" />
     <ProjectReference Include="..\Tello.Udp\Tello.Udp.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Reflection.DispatchProxy" Version="4.5.1" />
   </ItemGroup>
 
 </Project>
