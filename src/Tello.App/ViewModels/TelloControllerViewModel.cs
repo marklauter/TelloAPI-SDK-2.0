@@ -1,6 +1,8 @@
-﻿
+﻿using System;
 using System.Collections.Generic;
+using Tello.App.MvvM;
 using Tello.Controller;
+using Tello.Messaging;
 
 namespace Tello.App.ViewModels
 {
@@ -46,30 +48,126 @@ namespace Tello.App.ViewModels
 
         private void OnQueryResponseReceived(object sender, QueryResponseReceivedArgs e)
         {
-            throw new System.NotImplementedException();
+            switch (e.ResponseType)
+            {
+                case Responses.Ok:
+                    // command accepted and executed - basic ACK
+                    break;
+                case Responses.Error:
+                    // command failed
+                    break;
+                case Responses.Speed:
+                    e.Value
+                    break;
+                case Responses.Battery:
+                    break;
+                case Responses.Time:
+                    break;
+                case Responses.WiFiSnr:
+                    break;
+                case Responses.SdkVersion:
+                    break;
+                case Responses.SerialNumber:
+                    break;
+                case Responses.Unknown:
+                default:
+                    throw new System.NotImplementedException();
+            }
         }
 
-        private IInputCommand _enterSdkModeCommand;
-        public IInputCommand EnterSdkModeCommand => _enterSdkModeCommand = _enterSdkModeCommand ?? new InputCommand(_telloController.EnterSdkMode);
+        public string Speed { get; set; }
 
-        private IInputCommand _takeOffCommand;
-        public IInputCommand TakeOffCommand => _takeOffCommand = _takeOffCommand ?? new InputCommand(_telloController.TakeOff);
+#pragma warning disable IDE1006 // Naming Styles
+        private IInputCommand _EnterSdkModeCommand;
+        public IInputCommand EnterSdkModeCommand => _EnterSdkModeCommand = _EnterSdkModeCommand ?? new InputCommand(_telloController.EnterSdkMode);
 
-        private IInputCommand _landCommand;
-        public IInputCommand LandCommand => _landCommand = _landCommand ?? new InputCommand(_telloController.Land);
+        private IInputCommand _TakeOffCommand;
+        public IInputCommand TakeOffCommand => _TakeOffCommand = _TakeOffCommand ?? new InputCommand(_telloController.TakeOff);
 
-        private IInputCommand _stopCommand;
-        public IInputCommand StopCommand => _stopCommand = _stopCommand ?? new InputCommand(_telloController.Stop);
+        private IInputCommand _LandCommand;
+        public IInputCommand LandCommand => _LandCommand = _LandCommand ?? new InputCommand(_telloController.Land);
 
-        private IInputCommand _emergencyStopCommand;
-        public IInputCommand EmergencyStopCommand => _emergencyStopCommand = _emergencyStopCommand ?? new InputCommand(_telloController.EmergencyStop);
+        private IInputCommand _StopCommand;
+        public IInputCommand StopCommand => _StopCommand = _StopCommand ?? new InputCommand(_telloController.Stop);
 
-        private IInputCommand _startVideoCommand;
-        public IInputCommand StartVideoCommand => _startVideoCommand = _startVideoCommand ?? new InputCommand(_telloController.StartVideo);
+        private IInputCommand _EmergencyStopCommand;
+        public IInputCommand EmergencyStopCommand => _EmergencyStopCommand = _EmergencyStopCommand ?? new InputCommand(_telloController.EmergencyStop);
 
-        private IInputCommand _stopVideoCommand;
-        public IInputCommand StopVideoCommand => _stopVideoCommand = _stopVideoCommand ?? new InputCommand(_telloController.StopVideo);
+        private IInputCommand _StartVideoCommand;
+        public IInputCommand StartVideoCommand => _StartVideoCommand = _StartVideoCommand ?? new InputCommand(_telloController.StartVideo);
 
+        private IInputCommand _StopVideoCommand;
+        public IInputCommand StopVideoCommand => _StopVideoCommand = _StopVideoCommand ?? new InputCommand(_telloController.StopVideo);
+
+        private IInputCommand<int> _GoUpCommand;
+        public IInputCommand<int> GoUpCommand => _GoUpCommand = _GoUpCommand ?? new InputCommand<int>(_telloController.GoUp);
+
+        private IInputCommand<int> _GoDownCommand;
+        public IInputCommand<int> GoDownCommand => _GoDownCommand = _GoDownCommand ?? new InputCommand<int>(_telloController.GoDown);
+
+        private IInputCommand<int> _GoLeftCommand;
+        public IInputCommand<int> GoLeftCommand => _GoLeftCommand = _GoLeftCommand ?? new InputCommand<int>(_telloController.GoLeft);
+
+        private IInputCommand<int> _GoRightCommand;
+        public IInputCommand<int> GoRightCommand => _GoRightCommand = _GoRightCommand ?? new InputCommand<int>(_telloController.GoRight);
+
+        private IInputCommand<int> _GoBackwardCommand;
+        public IInputCommand<int> GoBackwardCommand => _GoBackwardCommand = _GoBackwardCommand ?? new InputCommand<int>(_telloController.GoBackward);
+
+        private IInputCommand<int> _TurnClockwiseCommand;
+        public IInputCommand<int> TurnClockwiseCommand => _TurnClockwiseCommand = _TurnClockwiseCommand ?? new InputCommand<int>(_telloController.TurnClockwise);
+
+        private IInputCommand<int> _TurnRightCommand;
+        public IInputCommand<int> TurnRightCommand => _TurnRightCommand = _TurnRightCommand ?? new InputCommand<int>(_telloController.TurnRight);
+
+        private IInputCommand<int> _TurnCounterClockwiseCommand;
+        public IInputCommand<int> TurnCounterClockwiseCommand => _TurnCounterClockwiseCommand = _TurnCounterClockwiseCommand ?? new InputCommand<int>(_telloController.TurnCounterClockwise);
+
+        private IInputCommand<int> _TurnLeftCommand;
+        public IInputCommand<int> TurnLeftCommand => _TurnLeftCommand = _TurnLeftCommand ?? new InputCommand<int>(_telloController.TurnLeft);
+
+        private IInputCommand<CardinalDirections> _FlipCommand;
+        public IInputCommand<CardinalDirections> FlipCommand => _FlipCommand = _FlipCommand ?? new InputCommand<CardinalDirections>(_telloController.Flip);
+
+        private IInputCommand<Tuple<int, int, int, int>> _GoCommand;
+        public IInputCommand<Tuple<int, int, int, int>> GoCommand => _GoCommand = _GoCommand ?? new InputCommand<Tuple<int, int, int, int>>((tuple) => { _telloController.Go(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4); });
+
+        private IInputCommand<Tuple<int, int, int, int, int, int, int>> _CurveCommand;
+        public IInputCommand<Tuple<int, int, int, int, int, int, int>> CommandNameCommand => _CurveCommand = _CurveCommand ?? new InputCommand<Tuple<int, int, int, int, int, int, int>>((tuple) => { _telloController.Curve(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7); });
+
+        private IInputCommand<Tuple<int, int, int, ClockDirections, bool>> _FlyPolygonCommand;
+        public IInputCommand<Tuple<int, int, int, ClockDirections, bool>> FlyPolygonCommand => _FlyPolygonCommand = _FlyPolygonCommand ?? new InputCommand<Tuple<int, int, int, ClockDirections, bool>>((tuple) => { _telloController.FlyPolygon(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5); });
+
+        private IInputCommand<int> _SetSpeedCommand;
+        public IInputCommand<int> SetSpeedCommand => _SetSpeedCommand = _SetSpeedCommand ?? new InputCommand<int>(_telloController.SetSpeed);
+
+        private IInputCommand<Tuple<int, int, int, int>> _Set4ChannelRCCommand;
+        public IInputCommand<Tuple<int, int, int, int>> Set4ChannelRCCommand => _Set4ChannelRCCommand = _Set4ChannelRCCommand ?? new InputCommand<Tuple<int, int, int, int>>((tuple) => { _telloController.Set4ChannelRC(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4); });
+
+        private IInputCommand<Tuple<string, string>> _SetWIFIPasswordCommand;
+        public IInputCommand<Tuple<string, string>> SetWIFIPassowrdCommand => _SetWIFIPasswordCommand = _SetWIFIPasswordCommand ?? new InputCommand<Tuple<string, string>>((tuple) => { _telloController.SetWIFIPassword(tuple.Item1, tuple.Item2); });
+
+        private IInputCommand<Tuple<string, string>> _SetStationModeCommand;
+        public IInputCommand<Tuple<string, string>> SetStationModeCommand => _SetStationModeCommand = _SetStationModeCommand ?? new InputCommand<Tuple<string, string>>((tuple)=>{_telloController.SetStationMode(tuple.Item1, tuple.Item2);});
+
+        private IInputCommand _GetSpeedCommand;
+        public IInputCommand GetSpeedCommand => _GetSpeedCommand = _GetSpeedCommand ?? new InputCommand(_telloController.GetSpeed);
+
+        private IInputCommand _GetBatteryCommand;
+        public IInputCommand GetBatteryCommand => _GetBatteryCommand = _GetBatteryCommand ?? new InputCommand(_telloController.GetBattery);
+
+        private IInputCommand _GetTimeCommand;
+        public IInputCommand GetTimeCommand => _GetTimeCommand = _GetTimeCommand ?? new InputCommand(_telloController.GetTime);
+
+        private IInputCommand _GetWIFISNRCommand;
+        public IInputCommand GetWIFISNRCommand => _GetWIFISNRCommand = _GetWIFISNRCommand ?? new InputCommand(_telloController.GetWIFISNR);
+
+        private IInputCommand _GetSdkVersionCommand;
+        public IInputCommand GetSdkVersionCommand => _GetSdkVersionCommand = _GetSdkVersionCommand ?? new InputCommand(_telloController.GetSdkVersion);
+
+        private IInputCommand _GetWIFISerialNumberCommand;
+        public IInputCommand GetWiFiSerialNumberCommand => _GetWIFISerialNumberCommand = _GetWIFISerialNumberCommand ?? new InputCommand(_telloController.GetWIFISerialNumber);
+#pragma warning restore IDE1006 // Naming Styles
 
     }
 }
