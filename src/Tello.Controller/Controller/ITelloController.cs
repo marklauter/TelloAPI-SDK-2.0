@@ -183,6 +183,6 @@ namespace Tello.Controller
 
         void GetSdkVersion();
 
-        void GetWiFiSerialNumber();
+        void GetWIFISerialNumber();
     }
 }

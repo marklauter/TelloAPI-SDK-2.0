@@ -832,7 +832,7 @@ namespace Tello.Controller
             EnqueueCommand(TelloCommands.GetSdkVersion);
         }
 
-        public void GetWiFiSerialNumber()
+        public void GetWIFISerialNumber()
         {
             EnqueueCommand(TelloCommands.GetSerialNumber);
         }
