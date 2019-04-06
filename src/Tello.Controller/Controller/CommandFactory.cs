@@ -81,7 +81,7 @@ namespace Tello.Controller
                 case TelloCommands.GetSpeed:
                 case TelloCommands.GetBattery:
                 case TelloCommands.GetTime:
-                case TelloCommands.GetWiFiSnr:
+                case TelloCommands.GetWIFISnr:
                 case TelloCommands.GetSdkVersion:
                 case TelloCommands.GetSerialNumber:
                     if (args.Length != expectedLength)
@@ -369,7 +369,7 @@ namespace Tello.Controller
                     return "battery?";
                 case TelloCommands.GetTime:
                     return "time?";
-                case TelloCommands.GetWiFiSnr:
+                case TelloCommands.GetWIFISnr:
                     return "wifi?";
                 case TelloCommands.GetSdkVersion:
                     return "sdk?";
@@ -406,7 +406,7 @@ namespace Tello.Controller
                 case TelloCommands.GetSpeed:
                 case TelloCommands.GetBattery:
                 case TelloCommands.GetTime:
-                case TelloCommands.GetWiFiSnr:
+                case TelloCommands.GetWIFISnr:
                 case TelloCommands.GetSdkVersion:
                 case TelloCommands.GetSerialNumber:
                     return TimeSpan.FromSeconds(5);
@@ -458,7 +458,7 @@ namespace Tello.Controller
                 case TelloCommands.GetTime:
                     return Responses.Time;
 
-                case TelloCommands.GetWiFiSnr:
+                case TelloCommands.GetWIFISnr:
                     return Responses.WIFISnr;
 
                 case TelloCommands.GetSdkVersion:

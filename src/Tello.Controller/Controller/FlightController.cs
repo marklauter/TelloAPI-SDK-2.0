@@ -187,7 +187,7 @@ namespace Tello.Controller
                 case TelloCommands.GetSpeed:
                 case TelloCommands.GetBattery:
                 case TelloCommands.GetTime:
-                case TelloCommands.GetWiFiSnr:
+                case TelloCommands.GetWIFISnr:
                 case TelloCommands.GetSdkVersion:
                 case TelloCommands.GetSerialNumber:
                     return responseMessage.ToLowerInvariant() != "error";
@@ -204,7 +204,7 @@ namespace Tello.Controller
                 case TelloCommands.GetSpeed:
                 case TelloCommands.GetBattery:
                 case TelloCommands.GetTime:
-                case TelloCommands.GetWiFiSnr:
+                case TelloCommands.GetWIFISnr:
                 case TelloCommands.GetSdkVersion:
                 case TelloCommands.GetSerialNumber:
                     return true;
@@ -249,7 +249,7 @@ namespace Tello.Controller
                     case TelloCommands.GetTime:
                         ReportedTime = Int32.Parse(responseValue);
                         break;
-                    case TelloCommands.GetWiFiSnr:
+                    case TelloCommands.GetWIFISnr:
                         ReportedWiFiSnr = responseValue;
                         break;
                     case TelloCommands.GetSdkVersion:
@@ -824,7 +824,7 @@ namespace Tello.Controller
 
         public void GetWIFISNR()
         {
-            EnqueueCommand(TelloCommands.GetWiFiSnr);
+            EnqueueCommand(TelloCommands.GetWIFISnr);
         }
 
         public void GetSdkVersion()
