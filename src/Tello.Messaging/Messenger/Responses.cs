@@ -8,7 +8,7 @@
         Speed,
         Battery,
         Time,
-        WiFiSnr,
+        WIFISnr,
         SdkVersion,
         SerialNumber
     }

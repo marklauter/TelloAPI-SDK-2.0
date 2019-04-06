@@ -31,7 +31,7 @@
         GetSpeed,
         GetBattery,
         GetTime,
-        GetWiFiSnr,
+        GetWIFISnr,
         GetSdkVersion,
         GetSerialNumber,
     }
