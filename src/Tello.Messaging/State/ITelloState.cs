@@ -1,4 +1,6 @@
-﻿namespace Tello.Messaging
+﻿using System;
+
+namespace Tello.Messaging
 {
     public interface IPosition
     {
@@ -41,6 +43,7 @@
 
     public interface ITelloState
     {
+        DateTime Timestamp { get; }
         IPosition Position { get; }
         IAttitude Attitude { get; }
         IAirSpeed AirSpeed { get; }
