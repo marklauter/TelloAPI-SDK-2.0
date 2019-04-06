@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
+    <PackageReference Include="Sumo.Retry" Version="5.4.24" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj" />
+  </ItemGroup>
+
+</Project>
