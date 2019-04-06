@@ -459,7 +459,7 @@ namespace Tello.Controller
                     return Responses.Time;
 
                 case TelloCommands.GetWiFiSnr:
-                    return Responses.WiFiSnr;
+                    return Responses.WIFISnr;
 
                 case TelloCommands.GetSdkVersion:
                     return Responses.SdkVersion;
