@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Tello.App.MvvM;
 using Tello.Controller;
 using Tello.Messaging;
@@ -9,10 +9,12 @@ namespace Tello.App.ViewModels
     public class TelloControllerViewModel : ViewModel
     {
         private readonly ITelloController _telloController;
+        private readonly IUserNotifier _userNotifier;
 
-        public TelloControllerViewModel(IUIDispatcher dispatcher, ITelloController telloController) : base(dispatcher)
+        public TelloControllerViewModel(IUIDispatcher dispatcher, ITelloController telloController, IUserNotifier userNotifier) : base(dispatcher)
         {
-            _telloController = telloController;
+            _telloController = telloController ?? throw new ArgumentNullException(nameof(telloController));
+            _userNotifier = userNotifier ?? throw new ArgumentNullException(nameof(userNotifier));
         }
 
         protected override void OnOpen(OpenEventArgs args)
@@ -33,49 +35,29 @@ namespace Tello.App.ViewModels
 
         private void OnCommandExceptionThrown(object sender, CommandExceptionThrownArgs e)
         {
-            throw new System.NotImplementedException();
+            var message = $"{DateTime.Now.TimeOfDay} - Command {e.Command} failed with exception {e.Exception.GetType().FullName} - {e.Exception.Message}";
+            ControlLog.Add(message);
         }
 
         private void OnExceptionThrown(object sender, ExceptionThrownArgs e)
         {
-            throw new System.NotImplementedException();
+            var message = $"{DateTime.Now.TimeOfDay} - Controller failed with exception {e.Exception.GetType().FullName} - {e.Exception.Message} at {e.Exception.StackTrace}";
+            ControlLog.Add(message);
         }
 
         private void OnCommandResponseReceived(object sender, CommandResponseReceivedArgs e)
         {
-            throw new System.NotImplementedException();
+            var message = $"{DateTime.Now.TimeOfDay} - {e.Command} completed with response {e.Response} in {Convert.ToInt32(e.Elapsed.TotalMilliseconds)}ms";
+            ControlLog.Add(message);
         }
 
         private void OnQueryResponseReceived(object sender, QueryResponseReceivedArgs e)
         {
-            switch (e.ResponseType)
-            {
-                case Responses.Ok:
-                    // command accepted and executed - basic ACK
-                    break;
-                case Responses.Error:
-                    // command failed
-                    break;
-                case Responses.Speed:
-                    e.Value
-                    break;
-                case Responses.Battery:
-                    break;
-                case Responses.Time:
-                    break;
-                case Responses.WiFiSnr:
-                    break;
-                case Responses.SdkVersion:
-                    break;
-                case Responses.SerialNumber:
-                    break;
-                case Responses.Unknown:
-                default:
-                    throw new System.NotImplementedException();
-            }
+            var message = $"{DateTime.Now.TimeOfDay} - {e.ResponseType} received with value '{e.Value}' int {Convert.ToInt32(e.Elapsed.TotalMilliseconds)}ms";
+            ControlLog.Add(message);
         }
 
-        public string Speed { get; set; }
+        public ObservableCollection<string> ControlLog = new ObservableCollection<string>();
 
 #pragma warning disable IDE1006 // Naming Styles
         private IInputCommand _EnterSdkModeCommand;
@@ -148,7 +130,7 @@ namespace Tello.App.ViewModels
         public IInputCommand<Tuple<string, string>> SetWIFIPassowrdCommand => _SetWIFIPasswordCommand = _SetWIFIPasswordCommand ?? new InputCommand<Tuple<string, string>>((tuple) => { _telloController.SetWIFIPassword(tuple.Item1, tuple.Item2); });
 
         private IInputCommand<Tuple<string, string>> _SetStationModeCommand;
-        public IInputCommand<Tuple<string, string>> SetStationModeCommand => _SetStationModeCommand = _SetStationModeCommand ?? new InputCommand<Tuple<string, string>>((tuple)=>{_telloController.SetStationMode(tuple.Item1, tuple.Item2);});
+        public IInputCommand<Tuple<string, string>> SetStationModeCommand => _SetStationModeCommand = _SetStationModeCommand ?? new InputCommand<Tuple<string, string>>((tuple) => { _telloController.SetStationMode(tuple.Item1, tuple.Item2); });
 
         private IInputCommand _GetSpeedCommand;
         public IInputCommand GetSpeedCommand => _GetSpeedCommand = _GetSpeedCommand ?? new InputCommand(_telloController.GetSpeed);
