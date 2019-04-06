@@ -17,11 +17,11 @@ namespace Tello.Controller
             HobbsMeter = hobbsMeter ?? throw new ArgumentNullException(nameof(hobbsMeter));
         }
 
-        public DateTime Timestamp { get; set; }
-        public IPosition Position { get; set; }
-        public IAttitude Attitude { get; set; }
-        public IAirSpeed AirSpeed { get; set; }
-        public IBattery Battery { get; set; }
-        public IHobbsMeter HobbsMeter { get; set; }
+        public DateTime Timestamp { get; }
+        public IPosition Position { get; }
+        public IAttitude Attitude { get; }
+        public IAirSpeed AirSpeed { get; }
+        public IBattery Battery { get; }
+        public IHobbsMeter HobbsMeter { get; }
     }
 }
