@@ -245,7 +245,7 @@ namespace Tello.Emulator.SDKV2
                             ? value.ToString()
                             : null;
                     }
-                    case TelloCommands.GetWiFiSnr:
+                    case TelloCommands.GetWIFISnr:
                         return _stateManager.IsPoweredUp
                             ? "snr"
                             : null;

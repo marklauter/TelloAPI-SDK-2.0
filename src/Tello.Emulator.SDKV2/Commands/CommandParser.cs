@@ -66,7 +66,7 @@ namespace Tello.Emulator.SDKV2
             { "speed?", TelloCommands.GetSpeed },
             { "battery?", TelloCommands.GetBattery },
             { "time?", TelloCommands.GetTime },
-            { "wifi?", TelloCommands.GetWiFiSnr },
+            { "wifi?", TelloCommands.GetWIFISnr },
             { "sdk?", TelloCommands.GetSdkVersion },
             { "sn?", TelloCommands.GetSerialNumber },
         };
