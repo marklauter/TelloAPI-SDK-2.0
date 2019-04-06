@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Tello.App
 {
-    //todo: i have no idea if this will work
+    //todo: i have no idea if this will work or how to test without an actual UWP app running
     internal class UIDispatcher : IUIDispatcher
     {
         private readonly SynchronizationContext _context;
