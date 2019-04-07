@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tello.App
+namespace Tello.App.MvvM
 {
     public interface IUIDispatcher
     {

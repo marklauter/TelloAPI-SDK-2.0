@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace Tello.App
+namespace Tello.App.MvvM
 {
     //todo: i have no idea if this will work or how to test without an actual UWP app running
     public class UIDispatcher : IUIDispatcher
