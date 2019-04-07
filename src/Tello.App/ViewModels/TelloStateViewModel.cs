@@ -51,5 +51,7 @@ namespace Tello.App.ViewModels
         private ITelloState _state;
         public ITelloState State { get => _state; set => SetProperty(ref _state, value); }
 
+        // documentation says there's ~ 15 minutes of battery
+        public string FlightTimeRemaining { get => _state != null ? ((15 * 60 - _state.HobbsMeter.MotorTimeInSeconds) / 60.0).ToString("F2") : string.Empty; }
     }
 }
