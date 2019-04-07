@@ -1,5 +1,6 @@
 ﻿<Page
     x:Class="Tello.App.UWP.MainPage"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Tello.App.UWP"
@@ -9,6 +10,18 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <controls:RadialGauge x:Name="RadialGaugeControl" Column="1" Value="70" Minimum="0" 
+	        Maximum="180" TickSpacing="20" ScaleWidth="26" Unit="Units" TickBrush="Gainsboro"
+	        ScaleTickBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+	        NeedleWidth="5" TickLength="18">
+        </controls:RadialGauge>
 
     </Grid>
 </Page>

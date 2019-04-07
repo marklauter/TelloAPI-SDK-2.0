@@ -60,9 +60,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.App", "Tello.App\Tell
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tello.App.UWP", "Tello.App.UWP\Tello.App.UWP.csproj", "{52BC2634-A8DB-4AE3-97B2-ED35C7D89DF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tello.Repository", "Tello.Repository\Tello.Repository.csproj", "{930F2846-7650-4BD8-A07A-EEF297A8F3E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.Repository", "Tello.Repository\Tello.Repository.csproj", "{930F2846-7650-4BD8-A07A-EEF297A8F3E7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.Repository.Test", "..\tests\Tello.Repository.Test\Tello.Repository.Test.csproj", "{70AF7379-CFA4-4CAB-857A-8BE097B44A87}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "design", "design", "{2BF948F2-156B-4665-ADF8-3FA296FBD02A}"
+	ProjectSection(SolutionItems) = preProject
+		..\design\TelloFlightControllerUI.bmpr = ..\design\TelloFlightControllerUI.bmpr
+		..\design\TelloFlightControllerUI.pdf = ..\design\TelloFlightControllerUI.pdf
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

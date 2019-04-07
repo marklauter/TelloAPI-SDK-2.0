@@ -20,9 +20,21 @@ namespace Tello.Messaging
 
     public interface IAirSpeed
     {
+        /// <summary>
+        /// forward/backward airspeed
+        /// </summary>
         int SpeedX { get; }
+
+        /// <summary>
+        /// lateral airspeed
+        /// </summary>
         int SpeedY { get; }
+
+        /// <summary>
+        /// vertical airspeed
+        /// </summary>
         int SpeedZ { get; }
+
         double AccelerationX { get; }
         double AccelerationY { get; }
         double AccelerationZ { get; }

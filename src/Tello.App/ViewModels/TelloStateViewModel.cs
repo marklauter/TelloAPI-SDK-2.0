@@ -9,6 +9,7 @@ using Tello.Repository;
 namespace Tello.App.ViewModels
 {
     //https://www.actiprosoftware.com/products/controls/wpf/gauge
+    //https://docs.microsoft.com/en-us/windows/communitytoolkit/controls/radialgauge
     public class TelloStateViewModel : ViewModel
     {
         private readonly IStateChangedNotifier _telloStateChangedNotifier;
