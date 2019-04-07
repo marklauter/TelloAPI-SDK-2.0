@@ -11,19 +11,30 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <!-- flight control row -->    
-            <RowDefinition Height="Auto" />
+            <!-- flight control row -->
+            <RowDefinition Height="*" />
             <!-- flight state 6 pack row -->
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!-- flight control row -->
-        <Grid Grid.Row="0" Background="Khaki">
-            <TextBlock>flight controls go here</TextBlock>
+        <Grid Grid.Row="0" x:Name="ControllerGrid" Background="SteelBlue">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <Button Command="{Binding Path=EnterSdkModeCommand}">connect</Button>
+                <Button Command="{Binding Path=TakeOffCommand}">takeoff</Button>
+                <Button Command="{Binding Path=LandCommand}">land</Button>
+            </StackPanel>
+
+            <ListBox Grid.Column="1" Background="Beige" ItemsSource="{Binding Path=ControlLog}"></ListBox>
         </Grid>
 
         <!-- flight state 6 pack -->
-        <Grid Grid.Row="1" Background="SteelBlue"> 
+        <Grid Grid.Row="1" x:Name="StateGrid" Background="SlateGray">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
@@ -37,37 +48,104 @@
 
             <!-- first row -->
             <StackPanel Grid.Row="0" Grid.Column="0">
-                <TextBlock>speed indicator</TextBlock>
-                <TextBlock></TextBlock>
+                <TextBlock>air speed indicator</TextBlock>
+                <StackPanel>
+                    <TextBlock>SPEED (cm/s)</TextBlock>
+                    <TextBlock Text="{Binding Path=State.AirSpeed.SpeedX}"></TextBlock>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock>ACEL (cm/s/s)</TextBlock>
+                    <TextBlock Text="{Binding Path=State.AirSpeed.AccelerationX}"></TextBlock>
+                </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="0" Grid.Column="1">
                 <TextBlock>attitude indicator</TextBlock>
+                <StackPanel>
+                    <TextBlock>ROLL</TextBlock>
+                    <TextBlock Text="{Binding Path=State.Attitude.Roll}"></TextBlock>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock>PITCH</TextBlock>
+                    <TextBlock Text="{Binding Path=State.Attitude.Pitch}"></TextBlock>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock>YAW</TextBlock>
+                    <TextBlock Text="{Binding Path=State.Attitude.Yaw}"></TextBlock>
+                </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="0" Grid.Column="3">
                 <TextBlock>altitude indicator</TextBlock>
+                <StackPanel>
+                    <TextBlock>AGL (cm)</TextBlock>
+                    <TextBlock Text="{Binding Path=State.Position.AltitudeAGLInCm}"></TextBlock>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock>MSL (cm)</TextBlock>
+                    <TextBlock Text="{Binding Path=State.Position.AltitudeMSLInCm}"></TextBlock>
+                </StackPanel>
             </StackPanel>
 
             <!-- second row -->
             <StackPanel Grid.Row="1" Grid.Column="0">
                 <TextBlock>lateral speed indicator (turn coordinator)</TextBlock>
+                <StackPanel>
+                    <TextBlock>SPEED (cm/s)</TextBlock>
+                    <TextBlock Text="{Binding Path=State.AirSpeed.SpeedY}"></TextBlock>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock>ACEL (cm/s/s)</TextBlock>
+                    <TextBlock Text="{Binding Path=State.AirSpeed.AccelerationZ}"></TextBlock>
+                </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="1">
                 <TextBlock>heading indicator</TextBlock>
+                <StackPanel>
+                    <TextBlock>HDG (deg)</TextBlock>
+                    <TextBlock Text="{Binding Path=State.Position.Heading}"></TextBlock>
+                </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="3">
                 <TextBlock>vertical speed indicator</TextBlock>
+                <StackPanel>
+                    <TextBlock>SPEED (cm/s)</TextBlock>
+                    <TextBlock Text="{Binding Path=State.AirSpeed.SpeedZ}"></TextBlock>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock>ACEL (cm/s/s)</TextBlock>
+                    <TextBlock Text="{Binding Path=State.AirSpeed.AccelerationZ}"></TextBlock>
+                </StackPanel>
             </StackPanel>
 
             <!-- third row -->
             <StackPanel Grid.Row="2" Grid.Column="0">
                 <TextBlock>hobbs meter</TextBlock>
+                <StackPanel>
+                    <TextBlock>MOTOR TIME (s)</TextBlock>
+                    <TextBlock Text="{Binding Path=State.HobbsMeter.MotorTimeInSeconds}"></TextBlock>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock>ESTIMATED TIME REMAINING (m)</TextBlock>
+                    <TextBlock Text="{Binding Path=FlightTimeRemaining}"></TextBlock>
+                </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="2" Grid.Column="1">
                 <TextBlock>fuel (battery)</TextBlock>
+                <StackPanel>
+                    <TextBlock>% REMAINING</TextBlock>
+                    <TextBlock Text="{Binding Path=State.Battery.PercentRemaining}"></TextBlock>
+                </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="2" Grid.Column="3">
                 <TextBlock>temperature</TextBlock>
-            </StackPanel>            
+                <StackPanel>
+                    <TextBlock>LOW (deg C)</TextBlock>
+                    <TextBlock Text="{Binding Path=State.Battery.TemperatureLowC}"></TextBlock>
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock>HIGH (deg C)</TextBlock>
+                    <TextBlock Text="{Binding Path=State.Battery.TemperatureHighC}"></TextBlock>
+                </StackPanel>                
+            </StackPanel>
         </Grid>
 
 
