@@ -123,6 +123,8 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\UIDispatcher.cs" />
+    <Compile Include="Services\UserNotifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -157,6 +159,36 @@
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
       <Version>5.1.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Tello.App\Tello.App.csproj">
+      <Project>{5e9087a6-702a-47ca-853a-08daa9ece8b1}</Project>
+      <Name>Tello.App</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj">
+      <Project>{C19D61FF-4B43-4FE4-89CB-BBED1A9FDA4A}</Project>
+      <Name>Tello.Controller</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tello.Emulator.SDKV2\Tello.Emulator.SDKV2.csproj">
+      <Project>{D1455165-FCA1-4C89-8FCE-33553AC060DD}</Project>
+      <Name>Tello.Emulator.SDKV2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj">
+      <Project>{04963A60-6721-4057-B3AE-2D97D025D127}</Project>
+      <Name>Tello.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tello.Repository\Tello.Repository.csproj">
+      <Project>{930f2846-7650-4bd8-a07a-eef297a8f3e7}</Project>
+      <Name>Tello.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tello.Scripting\Tello.Scripting.csproj">
+      <Project>{847fe59e-fc20-4b54-b512-3225ee11497d}</Project>
+      <Name>Tello.Scripting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tello.Udp\Tello.Udp.csproj">
+      <Project>{894d1a55-9212-4c04-aad7-a6621549594d}</Project>
+      <Name>Tello.Udp</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
