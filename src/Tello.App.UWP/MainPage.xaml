@@ -11,17 +11,28 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <!-- flight control row -->    
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <!-- flight state row -->
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <controls:RadialGauge x:Name="RadialGaugeControl" Column="1" Value="70" Minimum="0" 
+        <!-- flight control row -->
+        <Grid Grid.Row="0" Background="Khaki">
+            <TextBlock>flight controls go here</TextBlock>
+        </Grid>
+
+        <!-- flight state row -->
+        <Grid Grid.Row="1" Background="SteelBlue">
+            <TextBlock>flight state goes here</TextBlock>
+        </Grid>
+
+
+        <!--<controls:RadialGauge x:Name="RadialGaugeControl" Value="70" Minimum="0" 
 	        Maximum="180" TickSpacing="20" ScaleWidth="26" Unit="Units" TickBrush="Gainsboro"
 	        ScaleTickBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 	        NeedleWidth="5" TickLength="18">
-        </controls:RadialGauge>
+        </controls:RadialGauge>-->
 
     </Grid>
 </Page>
