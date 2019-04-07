@@ -30,7 +30,7 @@
                 <Button Command="{Binding Path=LandCommand}">land</Button>
             </StackPanel>
 
-            <ListBox Grid.Column="1" Background="Beige" ItemsSource="{Binding Path=ControlLog}"></ListBox>
+            <ListBox Grid.Column="1" Background="Beige" ItemsSource="{Binding ControlLog}"></ListBox>
         </Grid>
 
         <!-- flight state 6 pack -->
@@ -46,7 +46,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!-- first row -->
+             <!--first row--> 
             <StackPanel Grid.Row="0" Grid.Column="0">
                 <TextBlock>air speed indicator</TextBlock>
                 <StackPanel>
@@ -85,7 +85,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <!-- second row -->
+             <!--second row--> 
             <StackPanel Grid.Row="1" Grid.Column="0">
                 <TextBlock>lateral speed indicator (turn coordinator)</TextBlock>
                 <StackPanel>
@@ -116,7 +116,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <!-- third row -->
+             <!--third row--> 
             <StackPanel Grid.Row="2" Grid.Column="0">
                 <TextBlock>hobbs meter</TextBlock>
                 <StackPanel>
@@ -125,7 +125,7 @@
                 </StackPanel>
                 <StackPanel>
                     <TextBlock>ESTIMATED TIME REMAINING (m)</TextBlock>
-                    <TextBlock Text="{Binding Path=FlightTimeRemaining}"></TextBlock>
+                    <TextBlock Text="{Binding Path=State.HobbsMeter.FlightTimeRemainingInMinutes}"></TextBlock>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="2" Grid.Column="1">

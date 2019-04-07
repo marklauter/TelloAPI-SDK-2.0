@@ -51,6 +51,7 @@ namespace Tello.Messaging
     {
         int DistanceTraversedInCm { get; }
         int MotorTimeInSeconds { get; }
+        double FlightTimeRemainingInMinutes { get; }
     }
 
     public interface ITelloState

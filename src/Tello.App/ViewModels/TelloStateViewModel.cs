@@ -33,7 +33,7 @@ namespace Tello.App.ViewModels
 
         private async void OnTelloStateChanged(object sender, StateChangedArgs e)
         {
-            Dispatcher.Invoke((state)=> { _stateHistory.Add(state as ITelloState); }, State);
+            Dispatcher.Invoke((state)=> { StateHistory.Add(state as ITelloState); }, State);
             State = e.State;
             if(_repository != null)
             {
@@ -46,12 +46,9 @@ namespace Tello.App.ViewModels
             }
         }
 
-        public ObservableCollection<ITelloState> _stateHistory = new ObservableCollection<ITelloState>();
+        public ObservableCollection<ITelloState> StateHistory { get; } = new ObservableCollection<ITelloState>();
 
         private ITelloState _state;
         public ITelloState State { get => _state; set => SetProperty(ref _state, value); }
-
-        // documentation says there's ~ 15 minutes of battery
-        public string FlightTimeRemaining { get => _state != null ? ((15 * 60 - _state.HobbsMeter.MotorTimeInSeconds) / 60.0).ToString("F2") : string.Empty; }
     }
 }

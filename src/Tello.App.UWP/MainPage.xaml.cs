@@ -38,8 +38,6 @@ namespace Tello.App.UWP
         {
             InitializeComponent();
 
-            DataContext = this;
-
             _uiDispatcher = new UIDispatcher(SynchronizationContext.Current);
             _userNotifier = new UserNotifier();
             _repository = new ObservationRepository();

@@ -43,6 +43,7 @@ namespace Tello.Repository.Test
     {
         public int DistanceTraversedInCm { get; set; }
         public int MotorTimeInSeconds { get; set; }
+        public double FlightTimeRemainingInMinutes => (15 * 60 - MotorTimeInSeconds) / 60.0;
     }
 
     public class TestObservation : Observation

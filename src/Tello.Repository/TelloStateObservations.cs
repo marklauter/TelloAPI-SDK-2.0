@@ -133,5 +133,8 @@ namespace Tello.Repository
         public int DistanceTraversedInCm { get; set; }
 
         public int MotorTimeInSeconds { get; set; }
+
+        [SQLite.Ignore]
+        public double FlightTimeRemainingInMinutes { get; }
     }
 }

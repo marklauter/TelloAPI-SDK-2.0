@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using Tello.App.MvvM;
 using Tello.Controller;
 using Tello.Messaging;
@@ -34,28 +35,32 @@ namespace Tello.App.ViewModels
         private void OnCommandExceptionThrown(object sender, CommandExceptionThrownArgs e)
         {
             var message = $"{DateTime.Now.TimeOfDay} - Command {e.Command} failed with exception {e.Exception.GetType().FullName} - {e.Exception.Message}";
-            ControlLog.Add(message);
+            Debug.WriteLine(message);
+            Dispatcher.Invoke((msg) => { ControlLog.Add(msg as string); }, message);
         }
 
         private void OnExceptionThrown(object sender, ExceptionThrownArgs e)
         {
             var message = $"{DateTime.Now.TimeOfDay} - Controller failed with exception {e.Exception.GetType().FullName} - {e.Exception.Message} at {e.Exception.StackTrace}";
-            ControlLog.Add(message);
+            Debug.WriteLine(message);
+            Dispatcher.Invoke((msg) => { ControlLog.Add(msg as string); }, message);
         }
 
         private void OnCommandResponseReceived(object sender, CommandResponseReceivedArgs e)
         {
             var message = $"{DateTime.Now.TimeOfDay} - {e.Command} completed with response {e.Response} in {Convert.ToInt32(e.Elapsed.TotalMilliseconds)}ms";
-            ControlLog.Add(message);
+            Debug.WriteLine(message);
+            Dispatcher.Invoke((msg) => { ControlLog.Add(msg as string); }, message);
         }
 
         private void OnQueryResponseReceived(object sender, QueryResponseReceivedArgs e)
         {
-            var message = $"{DateTime.Now.TimeOfDay} - {e.ResponseType} received with value '{e.Value}' int {Convert.ToInt32(e.Elapsed.TotalMilliseconds)}ms";
-            ControlLog.Add(message);
+            var message = $"{DateTime.Now.TimeOfDay} - {e.ResponseType} returned value '{e.Value}' int {Convert.ToInt32(e.Elapsed.TotalMilliseconds)}ms";
+            Debug.WriteLine(message);
+            Dispatcher.Invoke((msg) => { ControlLog.Add(msg as string); }, message);
         }
 
-        public ObservableCollection<string> ControlLog = new ObservableCollection<string>();
+        public ObservableCollection<string> ControlLog { get; } = new ObservableCollection<string>();
 
 #pragma warning disable IDE1006 // Naming Styles
         private IInputCommand _EnterSdkModeCommand;
