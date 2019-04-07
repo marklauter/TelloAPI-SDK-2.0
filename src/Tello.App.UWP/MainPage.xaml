@@ -13,7 +13,7 @@
         <Grid.RowDefinitions>
             <!-- flight control row -->    
             <RowDefinition Height="Auto" />
-            <!-- flight state row -->
+            <!-- flight state 6 pack row -->
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -22,9 +22,52 @@
             <TextBlock>flight controls go here</TextBlock>
         </Grid>
 
-        <!-- flight state row -->
-        <Grid Grid.Row="1" Background="SteelBlue">
-            <TextBlock>flight state goes here</TextBlock>
+        <!-- flight state 6 pack -->
+        <Grid Grid.Row="1" Background="SteelBlue"> 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- first row -->
+            <StackPanel Grid.Row="0" Grid.Column="0">
+                <TextBlock>speed indicator</TextBlock>
+                <TextBlock></TextBlock>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <TextBlock>attitude indicator</TextBlock>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="3">
+                <TextBlock>altitude indicator</TextBlock>
+            </StackPanel>
+
+            <!-- second row -->
+            <StackPanel Grid.Row="1" Grid.Column="0">
+                <TextBlock>lateral speed indicator (turn coordinator)</TextBlock>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="1">
+                <TextBlock>heading indicator</TextBlock>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="3">
+                <TextBlock>vertical speed indicator</TextBlock>
+            </StackPanel>
+
+            <!-- third row -->
+            <StackPanel Grid.Row="2" Grid.Column="0">
+                <TextBlock>hobbs meter</TextBlock>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Grid.Column="1">
+                <TextBlock>fuel (battery)</TextBlock>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Grid.Column="3">
+                <TextBlock>temperature</TextBlock>
+            </StackPanel>            
         </Grid>
 
 
