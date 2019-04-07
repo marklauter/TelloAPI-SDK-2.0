@@ -26,9 +26,12 @@ namespace Tello.App.MvvM
 
     public class ViewModel : PropertyChangedNotifier
     {
-        public ViewModel(IUIDispatcher dispatcher) : base(dispatcher)
+        protected readonly IUserNotifier UserNotifier;
+
+        public ViewModel(IUIDispatcher dispatcher, IUserNotifier userNotifier) : base(dispatcher)
         {
             DisplayName = $"#{GetType().Name}#";
+            UserNotifier = userNotifier ?? throw new ArgumentNullException(nameof(userNotifier));
         }
 
         public string DisplayName { get; set; }

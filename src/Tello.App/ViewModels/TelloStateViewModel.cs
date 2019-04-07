@@ -15,7 +15,7 @@ namespace Tello.App.ViewModels
         private readonly IStateChangedNotifier _telloStateChangedNotifier;
         private readonly IRepository _repository;
 
-        public TelloStateViewModel(IUIDispatcher dispatcher, IStateChangedNotifier telloStateChangedNotifier, IRepository repository) : base(dispatcher)
+        public TelloStateViewModel(IUIDispatcher dispatcher, IUserNotifier userNotifier, IStateChangedNotifier telloStateChangedNotifier, IRepository repository) : base(dispatcher, userNotifier)
         {
             _telloStateChangedNotifier = telloStateChangedNotifier ?? throw new ArgumentNullException(nameof(telloStateChangedNotifier));
             _repository = repository;

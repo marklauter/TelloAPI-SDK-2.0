@@ -9,12 +9,10 @@ namespace Tello.App.ViewModels
     public class TelloControllerViewModel : ViewModel
     {
         private readonly ITelloController _telloController;
-        private readonly IUserNotifier _userNotifier;
 
-        public TelloControllerViewModel(IUIDispatcher dispatcher, ITelloController telloController, IUserNotifier userNotifier) : base(dispatcher)
+        public TelloControllerViewModel(IUIDispatcher dispatcher, IUserNotifier userNotifier, ITelloController telloController) : base(dispatcher, userNotifier)
         {
             _telloController = telloController ?? throw new ArgumentNullException(nameof(telloController));
-            _userNotifier = userNotifier ?? throw new ArgumentNullException(nameof(userNotifier));
         }
 
         protected override void OnOpen(OpenEventArgs args)
