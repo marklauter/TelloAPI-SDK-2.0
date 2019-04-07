@@ -57,9 +57,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.49497475"
-     inkscape:cx="418.92379"
-     inkscape:cy="63.18184"
+     inkscape:zoom="0.35"
+     inkscape:cx="-782.85015"
+     inkscape:cy="-1268.746"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -67,7 +67,9 @@
      inkscape:window-height="1027"
      inkscape:window-x="1912"
      inkscape:window-y="-8"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -76,7 +78,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -257,5 +259,95 @@
        id="path4870"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccc" />
+    <rect
+       style="opacity:1;fill:#115996;fill-opacity:1;stroke:none;stroke-width:31.75;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       id="rect846"
+       width="1238.8879"
+       height="598.888"
+       x="-646.97003"
+       y="411.78656" />
+    <g
+       inkscape:export-ydpi="11.877535"
+       inkscape:export-xdpi="11.877535"
+       id="g4854-5"
+       transform="matrix(1.1727105,0,0,1.1662696,253.7994,-97.795325)"
+       style="fill:#ffffff;stroke:none">
+      <path
+         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.99999994"
+         d="m -1180.6836,2100.4883 a 244.4569,244.4569 0 0 0 -244.457,244.457 244.4569,244.4569 0 0 0 244.457,244.457 244.4569,244.4569 0 0 0 86.3281,-16.0605 c -10.4135,-16.6117 -21.9492,-32.494 -33.9902,-48.0469 a 187.88836,187.88836 0 0 1 -52.3379,7.5391 187.88836,187.88836 0 0 1 -187.8887,-187.8887 187.88836,187.88836 0 0 1 187.8887,-187.8887 187.88836,187.88836 0 0 1 187.88672,187.8887 187.88836,187.88836 0 0 1 -7.33792,51.3985 c 15.79888,11.983 31.16907,25.1636 47.75785,35.7851 a 244.4569,244.4569 0 0 0 16.15039,-87.1836 244.4569,244.4569 0 0 0 -244.45704,-244.457 z m 548.00001,0 a 244.4569,244.4569 0 0 0 -244.45703,244.457 244.4569,244.4569 0 0 0 16.58203,87.7578 c 16.90311,-9.5867 32.74452,-21.2464 48.15039,-33.5371 a 187.88836,187.88836 0 0 1 -8.16407,-54.2207 187.88836,187.88836 0 0 1 187.88868,-187.8887 187.88836,187.88836 0 0 1 187.88671,187.8887 187.88836,187.88836 0 0 1 -187.88671,187.8887 187.88836,187.88836 0 0 1 -48.97852,-6.7207 c -11.86729,15.8909 -25.22221,31.2821 -35.88281,47.9121 a 244.4569,244.4569 0 0 0 84.86133,15.3769 244.4569,244.4569 0 0 0 244.45703,-244.457 244.4569,244.4569 0 0 0 -244.45703,-244.457 z m -548.00001,553.7265 a 244.4569,244.4569 0 0 0 -244.457,244.4571 244.4569,244.4569 0 0 0 244.457,244.457 244.4569,244.4569 0 0 0 244.45704,-244.457 244.4569,244.4569 0 0 0 -17.16797,-89.3653 c -14.50675,9.138 -28.10666,20.1757 -41.44727,30.5372 -2.05716,1.4931 -4.10395,3.0036 -6.1445,4.5234 a 187.88836,187.88836 0 0 1 8.18942,54.3047 187.88836,187.88836 0 0 1 -187.88672,187.8886 187.88836,187.88836 0 0 1 -187.8887,-187.8886 187.88836,187.88836 0 0 1 187.8887,-187.8887 187.88836,187.88836 0 0 1 50.3125,7.0606 c 5.7197,-7.3129 11.3541,-14.6819 16.834,-22.1504 5.2789,-8.3311 11.8008,-17.0057 17.9687,-26.0176 a 244.4569,244.4569 0 0 0 -85.1152,-15.461 z m 548.00001,0 a 244.4569,244.4569 0 0 0 -82.89258,14.8047 c 10.15652,16.8576 22.38409,32.6744 34.89648,48.1035 a 187.88836,187.88836 0 0 1 47.9961,-6.3398 187.88836,187.88836 0 0 1 187.88671,187.8887 187.88836,187.88836 0 0 1 -187.88671,187.8886 187.88836,187.88836 0 0 1 -187.88868,-187.8886 187.88836,187.88836 0 0 1 8.50196,-55.8262 c -15.40045,-12.3967 -30.79746,-24.8581 -47.47266,-34.9531 a 244.4569,244.4569 0 0 0 -17.59765,90.7793 244.4569,244.4569 0 0 0 244.45703,244.457 244.4569,244.4569 0 0 0 244.45703,-244.457 244.4569,244.4569 0 0 0 -244.45703,-244.4571 z"
+         transform="scale(0.26458333)"
+         id="path4842-8"
+         inkscape:connector-curvature="0" />
+      <path
+         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         d="m -318.44312,612.74352 c -3.85385,2.90347 0.57618,8.22481 2.07023,11.45889 12.61604,22.74645 34.99498,39.70907 43.92391,64.79307 2.36399,14.41791 -9.21277,25.84478 -16.55274,36.79297 -11.11063,14.84118 -25.37401,28.02871 -31.08984,46.01367 1.20811,4.54084 6.4566,0.14298 9.07422,-0.42383 14.64315,-7.25457 26.26438,-19.21033 39.49228,-28.72868 9.66252,-7.42392 20.25056,-16.22028 32.96475,-16.67562 14.23026,1.39151 24.57046,12.58857 35.80991,20.20085 13.18293,10.13136 25.62242,23.00162 41.92251,27.70345 4.25113,-1.66116 0.0402,-6.49029 -0.72461,-9.17774 -8.61929,-17.01652 -22.81596,-30.25736 -33.56928,-45.86014 -7.13116,-9.55348 -15.19657,-22.00495 -9.96783,-34.25704 5.22446,-12.64011 14.90208,-22.75478 22.93555,-33.63477 8.85327,-11.21686 19.52552,-22.27506 23.07812,-36.41797 -0.83533,-4.10659 -5.80689,0.12505 -8.17382,0.40235 -14.51121,6.67213 -25.62522,18.62599 -38.57546,27.70489 -10.17552,7.86735 -21.16362,17.48695 -34.62962,18.02167 -14.23518,-1.3947 -24.5419,-12.59112 -35.78866,-20.16684 -13.23955,-10.22605 -25.6957,-23.1285 -42.19962,-27.74918 z"
+         id="path4844-8"
+         inkscape:connector-curvature="0" />
+      <circle
+         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         id="circle4846-8"
+         cx="-312.3894"
+         cy="766.94012"
+         r="12.561667" />
+      <circle
+         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         id="circle4848-7"
+         cx="-312.3894"
+         cy="620.43341"
+         r="12.561667" />
+      <circle
+         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         id="circle4850-3"
+         cx="-167.39766"
+         cy="620.43341"
+         r="12.561667" />
+      <circle
+         r="12.561667"
+         cy="766.94012"
+         cx="-167.39769"
+         id="circle4852-4"
+         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332" />
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
+       x="-600.6698"
+       y="553.22919"
+       id="text897"><tspan
+         sodipodi:role="line"
+         id="tspan895"
+         x="-600.6698"
+         y="553.22919"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:50.79999924px;font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI Bold';text-align:start;letter-spacing:2.64583325px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332;"
+         rotate="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0">TELLO SDK 2.0 </tspan><tspan
+         sodipodi:role="line"
+         x="-600.6698"
+         y="616.72919"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:50.79999924px;font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI Bold';text-align:start;letter-spacing:2.64583325px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332;"
+         rotate="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+         id="tspan932">UWP DEMO</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:22.57777786px;line-height:1.25;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332;"
+       x="-601.36707"
+       y="475.56833"
+       id="text897-9"><tspan
+         sodipodi:role="line"
+         x="-601.36707"
+         y="475.56833"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:22.57777786px;font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI Bold';text-align:start;letter-spacing:2.64583325px;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332;"
+         rotate="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+         id="tspan932-4">https://github.com/marklauter/TelloAPI-SDK-2.0</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:18.45015526px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.46125385"
+       x="-642.98206"
+       y="377.06027"
+       id="text959"><tspan
+         sodipodi:role="line"
+         id="tspan957"
+         x="-642.98206"
+         y="377.06027"
+         style="stroke-width:0.46125385">spash screen</tspan></text>
   </g>
 </svg>
