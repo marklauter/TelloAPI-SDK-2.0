@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
 
         <!-- flight control row -->
-        <Grid Grid.Row="0" x:Name="ControllerGrid" Background="SteelBlue">
+        <Grid Grid.Row="0" x:Name="ControllerGrid" Background="AliceBlue">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -46,11 +46,11 @@
                 <Button Command="{Binding Path=LandCommand}">land</Button>
             </controls:WrapPanel>
 
-            <ListBox Grid.Column="1" Background="Beige" ItemsSource="{Binding ControlLog}"></ListBox>
+            <ListBox Grid.Column="1" Background="AntiqueWhite" ItemsSource="{Binding ControlLog}"></ListBox>
         </Grid>
 
         <!-- flight state 6 pack -->
-        <Grid Grid.Row="1" x:Name="StateGrid" Background="SlateGray">
+        <Grid Grid.Row="1" x:Name="StateGrid" Background="Khaki">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
