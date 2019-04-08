@@ -51,7 +51,7 @@
         </Grid>
 
         <!-- flight state 6 pack -->
-        <Grid Grid.Row="1" x:Name="StateGrid" Background="Khaki">
+        <Grid Grid.Row="1" x:Name="StateGrid" Background="DarkGray">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
@@ -96,7 +96,7 @@
                         ScalePadding="5"
                         ScaleWidth="10" 
                         ScaleBrush="White"
-	                    ScaleTickBrush="Lime"
+	                    ScaleTickBrush="White"
                         ScaleTickWidth="2"
                         
                         TrailBrush="White"
@@ -140,6 +140,37 @@
                     <TextBlock>SPEED (cm/s)</TextBlock>
                     <TextBlock Text="{Binding Path=State.AirSpeed.SpeedY}"></TextBlock>
                 </StackPanel>
+                <Canvas HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse Width="100" Height="100" Fill="Black" Stroke="Black" StrokeThickness="5"/>
+                    <controls:RadialGauge 
+                        Width="100"
+                        Height="100"
+                        
+                        Minimum="-100" 
+                        MinAngle="270"
+	                    Maximum="100" 
+                        MaxAngle="90"
+                            
+                        StepSize="0"
+                        Value="{Binding Path=State.AirSpeed.SpeedY, Mode=TwoWay}" 
+                        
+                        TickSpacing="20" 
+                        TickLength="25"
+                        TickWidth="2"
+                        TickBrush="White"
+
+                        ScalePadding="5"
+                        ScaleWidth="10" 
+                        ScaleBrush="White"
+	                    ScaleTickBrush="White"
+                        ScaleTickWidth="2"
+                        
+                        TrailBrush="White"        
+                        
+                        NeedleBrush="White"
+	                    NeedleWidth="4">
+                    </controls:RadialGauge>
+                </Canvas>
                 <StackPanel>
                     <TextBlock>ACEL (cm/s/s)</TextBlock>
                     <TextBlock Text="{Binding Path=State.AirSpeed.AccelerationZ}"></TextBlock>
@@ -151,6 +182,37 @@
                     <TextBlock>HDG (deg)</TextBlock>
                     <TextBlock Text="{Binding Path=State.Position.Heading}"></TextBlock>
                 </StackPanel>
+                <Canvas HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse Width="100" Height="100" Fill="Black" Stroke="Black" StrokeThickness="5"/>
+                    <controls:RadialGauge 
+                        Width="100"
+                        Height="100"
+
+                        Minimum="0" 
+                        MinAngle="0"
+	                    Maximum="360" 
+                        MaxAngle="360"
+                            
+                        StepSize="0"
+                        Value="{Binding Path=State.AirSpeed.Heading, Mode=TwoWay}" 
+                        
+                        TickSpacing="45" 
+                        TickLength="15"
+                        TickWidth="2"
+                        TickBrush="White"
+
+                        ScalePadding="2"
+                        ScaleWidth="4" 
+                        ScaleBrush="White"
+	                    ScaleTickBrush="White"
+                        ScaleTickWidth="2"
+                        
+                        TrailBrush="White"        
+                        
+                        NeedleBrush="White"
+	                    NeedleWidth="4">
+                    </controls:RadialGauge>
+                </Canvas>
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="3">
                 <TextBlock>vertical speed indicator</TextBlock>
@@ -158,6 +220,37 @@
                     <TextBlock>SPEED (cm/s)</TextBlock>
                     <TextBlock Text="{Binding Path=State.AirSpeed.SpeedZ}"></TextBlock>
                 </StackPanel>
+                <Canvas HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse Width="100" Height="100" Fill="Black" Stroke="Black" StrokeThickness="5"/>
+                    <controls:RadialGauge 
+                        Width="100"
+                        Height="100"
+
+                        Minimum="-100" 
+                        MinAngle="180"
+	                    Maximum="100" 
+                        MaxAngle="360"
+                            
+                        StepSize="0"
+                        Value="{Binding Path=State.AirSpeed.SpeedZ, Mode=TwoWay}" 
+                        
+                        TickSpacing="20" 
+                        TickLength="25"
+                        TickWidth="2"
+                        TickBrush="White"
+
+                        ScalePadding="5"
+                        ScaleWidth="10" 
+                        ScaleBrush="White"
+	                    ScaleTickBrush="White"
+                        ScaleTickWidth="2"
+                        
+                        TrailBrush="White"        
+                        
+                        NeedleBrush="White"
+	                    NeedleWidth="4">
+                    </controls:RadialGauge>
+                </Canvas>
                 <StackPanel>
                     <TextBlock>ACEL (cm/s/s)</TextBlock>
                     <TextBlock Text="{Binding Path=State.AirSpeed.AccelerationZ}"></TextBlock>
