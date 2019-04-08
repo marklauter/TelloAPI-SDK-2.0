@@ -24,11 +24,27 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0" Orientation="Horizontal">
+            <controls:WrapPanel Grid.Column="0">
                 <Button Command="{Binding Path=EnterSdkModeCommand}">connect</Button>
                 <Button Command="{Binding Path=TakeOffCommand}">takeoff</Button>
+                <StackPanel BorderBrush="Black" BorderThickness="1">
+                    <!-- sides, length, speed, clock-->
+                    <StackPanel>
+                        <TextBlock Text="sides"/>
+                        <TextBox Text="{Binding Path=FlyPolygonCommandParams.Item1, Mode=TwoWay}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="length"/>
+                        <TextBox Text="{Binding Path=FlyPolygonCommandParams.Item2, Mode=TwoWay}"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="speed"/>
+                        <TextBox Text="{Binding Path=FlyPolygonCommandParams.Item3, Mode=TwoWay}"/>
+                    </StackPanel>
+                    <Button Command="{Binding Path=FlyPolygonCommand}" CommandParameter="{Binding FlyPolygonCommandParams}">fly polygon</Button>
+                </StackPanel>
                 <Button Command="{Binding Path=LandCommand}">land</Button>
-            </StackPanel>
+            </controls:WrapPanel>
 
             <ListBox Grid.Column="1" Background="Beige" ItemsSource="{Binding ControlLog}"></ListBox>
         </Grid>
@@ -46,7 +62,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-             <!--first row--> 
+            <!--first row-->
             <StackPanel Grid.Row="0" Grid.Column="0">
                 <TextBlock>air speed indicator</TextBlock>
                 <StackPanel>
@@ -85,7 +101,7 @@
                 </StackPanel>
             </StackPanel>
 
-             <!--second row--> 
+            <!--second row-->
             <StackPanel Grid.Row="1" Grid.Column="0">
                 <TextBlock>lateral speed indicator (turn coordinator)</TextBlock>
                 <StackPanel>
@@ -116,7 +132,7 @@
                 </StackPanel>
             </StackPanel>
 
-             <!--third row--> 
+            <!--third row-->
             <StackPanel Grid.Row="2" Grid.Column="0">
                 <TextBlock>hobbs meter</TextBlock>
                 <StackPanel>
@@ -144,7 +160,7 @@
                 <StackPanel>
                     <TextBlock>HIGH (deg C)</TextBlock>
                     <TextBlock Text="{Binding Path=State.Battery.TemperatureHighC}"></TextBlock>
-                </StackPanel>                
+                </StackPanel>
             </StackPanel>
         </Grid>
 
