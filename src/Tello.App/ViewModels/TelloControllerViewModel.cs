@@ -36,28 +36,28 @@ namespace Tello.App.ViewModels
         {
             var message = $"{DateTime.Now.TimeOfDay} - Command {e.Command} failed with exception '{e.Exception.GetType().FullName}' - {e.Exception.Message}";
             Debug.WriteLine(message);
-            Dispatcher.Invoke((msg) => { ControlLog.Add(msg as string); }, message);
+            Dispatcher.Invoke((msg) => { ControlLog.Insert(0, msg as string); }, message);
         }
 
         private void OnExceptionThrown(object sender, ExceptionThrownArgs e)
         {
             var message = $"{DateTime.Now.TimeOfDay} - Controller failed with exception '{e.Exception.GetType().FullName}' - {e.Exception.Message} at {e.Exception.StackTrace}";
             Debug.WriteLine(message);
-            Dispatcher.Invoke((msg) => { ControlLog.Add(msg as string); }, message);
+            Dispatcher.Invoke((msg) => { ControlLog.Insert(0, msg as string); }, message);
         }
 
         private void OnCommandResponseReceived(object sender, CommandResponseReceivedArgs e)
         {
             var message = $"{DateTime.Now.TimeOfDay} - {e.Command} completed with response '{e.Response}' in {Convert.ToInt32(e.Elapsed.TotalMilliseconds)}ms";
             Debug.WriteLine(message);
-            Dispatcher.Invoke((msg) => { ControlLog.Add(msg as string); }, message);
+            Dispatcher.Invoke((msg) => { ControlLog.Insert(0, msg as string); }, message);
         }
 
         private void OnQueryResponseReceived(object sender, QueryResponseReceivedArgs e)
         {
             var message = $"{DateTime.Now.TimeOfDay} - {e.ResponseType} returned value '{e.Value}' int {Convert.ToInt32(e.Elapsed.TotalMilliseconds)}ms";
             Debug.WriteLine(message);
-            Dispatcher.Invoke((msg) => { ControlLog.Add(msg as string); }, message);
+            Dispatcher.Invoke((msg) => { ControlLog.Insert(0, msg as string); }, message);
         }
 
         public ObservableCollection<string> ControlLog { get; } = new ObservableCollection<string>();

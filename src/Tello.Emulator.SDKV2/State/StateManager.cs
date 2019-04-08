@@ -155,7 +155,7 @@ namespace Tello.Emulator.SDKV2
 
         //todo: set an approximate acceleration in the movement commands before the delay and reset to zero after
         //todo: take heading into account - see Tello.Controller.Position.Move() for help
-        public void GoForward(int cm)
+        public async void GoForward(int cm)
         {
             if (!IsPoweredUp)
             {
@@ -168,6 +168,13 @@ namespace Tello.Emulator.SDKV2
             }
 
             Position.Move(TelloCommands.Forward, cm);
+
+            _droneState.SpeedX = Speed;
+            await Task.Run(async () =>
+            {
+                await Task.Delay(20 * 1000);
+                _droneState.SpeedX = 0;
+            });
         }
 
         public void GoBack(int cm)
@@ -280,7 +287,7 @@ namespace Tello.Emulator.SDKV2
             Position.Turn(TelloCommands.CounterClockwiseTurn, degrees);
         }
 
-        public void Go(int x, int y, int z, int speed)
+        public async void Go(int x, int y, int z, int speed)
         {
             if (!IsPoweredUp)
             {
@@ -313,6 +320,8 @@ namespace Tello.Emulator.SDKV2
                 : -1 * _droneState.HeightInCm;
             _droneState.BarometerInCm += heightDelta;
             _position.Height = _droneState.HeightInCm += heightDelta;
+            _droneState.SpeedX = speed;
+            await Task.Run(() => { Task.Delay(20 * 1000); _droneState.SpeedX = 0; });
         }
 
         public void StartVideo()

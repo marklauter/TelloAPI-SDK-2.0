@@ -12,7 +12,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <!-- flight control row -->
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <!-- flight state 6 pack row -->
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -45,8 +45,9 @@
                 </StackPanel>
                 <Button Command="{Binding Path=LandCommand}">land</Button>
             </controls:WrapPanel>
-
-            <ListBox Grid.Column="1" Background="AntiqueWhite" ItemsSource="{Binding ControlLog}"></ListBox>
+            <ScrollViewer Grid.Column="1" Height="200" MaxHeight="200">
+                <ListBox Background="AntiqueWhite" ItemsSource="{Binding ControlLog}"></ListBox>
+            </ScrollViewer>
         </Grid>
 
         <!-- flight state 6 pack -->
@@ -73,6 +74,37 @@
                     <TextBlock>ACEL (cm/s/s)</TextBlock>
                     <TextBlock Text="{Binding Path=State.AirSpeed.AccelerationX}"></TextBlock>
                 </StackPanel>
+                <Canvas HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse Width="100" Height="100" Fill="Black" Stroke="Black" StrokeThickness="5"/>
+                    <controls:RadialGauge 
+                        Width="100"
+                        Height="100"
+
+                        Minimum="0" 
+                        MinAngle="20"
+	                    Maximum="100" 
+                        MaxAngle="340"
+                            
+                        StepSize="0"
+                        Value="{Binding Path=State.AirSpeed.SpeedX, Mode=TwoWay}" 
+                        
+                        TickSpacing="10" 
+                        TickLength="25"
+                        TickWidth="2"
+                        TickBrush="White"
+
+                        ScalePadding="5"
+                        ScaleWidth="10" 
+                        ScaleBrush="White"
+	                    ScaleTickBrush="Lime"
+                        ScaleTickWidth="2"
+                        
+                        TrailBrush="White"
+                        
+                        NeedleBrush="White"
+	                    NeedleWidth="4">
+                    </controls:RadialGauge>
+                </Canvas>
             </StackPanel>
             <StackPanel Grid.Row="0" Grid.Column="1">
                 <TextBlock>attitude indicator</TextBlock>
@@ -163,13 +195,5 @@
                 </StackPanel>
             </StackPanel>
         </Grid>
-
-
-        <!--<controls:RadialGauge x:Name="RadialGaugeControl" Value="70" Minimum="0" 
-	        Maximum="180" TickSpacing="20" ScaleWidth="26" Unit="Units" TickBrush="Gainsboro"
-	        ScaleTickBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-	        NeedleWidth="5" TickLength="18">
-        </controls:RadialGauge>-->
-
     </Grid>
 </Page>
