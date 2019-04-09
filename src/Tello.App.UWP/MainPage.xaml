@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid ColumnSpacing="6" RowSpacing="6" Background="Silver">
         <Grid.RowDefinitions>
             <!-- flight control row -->
             <RowDefinition Height="Auto" />
@@ -51,7 +51,7 @@
         </Grid>
 
         <!-- flight state 6 pack -->
-        <Grid Grid.Row="1" x:Name="StateGrid" Background="DarkGray">
+        <Grid Grid.Row="1" x:Name="StateGrid" Background="Silver" ColumnSpacing="6" RowSpacing="6">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
@@ -63,9 +63,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!--first row-->
-            <StackPanel Grid.Row="0" Grid.Column="0">
-                <TextBlock>air speed indicator</TextBlock>
+            <!--
                 <StackPanel>
                     <TextBlock>SPEED (cm/s)</TextBlock>
                     <TextBlock Text="{Binding Path=State.AirSpeed.SpeedX}"></TextBlock>
@@ -74,38 +72,48 @@
                     <TextBlock>ACEL (cm/s/s)</TextBlock>
                     <TextBlock Text="{Binding Path=State.AirSpeed.AccelerationX}"></TextBlock>
                 </StackPanel>
-                <Canvas HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Ellipse Width="100" Height="100" Fill="Black" Stroke="Black" StrokeThickness="5"/>
-                    <controls:RadialGauge 
-                        Width="100"
-                        Height="100"
-
-                        Minimum="0" 
-                        MinAngle="20"
-	                    Maximum="100" 
-                        MaxAngle="340"
+                -->
+            <!--first row-->
+            <Grid Grid.Row="0" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+                <Ellipse x:Name="GaugeBg" Grid.RowSpan="2" Width="{Binding Path=ActualHeight, ElementName=GaugeBg}" Fill="Black" />
+                <controls:RadialGauge 
+                    Grid.RowSpan="2" 
+                    
+                    Margin="5"
+                        
+                    Minimum="0" 
+                    MinAngle="20"
+	                Maximum="100" 
+                    MaxAngle="340"
                             
-                        StepSize="0"
-                        Value="{Binding Path=State.AirSpeed.SpeedX, Mode=TwoWay}" 
-                        
-                        TickSpacing="10" 
-                        TickLength="25"
-                        TickWidth="2"
-                        TickBrush="White"
+                    StepSize="0"
+                    Value="{Binding Path=State.AirSpeed.SpeedX, Mode=TwoWay}" 
+                       
+                    TickSpacing="10" 
+                    TickLength="25"
+                    TickWidth="1"
+                    TickBrush="White"
 
-                        ScalePadding="5"
-                        ScaleWidth="10" 
-                        ScaleBrush="White"
-	                    ScaleTickBrush="White"
-                        ScaleTickWidth="2"
+                    ScalePadding="5"
+                    ScaleWidth="10" 
+                    ScaleBrush="White"
+	                ScaleTickBrush="White"
+                    ScaleTickWidth="1"
                         
-                        TrailBrush="White"
+                    TrailBrush="Green"
                         
-                        NeedleBrush="White"
-	                    NeedleWidth="4">
-                    </controls:RadialGauge>
-                </Canvas>
-            </StackPanel>
+                    NeedleBrush="White"
+	                NeedleWidth="2" />
+                <StackPanel Grid.Row="2" VerticalAlignment="Top">
+                    <TextBlock Foreground="White" FontWeight="Bold" HorizontalAlignment="Center">SPEED (cm/s)</TextBlock>
+                    <TextBlock Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Text="{Binding Path=State.AirSpeed.SpeedX}"/>
+                </StackPanel>
+            </Grid>
+
             <StackPanel Grid.Row="0" Grid.Column="1">
                 <TextBlock>attitude indicator</TextBlock>
                 <StackPanel>
