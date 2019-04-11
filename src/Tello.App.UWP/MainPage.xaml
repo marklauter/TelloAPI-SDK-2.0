@@ -51,7 +51,7 @@
         </Grid>
 
         <!-- flight state 6 pack -->
-        <Grid Grid.Row="1" x:Name="StateGrid" Background="Silver" ColumnSpacing="6" RowSpacing="6">
+        <Grid Grid.Row="1" x:Name="StateGrid" Background="DimGray" ColumnSpacing="6" RowSpacing="6">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
@@ -63,57 +63,34 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!--
-                <StackPanel>
-                    <TextBlock>SPEED (cm/s)</TextBlock>
-                    <TextBlock Text="{Binding Path=State.AirSpeed.SpeedX}"></TextBlock>
-                </StackPanel>
-                <StackPanel>
-                    <TextBlock>ACEL (cm/s/s)</TextBlock>
-                    <TextBlock Text="{Binding Path=State.AirSpeed.AccelerationX}"></TextBlock>
-                </StackPanel>
-                -->
-            <!--first row-->
+            <!-- first row -->
+            <!-- air speed -->
             <Grid Grid.Row="0" Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="3*"/>
                     <RowDefinition Height="2*"/>
                 </Grid.RowDefinitions>
-                <Ellipse x:Name="GaugeBg" Grid.RowSpan="2" Width="{Binding Path=ActualHeight, ElementName=GaugeBg}" Fill="Black" />
-                <controls:RadialGauge 
-                    Grid.RowSpan="2" 
-                    
-                    Margin="5"
-                        
-                    Minimum="0" 
-                    MinAngle="20"
-	                Maximum="100" 
-                    MaxAngle="340"
-                            
-                    StepSize="0"
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/>
+                <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
+                    Minimum="0" MinAngle="20" Maximum="100" MaxAngle="340" StepSize="0"
                     Value="{Binding Path=State.AirSpeed.SpeedX, Mode=TwoWay}" 
-                       
-                    TickSpacing="10" 
-                    TickLength="25"
-                    TickWidth="1"
-                    TickBrush="White"
-
-                    ScalePadding="5"
-                    ScaleWidth="10" 
-                    ScaleBrush="White"
-	                ScaleTickBrush="White"
-                    ScaleTickWidth="1"
-                        
-                    TrailBrush="Green"
-                        
-                    NeedleBrush="White"
-	                NeedleWidth="2" />
-                <StackPanel Grid.Row="2" VerticalAlignment="Top">
+                    TickSpacing="10" TickLength="15" TickWidth="3" TickBrush="White"
+                    ScalePadding="0" ScaleWidth="3" ScaleBrush="White" ScaleTickBrush="White" ScaleTickWidth="0"
+                    TrailBrush="LimeGreen" NeedleBrush="White" NeedleWidth="2" />
+                <StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Top">
                     <TextBlock Foreground="White" FontWeight="Bold" HorizontalAlignment="Center">SPEED (cm/s)</TextBlock>
                     <TextBlock Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Text="{Binding Path=State.AirSpeed.SpeedX}"/>
+                    <!--<TextBlock Foreground="White" FontSize="10" HorizontalAlignment="Center">AC (cm/s/s)</TextBlock>
+                    <TextBlock Foreground="White" FontSize="10" HorizontalAlignment="Center" Text="{Binding Path=State.AirSpeed.AccelerationX}"/>-->
                 </StackPanel>
             </Grid>
 
+            <!-- attitude indicator -->
             <StackPanel Grid.Row="0" Grid.Column="1">
                 <TextBlock>attitude indicator</TextBlock>
                 <StackPanel>
@@ -129,141 +106,109 @@
                     <TextBlock Text="{Binding Path=State.Attitude.Yaw}"></TextBlock>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="0" Grid.Column="3">
-                <TextBlock>altitude indicator</TextBlock>
-                <StackPanel>
-                    <TextBlock>AGL (cm)</TextBlock>
-                    <TextBlock Text="{Binding Path=State.Position.AltitudeAGLInCm}"></TextBlock>
-                </StackPanel>
-                <StackPanel>
-                    <TextBlock>MSL (cm)</TextBlock>
-                    <TextBlock Text="{Binding Path=State.Position.AltitudeMSLInCm}"></TextBlock>
-                </StackPanel>
-            </StackPanel>
 
-            <!--second row-->
-            <StackPanel Grid.Row="1" Grid.Column="0">
-                <TextBlock>lateral speed indicator (turn coordinator)</TextBlock>
-                <StackPanel>
-                    <TextBlock>SPEED (cm/s)</TextBlock>
-                    <TextBlock Text="{Binding Path=State.AirSpeed.SpeedY}"></TextBlock>
+            <!-- altitude indicator -->
+            <Grid Grid.Row="0" Grid.Column="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/>
+                <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
+                    Minimum="0" MinAngle="0" Maximum="1000" MaxAngle="330" StepSize="0"
+                    Value="{Binding Path=State.Position.AltitudeAGLInCm, Mode=TwoWay}" 
+                    TickSpacing="50" TickLength="15" TickWidth="3" TickBrush="White"
+                    ScalePadding="0" ScaleWidth="3" ScaleBrush="White" ScaleTickBrush="White" ScaleTickWidth="0"
+                    TrailBrush="LimeGreen" NeedleBrush="White" NeedleWidth="2" />
+                <StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Top">
+                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center">ALT (cm)</TextBlock>
+                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=State.Position.AltitudeAGLInCm}"></TextBlock>
+                    <!--<TextBlock>MSL (cm)</TextBlock>
+                    <TextBlock Text="{Binding Path=State.Position.AltitudeMSLInCm}"></TextBlock>-->
                 </StackPanel>
-                <Canvas HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Ellipse Width="100" Height="100" Fill="Black" Stroke="Black" StrokeThickness="5"/>
-                    <controls:RadialGauge 
-                        Width="100"
-                        Height="100"
-                        
-                        Minimum="-100" 
-                        MinAngle="270"
-	                    Maximum="100" 
-                        MaxAngle="90"
-                            
-                        StepSize="0"
-                        Value="{Binding Path=State.AirSpeed.SpeedY, Mode=TwoWay}" 
-                        
-                        TickSpacing="20" 
-                        TickLength="25"
-                        TickWidth="2"
-                        TickBrush="White"
+            </Grid>
 
-                        ScalePadding="5"
-                        ScaleWidth="10" 
-                        ScaleBrush="White"
-	                    ScaleTickBrush="White"
-                        ScaleTickWidth="2"
-                        
-                        TrailBrush="White"        
-                        
-                        NeedleBrush="White"
-	                    NeedleWidth="4">
-                    </controls:RadialGauge>
-                </Canvas>
-                <StackPanel>
-                    <TextBlock>ACEL (cm/s/s)</TextBlock>
-                    <TextBlock Text="{Binding Path=State.AirSpeed.AccelerationZ}"></TextBlock>
+            <!-- second row -->
+            <!-- lateral speed/accel (turn coordinator) -->
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/>
+                <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
+                    Minimum="-100" MinAngle="270" Maximum="100" MaxAngle="90" StepSize="0"
+                    Value="{Binding Path=State.AirSpeed.SpeedY, Mode=TwoWay}" 
+                    TickSpacing="20" TickLength="15" TickWidth="3" TickBrush="White"
+                    ScalePadding="0" ScaleWidth="3" ScaleBrush="White" ScaleTickBrush="White" ScaleTickWidth="0"
+                    TrailBrush="White" NeedleBrush="White" NeedleWidth="2" />
+                <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
+                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center">LAT SPD (cm/s)</TextBlock>
+                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=State.AirSpeed.SpeedY}"></TextBlock>
+                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center">TC (cm/s/s)</TextBlock>
+                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=State.AirSpeed.AccelerationZ}"></TextBlock>
                 </StackPanel>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="1">
-                <TextBlock>heading indicator</TextBlock>
-                <StackPanel>
-                    <TextBlock>HDG (deg)</TextBlock>
-                    <TextBlock Text="{Binding Path=State.Position.Heading}"></TextBlock>
+            </Grid>
+
+            <!-- heading indicator -->
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/>
+                <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
+                    Minimum="0" MinAngle="0" Maximum="360" MaxAngle="360" StepSize="0"
+                    Value="{Binding Path=State.Position.Heading, Mode=TwoWay}" 
+                    TickSpacing="45" TickLength="15" TickWidth="3" TickBrush="White"
+                    ScalePadding="0" ScaleWidth="3" ScaleBrush="White" ScaleTickBrush="White" ScaleTickWidth="0"
+                    TrailBrush="White" NeedleBrush="White" NeedleWidth="2" />
+                <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
+                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center">HDG (deg)</TextBlock>
+                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=State.Position.Heading}"></TextBlock>
                 </StackPanel>
-                <Canvas HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Ellipse Width="100" Height="100" Fill="Black" Stroke="Black" StrokeThickness="5"/>
-                    <controls:RadialGauge 
-                        Width="100"
-                        Height="100"
+            </Grid>
 
-                        Minimum="0" 
-                        MinAngle="0"
-	                    Maximum="360" 
-                        MaxAngle="360"
-                            
-                        StepSize="0"
-                        Value="{Binding Path=State.AirSpeed.Heading, Mode=TwoWay}" 
-                        
-                        TickSpacing="45" 
-                        TickLength="15"
-                        TickWidth="2"
-                        TickBrush="White"
-
-                        ScalePadding="2"
-                        ScaleWidth="4" 
-                        ScaleBrush="White"
-	                    ScaleTickBrush="White"
-                        ScaleTickWidth="2"
-                        
-                        TrailBrush="White"        
-                        
-                        NeedleBrush="White"
-	                    NeedleWidth="4">
-                    </controls:RadialGauge>
-                </Canvas>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="3">
-                <TextBlock>vertical speed indicator</TextBlock>
-                <StackPanel>
-                    <TextBlock>SPEED (cm/s)</TextBlock>
-                    <TextBlock Text="{Binding Path=State.AirSpeed.SpeedZ}"></TextBlock>
+            <!-- vertical speed indicator -->
+            <Grid Grid.Row="1" Grid.Column="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/>
+                <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
+                    Minimum="-100" MinAngle="180" Maximum="100" MaxAngle="360" StepSize="0"
+                    Value="{Binding Path=State.AirSpeed.SpeedZ}" 
+                    TickSpacing="20" TickLength="15" TickWidth="3" TickBrush="White"
+                    ScalePadding="0" ScaleWidth="3" ScaleBrush="White" ScaleTickBrush="White" ScaleTickWidth="0"
+                    TrailBrush="White" NeedleBrush="White" NeedleWidth="2" />
+                <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
+                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center">VSI (cm/s)</TextBlock>
+                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=State.AirSpeed.SpeedZ}"></TextBlock>
+                    <!--<TextBlock>ACEL (cm/s/s)</TextBlock>
+                    <TextBlock Text="{Binding Path=State.AirSpeed.AccelerationZ}"></TextBlock>-->
                 </StackPanel>
-                <Canvas HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Ellipse Width="100" Height="100" Fill="Black" Stroke="Black" StrokeThickness="5"/>
-                    <controls:RadialGauge 
-                        Width="100"
-                        Height="100"
-
-                        Minimum="-100" 
-                        MinAngle="180"
-	                    Maximum="100" 
-                        MaxAngle="360"
-                            
-                        StepSize="0"
-                        Value="{Binding Path=State.AirSpeed.SpeedZ, Mode=TwoWay}" 
-                        
-                        TickSpacing="20" 
-                        TickLength="25"
-                        TickWidth="2"
-                        TickBrush="White"
-
-                        ScalePadding="5"
-                        ScaleWidth="10" 
-                        ScaleBrush="White"
-	                    ScaleTickBrush="White"
-                        ScaleTickWidth="2"
-                        
-                        TrailBrush="White"        
-                        
-                        NeedleBrush="White"
-	                    NeedleWidth="4">
-                    </controls:RadialGauge>
-                </Canvas>
-                <StackPanel>
-                    <TextBlock>ACEL (cm/s/s)</TextBlock>
-                    <TextBlock Text="{Binding Path=State.AirSpeed.AccelerationZ}"></TextBlock>
-                </StackPanel>
-            </StackPanel>
+            </Grid>
 
             <!--third row-->
             <StackPanel Grid.Row="2" Grid.Column="0">
