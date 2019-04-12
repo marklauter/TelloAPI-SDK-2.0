@@ -32,7 +32,7 @@ namespace Tello.Udp.Demo
             //_tello.PowerOn();
 
             Log.WriteLine("> enter sdk mode");
-            _controller.EnterSdkMode();
+            _controller.Connect();
 
             Log.WriteLine("> get battery");
             _controller.GetBattery();

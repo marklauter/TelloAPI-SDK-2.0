@@ -4,7 +4,7 @@ using Tello.App.MvvM;
 
 namespace Tello.App.UWP.Services
 {
-    public class UserNotifier : IUserNotifier
+    public class UINotifier : IUINotifier
     {
         public void Error(string message, string title = "error")
         {

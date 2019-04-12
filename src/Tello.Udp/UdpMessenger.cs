@@ -68,7 +68,7 @@ namespace Tello.Udp
         {
             return Task.Run(async () =>
             {
-                var timer = Stopwatch.StartNew();
+                var stopwatch = Stopwatch.StartNew();
                 try
                 {
                     if (MessengerState != MessengerStates.Connected)
@@ -79,23 +79,23 @@ namespace Tello.Udp
                     await _client.SendAsync(request.Data, request.Data.Length);
 
                     var spinWait = new SpinWait();
-                    while (_client.Available == 0 && timer.Elapsed <= request.Timeout)
+                    while (_client.Available == 0 && stopwatch.Elapsed <= request.Timeout)
                     {
                         spinWait.SpinOnce();
                     }
-                    timer.Stop();
+                    stopwatch.Stop();
 
                     if (_client.Available == 0)
                     {
-                        throw new TimeoutException(timer.Elapsed.ToString());
+                        throw new TimeoutException(stopwatch.Elapsed.ToString());
                     }
 
                     var response = await _client.ReceiveAsync();
-                    return Response.FromData(request, response.Buffer, timer.Elapsed);
+                    return Response.FromData(request, response.Buffer, stopwatch.Elapsed);
                 }
                 catch (Exception ex)
                 {
-                    return Response.FromException(request, ex, timer.Elapsed);
+                    return Response.FromException(request, ex, stopwatch.Elapsed);
                 }
             });
         }

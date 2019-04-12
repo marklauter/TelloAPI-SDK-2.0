@@ -53,7 +53,7 @@ namespace Tello.Controller.Test
             tello.PowerOn();
             try
             {
-                controller.EnterSdkMode();
+                controller.Connect();
                 Assert.AreEqual(ConnectionStates.CommandLinkEstablished, controller.ConnectionState);
             }
             finally
@@ -82,7 +82,7 @@ namespace Tello.Controller.Test
                 Assert.Fail("wrong event handler called");
             };
 
-            controller.EnterSdkMode();
+            controller.Connect();
         }
 
         private void AwaitCommand(FlightController controller, Action command)
@@ -114,7 +114,7 @@ namespace Tello.Controller.Test
             tello.PowerOn();
             try
             {
-                controller.EnterSdkMode();
+                controller.Connect();
                 controller.CommandResponseReceived += delegate (object sender, CommandResponseReceivedArgs e)
                 {
                     actualCommand = e.Command;
@@ -149,7 +149,7 @@ namespace Tello.Controller.Test
             tello.PowerOn();
             try
             {
-                controller.EnterSdkMode();
+                controller.Connect();
                 AwaitCommand(controller, controller.TakeOff);
                 Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
 
@@ -182,7 +182,7 @@ namespace Tello.Controller.Test
             tello.PowerOn();
             try
             {
-                controller.EnterSdkMode();
+                controller.Connect();
                 AwaitCommand(controller, controller.TakeOff);
                 Assert.AreEqual(FlightStates.InFlight, controller.FlightState);
 

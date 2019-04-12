@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.Udp", "Tello.Udp\Tello.Udp.csproj", "{894D1A55-9212-4C04-AAD7-A6621549594D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.SDKV2.Udp", "Tello.Udp\Tello.SDKV2.Udp.csproj", "{894D1A55-9212-4C04-AAD7-A6621549594D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{27288A55-6761-4412-B2A5-EFAF635C4A30}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.Controller", "Tello.Controller\Tello.Controller.csproj", "{C19D61FF-4B43-4FE4-89CB-BBED1A9FDA4A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.Emulator.SDKV2", "Tello.Emulator.SDKV2\Tello.Emulator.SDKV2.csproj", "{D1455165-FCA1-4C89-8FCE-33553AC060DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.SDKV2.Emulator", "Tello.Emulator.SDKV2\Tello.SDKV2.Emulator.csproj", "{D1455165-FCA1-4C89-8FCE-33553AC060DD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.Emulator.SDKV2.Demo", "Tello.Emulator.SDKV2.Demo\Tello.Emulator.SDKV2.Demo.csproj", "{9DB0B70C-E5F0-4E7E-B3E7-2C6E6D9E49DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.SDKV2.Emulator.Demo", "Tello.Emulator.SDKV2.Demo\Tello.SDKV2.Emulator.Demo.csproj", "{9DB0B70C-E5F0-4E7E-B3E7-2C6E6D9E49DA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.Messaging", "Tello.Messaging\Tello.Messaging.csproj", "{04963A60-6721-4057-B3AE-2D97D025D127}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.Udp.Demo", "Tello.Udp.Demo\Tello.Udp.Demo.csproj", "{AEC9444C-B8D6-468E-AF62-2E68C77321AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.SDKV2.Udp.Demo", "Tello.Udp.Demo\Tello.SDKV2.Udp.Demo.csproj", "{AEC9444C-B8D6-468E-AF62-2E68C77321AC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuspec", "nuspec", "{7DB42DF1-D03B-4CEC-AF7E-37481DE7BB87}"
 	ProjectSection(SolutionItems) = preProject

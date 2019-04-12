@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj" />
-    <ProjectReference Include="..\Tello.Emulator.SDKV2\Tello.Emulator.SDKV2.csproj" />
+    <ProjectReference Include="..\Tello.Emulator.SDKV2\Tello.SDKV2.Emulator.csproj" />
     <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj" />
   </ItemGroup>
 

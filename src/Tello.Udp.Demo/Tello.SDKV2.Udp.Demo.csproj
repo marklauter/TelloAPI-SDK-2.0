@@ -8,7 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj" />
     <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj" />
-    <ProjectReference Include="..\Tello.Udp\Tello.Udp.csproj" />
+    <ProjectReference Include="..\Tello.Udp\Tello.SDKV2.Udp.csproj" />
   </ItemGroup>
 
 </Project>

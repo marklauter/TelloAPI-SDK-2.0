@@ -81,9 +81,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.64"
-     inkscape:cx="332.64776"
-     inkscape:cy="664.98107"
+     inkscape:zoom="0.90509668"
+     inkscape:cx="35.691417"
+     inkscape:cy="380.90572"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -1440,12 +1440,18 @@ AJ60RJKSg4NuxwEAAAAAAFBX/x/Io77lVRKLAwAAAABJRU5ErkJggg==
        width="54.504166"
        height="54.504166"
        x="65.553345"
-       y="4.080225" />
+       y="4.080225"
+       inkscape:export-filename="C:\Dev\MarkLauter\TelloAPI\src\Tello.App.UWP\Assets\gauge.png"
+       inkscape:export-xdpi="279.60999"
+       inkscape:export-ydpi="279.60999" />
     <circle
        cy="31.332308"
        cx="92.805428"
        id="circle843"
        style="opacity:1;fill:#000000;fill-opacity:0.94387758;stroke:none;stroke-width:55.19934845;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
-       r="25.135416" />
+       r="25.135416"
+       inkscape:export-filename="C:\Dev\MarkLauter\TelloAPI\src\Tello.App.UWP\Assets\gauge.png"
+       inkscape:export-xdpi="279.60999"
+       inkscape:export-ydpi="279.60999" />
   </g>
 </svg>

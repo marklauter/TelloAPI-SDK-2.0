@@ -474,7 +474,7 @@ namespace Tello.Controller
         /// <summary>
         /// establish a command link with Tello - validates network connection, connects to UDP, sends "command" to Tello
         /// </summary>
-        public async void EnterSdkMode()
+        public async void Connect()
         {
             ConnectionState = ConnectionStates.Connecting;
             try
@@ -489,12 +489,20 @@ namespace Tello.Controller
             }
             catch (Exception ex)
             {
+                _messenger.Disconnect();
                 _stateServer.Stop();
                 ConnectionState = ConnectionStates.Disconnected;
                 ExceptionThrown?.Invoke(this,
                     new ExceptionThrownArgs(
                         new TelloControllerException($"Connection failed with message '{ex.Message}'", ex)));
             }
+        }
+
+        public void Disconnect()
+        {
+            _messenger.Disconnect();
+            _stateServer.Stop();
+            ConnectionState = ConnectionStates.Disconnected;
         }
 
         /// <summary>

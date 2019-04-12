@@ -26,7 +26,9 @@
 
             <controls:WrapPanel Grid.Column="0">
                 <Button Command="{Binding Path=EnterSdkModeCommand}">connect</Button>
+                <Button Command="{Binding Path=DisconnectCommand}">disconnect</Button>
                 <Button Command="{Binding Path=TakeOffCommand}">takeoff</Button>
+                <Button Command="{Binding Path=ForwardCommand}" CommandParameter="100">forward 100</Button>
                 <StackPanel BorderBrush="Black" BorderThickness="1">
                     <!-- sides, length, speed, clock-->
                     <StackPanel>
@@ -45,6 +47,7 @@
                 </StackPanel>
                 <Button Command="{Binding Path=LandCommand}">land</Button>
             </controls:WrapPanel>
+            
             <ScrollViewer Grid.Column="1" Height="200" MaxHeight="200">
                 <ListBox Background="AntiqueWhite" ItemsSource="{Binding ControlLog}"></ListBox>
             </ScrollViewer>

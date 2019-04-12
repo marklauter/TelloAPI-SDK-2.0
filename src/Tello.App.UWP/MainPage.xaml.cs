@@ -1,4 +1,4 @@
-﻿#define EMULATOR
+﻿#define NO_EMULATOR
 
 #if EMULATOR
 using Tello.Emulator.SDKV2;
@@ -16,19 +16,14 @@ using Tello.Repository;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-
 namespace Tello.App.UWP
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MainPage : Page
     {
         private readonly IMessengerService _tello;
         private readonly FlightController _flightController;
         private readonly IUIDispatcher _uiDispatcher;
-        private readonly IUserNotifier _userNotifier;
+        private readonly IUINotifier _uiNotifier;
         private readonly IRepository _repository;
 
         public TelloControllerViewModel ControllerViewModel { get; }
@@ -39,7 +34,7 @@ namespace Tello.App.UWP
             InitializeComponent();
 
             _uiDispatcher = new UIDispatcher(SynchronizationContext.Current);
-            _userNotifier = new UserNotifier();
+            _uiNotifier = new UINotifier();
             _repository = new ObservationRepository();
 
 #if EMULATOR
@@ -51,8 +46,8 @@ namespace Tello.App.UWP
 
             _flightController = new FlightController(tello, tello.StateServer, tello.VideoServer, tello.VideoSampleProvider);
 
-            ControllerViewModel = new TelloControllerViewModel(_uiDispatcher, _userNotifier, _flightController);
-            StateViewModel = new TelloStateViewModel(_uiDispatcher, _userNotifier, _flightController, _repository);
+            ControllerViewModel = new TelloControllerViewModel(_uiDispatcher, _uiNotifier, _flightController);
+            StateViewModel = new TelloStateViewModel(_uiDispatcher, _uiNotifier, _flightController, _repository);
 
             ControllerGrid.DataContext = ControllerViewModel;
             StateGrid.DataContext = StateViewModel;

@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Tello.Controller\Tello.Controller.csproj" />
-    <ProjectReference Include="..\..\src\Tello.Emulator.SDKV2\Tello.Emulator.SDKV2.csproj" />
+    <ProjectReference Include="..\..\src\Tello.Emulator.SDKV2\Tello.SDKV2.Emulator.csproj" />
     <ProjectReference Include="..\..\src\Tello.Messaging\Tello.Messaging.csproj" />
     <ProjectReference Include="..\..\src\Tello.Scripting\Tello.Scripting.csproj" />
   </ItemGroup>

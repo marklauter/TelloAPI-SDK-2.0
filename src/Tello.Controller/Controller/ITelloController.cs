@@ -19,7 +19,9 @@ namespace Tello.Controller
         /// <summary>
         /// establish a command link with Tello - validates network connection, connects to UDP, sends "command" to Tello
         /// </summary>
-        void EnterSdkMode();
+        void Connect();
+
+        void Disconnect();
 
         /// <summary>
         /// auto take off to 20cm

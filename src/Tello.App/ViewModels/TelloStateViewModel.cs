@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Tello.App.MvvM;
 using Tello.Controller;
@@ -15,7 +14,7 @@ namespace Tello.App.ViewModels
         private readonly IStateChangedNotifier _telloStateChangedNotifier;
         private readonly IRepository _repository;
 
-        public TelloStateViewModel(IUIDispatcher dispatcher, IUserNotifier userNotifier, IStateChangedNotifier telloStateChangedNotifier, IRepository repository) : base(dispatcher, userNotifier)
+        public TelloStateViewModel(IUIDispatcher dispatcher, IUINotifier userNotifier, IStateChangedNotifier telloStateChangedNotifier, IRepository repository) : base(dispatcher, userNotifier)
         {
             _telloStateChangedNotifier = telloStateChangedNotifier ?? throw new ArgumentNullException(nameof(telloStateChangedNotifier));
             _repository = repository;
@@ -33,9 +32,17 @@ namespace Tello.App.ViewModels
 
         private async void OnTelloStateChanged(object sender, StateChangedArgs e)
         {
-            Dispatcher.Invoke((state)=> { StateHistory.Add(state as ITelloState); }, State);
+            Dispatcher.Invoke((state) =>
+            {
+                StateHistory.Add(state as ITelloState);
+                if(StateHistory.Count > 500)
+                {
+                    StateHistory.RemoveAt(0);
+                }
+            }, 
+            State);
             State = e.State;
-            if(_repository != null)
+            if (_repository != null)
             {
                 var groupId = Guid.NewGuid().ToString();
                 await _repository.Write(new PositionObservation(e.State, groupId));
@@ -49,6 +56,10 @@ namespace Tello.App.ViewModels
         public ObservableCollection<ITelloState> StateHistory { get; } = new ObservableCollection<ITelloState>();
 
         private ITelloState _state;
-        public ITelloState State { get => _state; set => SetProperty(ref _state, value); }
+        public ITelloState State
+        {
+            get => _state;
+            set => SetProperty(ref _state, value);
+        }
     }
 }

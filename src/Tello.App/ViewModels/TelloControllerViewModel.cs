@@ -11,7 +11,7 @@ namespace Tello.App.ViewModels
     {
         private readonly ITelloController _telloController;
 
-        public TelloControllerViewModel(IUIDispatcher dispatcher, IUserNotifier userNotifier, ITelloController telloController) : base(dispatcher, userNotifier)
+        public TelloControllerViewModel(IUIDispatcher dispatcher, IUINotifier userNotifier, ITelloController telloController) : base(dispatcher, userNotifier)
         {
             _telloController = telloController ?? throw new ArgumentNullException(nameof(telloController));
         }
@@ -64,7 +64,10 @@ namespace Tello.App.ViewModels
 
 #pragma warning disable IDE1006 // Naming Styles
         private IInputCommand _EnterSdkModeCommand;
-        public IInputCommand EnterSdkModeCommand => _EnterSdkModeCommand = _EnterSdkModeCommand ?? new InputCommand(_telloController.EnterSdkMode);
+        public IInputCommand EnterSdkModeCommand => _EnterSdkModeCommand = _EnterSdkModeCommand ?? new InputCommand(_telloController.Connect);
+
+        private IInputCommand _DisconnectCommand;
+        public IInputCommand DisconnectCommand => _DisconnectCommand = _DisconnectCommand ?? new InputCommand(_telloController.Disconnect);
 
         private IInputCommand _TakeOffCommand;
         public IInputCommand TakeOffCommand => _TakeOffCommand = _TakeOffCommand ?? new InputCommand(_telloController.TakeOff);
@@ -96,6 +99,12 @@ namespace Tello.App.ViewModels
         private IInputCommand<int> _GoRightCommand;
         public IInputCommand<int> GoRightCommand => _GoRightCommand = _GoRightCommand ?? new InputCommand<int>(_telloController.GoRight);
 
+        private IInputCommand<int> _GoForwardCommand;
+        public IInputCommand<int> GoForwardCommand => _GoForwardCommand = _GoForwardCommand ?? new InputCommand<int>((cm) =>
+             {
+                 _telloController.GoForward(cm);
+             });
+
         private IInputCommand<int> _GoBackwardCommand;
         public IInputCommand<int> GoBackwardCommand => _GoBackwardCommand = _GoBackwardCommand ?? new InputCommand<int>(_telloController.GoBackward);
 
@@ -119,7 +128,7 @@ namespace Tello.App.ViewModels
 
         private IInputCommand<Tuple<int, int, int, int, int, int, int>> _CurveCommand;
         public IInputCommand<Tuple<int, int, int, int, int, int, int>> CommandNameCommand => _CurveCommand = _CurveCommand ?? new InputCommand<Tuple<int, int, int, int, int, int, int>>((tuple) => { _telloController.Curve(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7); });
-        
+
         //sides, length, speed, clock, do land
         public Tuple<int, int, int, ClockDirections, bool> FlyPolygonCommandParams { get; } = new Tuple<int, int, int, ClockDirections, bool>(3, 100, 50, ClockDirections.Clockwise, false);
         private IInputCommand<Tuple<int, int, int, ClockDirections, bool>> _FlyPolygonCommand;
