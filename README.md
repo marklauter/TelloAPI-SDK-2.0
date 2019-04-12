@@ -13,11 +13,13 @@ Tello doesn't respond to commands as I expected after first skim of the SDK 1.0 
 Since the Tello operates synchronously, the flight controller had to provide an asynchronous interface to the Tello messaging system. We can't have a UI sitting around waiting for a 20 second command to complete, right? So command messages are queued up as they are received, program control is returned to the main thread, and a queue consumer running in a seperate thread pulls an item off the queue when it detects that Tello is ready for the next message.
 
 ## Work Plan
-### February - March 2019
+### February - March 2019 - COMPLETE
+* messaging interfaces
 * UDP messenger
 * Tello SDK 2.0 emulator
-* Sample projects
-* Automated tests
+* sample projects with dependency injection
+* automated tests
+* simplified scipting
 
 ### April 2019 Goals
 * UWP UI - command buttons tab, script tab, real time operations log display, gauges based on aviation 6 pack
