@@ -37,24 +37,24 @@ namespace Tello.Controller
         /// <param name="y">from estimated position tracker that works based on movement commands</param>
         /// <param name="useMissionPad"></param>
         /// <returns>Position</returns>
-        public Position(IRawDroneState rawDroneState, int heading)
-        {
-            if (rawDroneState == null)
-            {
-                throw new ArgumentNullException(nameof(rawDroneState));
-            }
+        //public Position(IRawDroneState rawDroneState, int heading)
+        //{
+        //    if (rawDroneState == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(rawDroneState));
+        //    }
 
-            if (!rawDroneState.MissionPadDetected)
-            {
-                throw new ArgumentException($"{nameof(rawDroneState)}.{nameof(IRawDroneState.MissionPadDetected)} == false");
-            }
+        //    if (!rawDroneState.MissionPadDetected)
+        //    {
+        //        throw new ArgumentException($"{nameof(rawDroneState)}.{nameof(IRawDroneState.MissionPadDetected)} == false");
+        //    }
 
-            AltitudeAGLInCm = rawDroneState.MissionPadZ;
-            AltitudeMSLInCm = rawDroneState.BarometerInCm + _altitudeDelta;
-            Heading = heading;
-            X = rawDroneState.MissionPadX;
-            Y = rawDroneState.MissionPadY;
-        }
+        //    AltitudeAGLInCm = rawDroneState.MissionPadZ;
+        //    AltitudeMSLInCm = rawDroneState.BarometerInCm + _altitudeDelta;
+        //    Heading = heading;
+        //    X = rawDroneState.MissionPadX;
+        //    Y = rawDroneState.MissionPadY;
+        //}
 
         /// <summary>
         /// requires position tracker to work - ignores mission pad values

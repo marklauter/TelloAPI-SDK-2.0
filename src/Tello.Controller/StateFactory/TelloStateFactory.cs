@@ -11,31 +11,6 @@ namespace Tello.Controller
         private static IBattery _battery = new Battery();
         private static IHobbsMeter _hobbsMeter = new HobbsMeter();
 
-        public static IPosition GetPosition()
-        {
-            return new Position(_position);
-        }
-
-        public static IAirSpeed GetAirSpeed()
-        {
-            return new AirSpeed(_airSpeed);
-        }
-
-        public static IAttitude GetAttitude()
-        {
-            return new Attitude(_attitude);
-        }
-
-        public static IBattery GetBattery()
-        {
-            return new Battery(_battery);
-        }
-
-        public static IHobbsMeter GetHobbsMeter()
-        {
-            return new HobbsMeter(_hobbsMeter);
-        }
-
         public static ITelloState GetState()
         {
             return new TelloState(
@@ -46,35 +21,35 @@ namespace Tello.Controller
                 new HobbsMeter(_hobbsMeter));
         }
 
-        public static void Update(IRawDroneState rawDroneState, bool useMissionPad = false)
+        public static void Update(IRawDroneState rawDroneState)//, bool useMissionPad = false)
         {
             if (rawDroneState == null)
             {
                 throw new ArgumentNullException(nameof(rawDroneState));
             }
 
-            if (useMissionPad)
-            {
-                if (!rawDroneState.MissionPadDetected)
-                {
-                    throw new ArgumentException($"{nameof(rawDroneState)}.{nameof(IRawDroneState.MissionPadDetected)} == false");
-                }
+            //if (useMissionPad)
+            //{
+            //    if (!rawDroneState.MissionPadDetected)
+            //    {
+            //        throw new ArgumentException($"{nameof(rawDroneState)}.{nameof(IRawDroneState.MissionPadDetected)} == false");
+            //    }
 
-                _positionGate.WithReadLock(() =>
-                {
-                    _position = new Position(rawDroneState, _heading);
-                });
-            }
-            else
-            {
+            //    _positionGate.WithReadLock(() =>
+            //    {
+            //        _position = new Position(rawDroneState, _heading);
+            //    });
+            //}
+            //else
+            //{
                 _positionGate.WithReadLock(() =>
                 {
                     _position = new Position(rawDroneState, _x, _y, _heading);
                 });
-            }
+            //}
 
             _airSpeed = new AirSpeed(rawDroneState);
-            _attitude = new Attitude(rawDroneState, useMissionPad);
+            _attitude = new Attitude(rawDroneState, false); //, useMissionPad);
             _battery = new Battery(rawDroneState);
             _hobbsMeter = new HobbsMeter(rawDroneState);
         }
