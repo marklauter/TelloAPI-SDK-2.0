@@ -1,33 +1,32 @@
-﻿#define NO_EMULATOR
+﻿#define EMULATOR
 
 #if EMULATOR
 using Tello.Emulator.SDKV2;
 #else
 using Tello.Udp;
 #endif
-
+using System;
 using System.Threading;
 using Tello.App.MvvM;
 using Tello.App.UWP.Services;
 using Tello.App.ViewModels;
-using Tello.Controller;
 using Tello.Messaging;
 using Tello.Repository;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Popups;
 
 namespace Tello.App.UWP
 {
     public sealed partial class MainPage : Page
     {
+        public MainViewModel ViewModel { get; }
+#if EMULATOR
         private readonly IMessengerService _tello;
-        private readonly FlightController _flightController;
+#endif
         private readonly IUIDispatcher _uiDispatcher;
         private readonly IUINotifier _uiNotifier;
         private readonly IRepository _repository;
-
-        public TelloControllerViewModel ControllerViewModel { get; }
-        public TelloStateViewModel StateViewModel { get; }
 
         public MainPage()
         {
@@ -39,42 +38,50 @@ namespace Tello.App.UWP
 
 #if EMULATOR
             var tello = new TelloEmulator();
+            _tello = tello;
 #else
             var tello = new UdpMessenger();
 #endif
-            _tello = tello;
 
-            _flightController = new FlightController(tello, tello.StateServer, tello.VideoServer, tello.VideoSampleProvider);
-
-            StateViewModel = new TelloStateViewModel(_uiDispatcher, _uiNotifier, _flightController, _repository);
-            StateGrid.DataContext = StateViewModel;
-
-            ControllerViewModel = new TelloControllerViewModel(_uiDispatcher, _uiNotifier, _flightController, _repository);
-            ControllerGrid.DataContext = ControllerViewModel;
+            ViewModel = new MainViewModel(_uiDispatcher, _uiNotifier, _repository, tello, tello.StateServer, tello.VideoServer, tello.VideoSampleProvider);
+            DataContext = ViewModel;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
-#if EMULATOR
-            (_tello as TelloEmulator).PowerOn();
-#endif
-
-            ControllerViewModel.Open(new OpenEventArgs());
-            StateViewModel.Open(new OpenEventArgs());
+            ViewModel.Open();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            ControllerViewModel.Close();
-            StateViewModel.Close();
+            ViewModel.Close();
 
-#if EMULATOR
-            (_tello as TelloEmulator).PowerOff();
-#endif
 
             base.OnNavigatedFrom(e);
+        }
+
+        private async void PowerUpButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+#if EMULATOR
+            (_tello as TelloEmulator).PowerOn();
+            var dialog = new MessageDialog("Powered On", "Tello SDK Emulator");
+#else
+            var dialog = new MessageDialog("This method is for the SDK emulator.", "Tello Drone");
+#endif
+            await dialog.ShowAsync();
+        }
+
+        private async void PowerDownButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+#if EMULATOR
+            (_tello as TelloEmulator).PowerOff();
+            var dialog = new MessageDialog("Powered Off", "Tello SDK Emulator");
+#else
+            var dialog = new MessageDialog("This method is for the SDK emulator.", "Tello Drone");
+#endif
+            await dialog.ShowAsync();
         }
     }
 }

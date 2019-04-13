@@ -18,39 +18,59 @@
         </Grid.RowDefinitions>
 
         <!-- flight control row -->
-        <Grid Grid.Row="0" x:Name="ControllerGrid" Background="AliceBlue">
+        <Grid Grid.Row="0" x:Name="ControllerGrid" ColumnSpacing="6" RowSpacing="6">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <controls:WrapPanel Grid.Column="0">
-                <Button Command="{Binding Path=EnterSdkModeCommand}">connect</Button>
-                <Button Command="{Binding Path=DisconnectCommand}">disconnect</Button>
-                <Button Command="{Binding Path=TakeOffCommand}">takeoff</Button>
-                <Button Command="{Binding Path=SetSpeedCommand}" CommandParameter="50">set speed 50</Button>
-                <Button Command="{Binding Path=GoForwardCommand}" CommandParameter="500">forward 500</Button>
-                <StackPanel BorderBrush="Black" BorderThickness="1">
+            <controls:WrapPanel Grid.Column="0" Orientation="Horizontal" Background="DimGray" Margin="5">
+                <StackPanel BorderBrush="White" BorderThickness="1" Margin="5" Padding="5">
+                    <Button Click="PowerUpButton_Click">power on</Button>
+                    <Button Click="PowerDownButton_Click">power off</Button>
+                </StackPanel>
+
+                <StackPanel BorderBrush="White" BorderThickness="1" Margin="5" Padding="5">
+                    <Button Command="{Binding Path=ControllerViewModel.EnterSdkModeCommand}">connect</Button>
+                    <Button Command="{Binding Path=ControllerViewModel.DisconnectCommand}">disconnect</Button>
+                </StackPanel>
+
+                <StackPanel BorderBrush="White" BorderThickness="1" Margin="5" Padding="5">
+                    <Button Command="{Binding Path=ControllerViewModel.TakeOffCommand}">takeoff</Button>
+                    <Button Command="{Binding Path=ControllerViewModel.LandCommand}">land</Button>
+                </StackPanel>
+
+                <StackPanel BorderBrush="White" BorderThickness="1" Margin="5" Padding="5">
+                    <Button Command="{Binding Path=ControllerViewModel.SetSpeedCommand}" CommandParameter="50">set speed 50</Button>
+                    <Button Command="{Binding Path=ControllerViewModel.GoForwardCommand}" CommandParameter="500">forward 500</Button>
+                </StackPanel>
+
+                <StackPanel BorderBrush="White" BorderThickness="1" Margin="5" Padding="5">
                     <!-- sides, length, speed, clock-->
                     <StackPanel>
                         <TextBlock Text="sides"/>
-                        <TextBox Text="{Binding Path=FlyPolygonCommandParams.Item1, Mode=TwoWay}" />
+                        <TextBox Text="{Binding Path=ControllerViewModel.FlyPolygonCommandParams.Item1, Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel>
                         <TextBlock Text="length"/>
-                        <TextBox Text="{Binding Path=FlyPolygonCommandParams.Item2, Mode=TwoWay}"/>
+                        <TextBox Text="{Binding Path=ControllerViewModel.FlyPolygonCommandParams.Item2, Mode=TwoWay}"/>
                     </StackPanel>
                     <StackPanel>
                         <TextBlock Text="speed"/>
-                        <TextBox Text="{Binding Path=FlyPolygonCommandParams.Item3, Mode=TwoWay}"/>
+                        <TextBox Text="{Binding Path=ControllerViewModel.FlyPolygonCommandParams.Item3, Mode=TwoWay}"/>
                     </StackPanel>
-                    <Button Command="{Binding Path=FlyPolygonCommand}" CommandParameter="{Binding FlyPolygonCommandParams}">fly polygon</Button>
+                    <Button Command="{Binding Path=ControllerViewModel.FlyPolygonCommand}" CommandParameter="{Binding Path=ControllerViewModel.FlyPolygonCommandParams}">fly polygon</Button>
                 </StackPanel>
-                <Button Command="{Binding Path=LandCommand}">land</Button>
+
+                <StackPanel BorderBrush="White" BorderThickness="1" Margin="5" Padding="5">
+                    <Button Command="{Binding Path=ClearDatabaseCommand}">clear db</Button>
+                </StackPanel>
+
+
             </controls:WrapPanel>
-            
+
             <ScrollViewer Grid.Column="1" Height="200" MaxHeight="200">
-                <ListBox Background="AntiqueWhite" ItemsSource="{Binding ControlLog}"></ListBox>
+                <ListBox Background="AntiqueWhite" ItemsSource="{Binding Path=ControllerViewModel.ControlLog}"></ListBox>
             </ScrollViewer>
         </Grid>
 
@@ -82,15 +102,15 @@
                 <Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/>
                 <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
                     Minimum="0" MinAngle="20" Maximum="100" MaxAngle="340" StepSize="0"
-                    Value="{Binding Path=State.AirSpeed.SpeedX, Mode=TwoWay}" 
+                    Value="{Binding Path=StateViewModel.State.AirSpeed.SpeedX}" 
                     TickSpacing="10" TickLength="15" TickWidth="3" TickBrush="White"
                     ScalePadding="0" ScaleWidth="3" ScaleBrush="White" ScaleTickBrush="White" ScaleTickWidth="0"
                     TrailBrush="LimeGreen" NeedleBrush="White" NeedleWidth="2" />
                 <StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Top">
                     <TextBlock Foreground="White" FontWeight="Bold" HorizontalAlignment="Center">SPEED (cm/s)</TextBlock>
-                    <TextBlock Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Text="{Binding Path=State.AirSpeed.SpeedX}"/>
+                    <TextBlock Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.AirSpeed.SpeedX}"/>
                     <!--<TextBlock Foreground="White" FontSize="10" HorizontalAlignment="Center">AC (cm/s/s)</TextBlock>
-                    <TextBlock Foreground="White" FontSize="10" HorizontalAlignment="Center" Text="{Binding Path=State.AirSpeed.AccelerationX}"/>-->
+                    <TextBlock Foreground="White" FontSize="10" HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.AirSpeed.AccelerationX}"/>-->
                 </StackPanel>
             </Grid>
 
@@ -99,15 +119,15 @@
                 <TextBlock>attitude indicator</TextBlock>
                 <StackPanel>
                     <TextBlock>ROLL</TextBlock>
-                    <TextBlock Text="{Binding Path=State.Attitude.Roll}"></TextBlock>
+                    <TextBlock Text="{Binding Path=StateViewModel.State.Attitude.Roll}"></TextBlock>
                 </StackPanel>
                 <StackPanel>
                     <TextBlock>PITCH</TextBlock>
-                    <TextBlock Text="{Binding Path=State.Attitude.Pitch}"></TextBlock>
+                    <TextBlock Text="{Binding Path=StateViewModel.State.Attitude.Pitch}"></TextBlock>
                 </StackPanel>
                 <StackPanel>
                     <TextBlock>YAW</TextBlock>
-                    <TextBlock Text="{Binding Path=State.Attitude.Yaw}"></TextBlock>
+                    <TextBlock Text="{Binding Path=StateViewModel.State.Attitude.Yaw}"></TextBlock>
                 </StackPanel>
             </StackPanel>
 
@@ -125,15 +145,15 @@
                 <Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/>
                 <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
                     Minimum="0" MinAngle="0" Maximum="1000" MaxAngle="330" StepSize="0"
-                    Value="{Binding Path=State.Position.AltitudeAGLInCm, Mode=TwoWay}" 
+                    Value="{Binding Path=StateViewModel.State.Position.AltitudeAGLInCm, Mode=TwoWay}" 
                     TickSpacing="50" TickLength="15" TickWidth="3" TickBrush="White"
                     ScalePadding="0" ScaleWidth="3" ScaleBrush="White" ScaleTickBrush="White" ScaleTickWidth="0"
                     TrailBrush="LimeGreen" NeedleBrush="White" NeedleWidth="2" />
                 <StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Top">
                     <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center">ALT (cm)</TextBlock>
-                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=State.Position.AltitudeAGLInCm}"></TextBlock>
+                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.Position.AltitudeAGLInCm}"></TextBlock>
                     <!--<TextBlock>MSL (cm)</TextBlock>
-                    <TextBlock Text="{Binding Path=State.Position.AltitudeMSLInCm}"></TextBlock>-->
+                    <TextBlock Text="{Binding Path=StateViewModel.State.Position.AltitudeMSLInCm}"></TextBlock>-->
                 </StackPanel>
             </Grid>
 
@@ -152,15 +172,15 @@
                 <Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/>
                 <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
                     Minimum="-100" MinAngle="270" Maximum="100" MaxAngle="90" StepSize="0"
-                    Value="{Binding Path=State.AirSpeed.SpeedY, Mode=TwoWay}" 
+                    Value="{Binding Path=StateViewModel.State.AirSpeed.SpeedY, Mode=TwoWay}" 
                     TickSpacing="20" TickLength="15" TickWidth="3" TickBrush="White"
                     ScalePadding="0" ScaleWidth="3" ScaleBrush="White" ScaleTickBrush="White" ScaleTickWidth="0"
                     TrailBrush="White" NeedleBrush="White" NeedleWidth="2" />
                 <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
                     <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center">LAT SPD (cm/s)</TextBlock>
-                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=State.AirSpeed.SpeedY}"></TextBlock>
+                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.AirSpeed.SpeedY}"></TextBlock>
                     <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center">TC (cm/s/s)</TextBlock>
-                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=State.AirSpeed.AccelerationZ}"></TextBlock>
+                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.AirSpeed.AccelerationZ}"></TextBlock>
                 </StackPanel>
             </Grid>
 
@@ -178,13 +198,13 @@
                 <Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/>
                 <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
                     Minimum="0" MinAngle="0" Maximum="360" MaxAngle="360" StepSize="0"
-                    Value="{Binding Path=State.Position.Heading, Mode=TwoWay}" 
+                    Value="{Binding Path=StateViewModel.State.Position.Heading, Mode=TwoWay}" 
                     TickSpacing="45" TickLength="15" TickWidth="3" TickBrush="White"
                     ScalePadding="0" ScaleWidth="3" ScaleBrush="White" ScaleTickBrush="White" ScaleTickWidth="0"
                     TrailBrush="White" NeedleBrush="White" NeedleWidth="2" />
                 <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
                     <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center">HDG (deg)</TextBlock>
-                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=State.Position.Heading}"></TextBlock>
+                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.Position.Heading}"></TextBlock>
                 </StackPanel>
             </Grid>
 
@@ -202,15 +222,15 @@
                 <Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/>
                 <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
                     Minimum="-100" MinAngle="180" Maximum="100" MaxAngle="360" StepSize="0"
-                    Value="{Binding Path=State.AirSpeed.SpeedZ}" 
+                    Value="{Binding Path=StateViewModel.State.AirSpeed.SpeedZ}" 
                     TickSpacing="20" TickLength="15" TickWidth="3" TickBrush="White"
                     ScalePadding="0" ScaleWidth="3" ScaleBrush="White" ScaleTickBrush="White" ScaleTickWidth="0"
                     TrailBrush="White" NeedleBrush="White" NeedleWidth="2" />
                 <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
                     <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center">VSI (cm/s)</TextBlock>
-                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=State.AirSpeed.SpeedZ}"></TextBlock>
+                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.AirSpeed.SpeedZ}"></TextBlock>
                     <TextBlock>ACEL (cm/s/s)</TextBlock>
-                    <TextBlock Text="{Binding Path=State.AirSpeed.AccelerationZ}"></TextBlock>
+                    <TextBlock Text="{Binding Path=StateViewModel.State.AirSpeed.AccelerationZ}"></TextBlock>
                 </StackPanel>
             </Grid>
 
@@ -219,29 +239,29 @@
                 <TextBlock>hobbs meter</TextBlock>
                 <StackPanel>
                     <TextBlock>MOTOR TIME (s)</TextBlock>
-                    <TextBlock Text="{Binding Path=State.HobbsMeter.MotorTimeInSeconds}"></TextBlock>
+                    <TextBlock Text="{Binding Path=StateViewModel.State.HobbsMeter.MotorTimeInSeconds}"></TextBlock>
                 </StackPanel>
                 <StackPanel>
                     <TextBlock>ESTIMATED TIME REMAINING (m)</TextBlock>
-                    <TextBlock Text="{Binding Path=State.HobbsMeter.FlightTimeRemainingInMinutes}"></TextBlock>
+                    <TextBlock Text="{Binding Path=StateViewModel.State.HobbsMeter.FlightTimeRemainingInMinutes}"></TextBlock>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="2" Grid.Column="1">
                 <TextBlock>fuel (battery)</TextBlock>
                 <StackPanel>
                     <TextBlock>% REMAINING</TextBlock>
-                    <TextBlock Text="{Binding Path=State.Battery.PercentRemaining}"></TextBlock>
+                    <TextBlock Text="{Binding Path=StateViewModel.State.Battery.PercentRemaining}"></TextBlock>
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="2" Grid.Column="3">
                 <TextBlock>temperature</TextBlock>
                 <StackPanel>
                     <TextBlock>LOW (deg C)</TextBlock>
-                    <TextBlock Text="{Binding Path=State.Battery.TemperatureLowC}"></TextBlock>
+                    <TextBlock Text="{Binding Path=StateViewModel.State.Battery.TemperatureLowC}"></TextBlock>
                 </StackPanel>
                 <StackPanel>
                     <TextBlock>HIGH (deg C)</TextBlock>
-                    <TextBlock Text="{Binding Path=State.Battery.TemperatureHighC}"></TextBlock>
+                    <TextBlock Text="{Binding Path=StateViewModel.State.Battery.TemperatureHighC}"></TextBlock>
                 </StackPanel>
             </StackPanel>
         </Grid>
