@@ -1,20 +1,18 @@
-﻿#define EMULATOR
+﻿#define NO_EMULATOR
 
 #if EMULATOR
 using Tello.Emulator.SDKV2;
 #else
 using Tello.Udp;
+using Windows.UI.Popups;
 #endif
-using System;
 using System.Threading;
 using Tello.App.MvvM;
 using Tello.App.UWP.Services;
 using Tello.App.ViewModels;
-using Tello.Messaging;
 using Tello.Repository;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI.Popups;
 
 namespace Tello.App.UWP
 {
@@ -22,7 +20,7 @@ namespace Tello.App.UWP
     {
         public MainViewModel ViewModel { get; }
 #if EMULATOR
-        private readonly IMessengerService _tello;
+        private readonly TelloEmulator _telloEmulator;
 #endif
         private readonly IUIDispatcher _uiDispatcher;
         private readonly IUINotifier _uiNotifier;
@@ -43,7 +41,7 @@ namespace Tello.App.UWP
 
 #if EMULATOR
             var tello = new TelloEmulator();
-            _tello = tello;
+            _telloEmulator = tello;
 #else
             var tello = new UdpMessenger();
 #endif
@@ -69,7 +67,7 @@ namespace Tello.App.UWP
         private void PowerUpButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
 #if EMULATOR
-            (_tello as TelloEmulator).PowerOn();
+            _telloEmulator.PowerOn();
             ViewModel.ControllerViewModel.ControlLog.Insert(0, "Tello SDK Emulator Powered On");
 #else
             var dialog = new MessageDialog("This method is for the SDK emulator.", "Tello Drone");
@@ -80,7 +78,7 @@ namespace Tello.App.UWP
         private void PowerDownButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
 #if EMULATOR
-            (_tello as TelloEmulator).PowerOff();
+            _telloEmulator.PowerOff();
             ViewModel.ControllerViewModel.ControlLog.Insert(0, "Tello SDK Emulator Powered Off");
 #else
             var dialog = new MessageDialog("This method is for the SDK emulator.", "Tello Drone");
