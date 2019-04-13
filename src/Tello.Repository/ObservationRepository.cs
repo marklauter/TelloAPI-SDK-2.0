@@ -2,7 +2,6 @@
 using Sumo.Retry.Policies;
 using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace Tello.Repository
 {
@@ -38,21 +37,6 @@ namespace Tello.Repository
             _sqliteConnection = _sqliteConnection ?? new SQLiteConnection(_connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
         }
 
-        private void InvokeDbOperation(Action<SQLiteConnection> action)
-        {
-            _sqliteConnection.BeginTransaction();
-            try
-            {
-                action(_sqliteConnection);
-                _sqliteConnection.Commit();
-            }
-            catch
-            {
-                _sqliteConnection.Rollback();
-                throw;
-            }
-        }
-
         public void Write<T>(T observation) where T : IObservation, new()
         {
             if (observation == null)
@@ -60,23 +44,15 @@ namespace Tello.Repository
                 throw new ArgumentNullException(nameof(observation));
             }
 
-            InvokeDbOperation((connection) =>
-            {
-                connection.CreateTable<T>();
-                connection.Insert(observation);
-            });
+            _sqliteConnection.CreateTable<T>();
+            _sqliteConnection.Insert(observation);
         }
 
         public T[] Read<T>() where T : IObservation, new()
         {
-            var result = default(T[]);
-            InvokeDbOperation((connection) =>
-            {
-                connection.CreateTable<T>();
-                result = connection.Table<T>()
-                    .ToArray();
-            });
-            return result;
+            _sqliteConnection.CreateTable<T>();
+            return _sqliteConnection.Table<T>()
+                .ToArray();
         }
 
         public T[] Read<T>(Expression<Func<T, bool>> predicate) where T : IObservation, new()
@@ -86,50 +62,34 @@ namespace Tello.Repository
                 throw new ArgumentNullException(nameof(predicate));
             }
 
-            var result = default(T[]);
-            InvokeDbOperation((connection) =>
-            {
-                connection.CreateTable<T>();
-                result = connection.Table<T>()
-                    .Where(predicate)
-                    .ToArray();
-            });
-            return result;
+            _sqliteConnection.CreateTable<T>();
+            return _sqliteConnection.Table<T>()
+                .Where(predicate)
+                .ToArray();
         }
 
         public T[] Read<T>(TimeSpan age) where T : IObservation, new()
         {
-            var result = default(T[]);
-            InvokeDbOperation((connection) =>
-            {
-                connection.CreateTable<T>();
-                result = connection
-                    .Table<T>()
-                    .Where(o => o.Timestamp >= DateTime.UtcNow - age)
-                    .ToArray();
-            });
-            return result;
+            _sqliteConnection.CreateTable<T>();
+            return _sqliteConnection
+                .Table<T>()
+                .Where(o => o.Timestamp >= DateTime.UtcNow - age)
+                .ToArray();
         }
 
         public void Clear<T>() where T : IObservation, new()
         {
-            InvokeDbOperation((connection) =>
-            {
-                connection.CreateTable<T>();
-                connection.DeleteAll<T>();
-            });
+            _sqliteConnection.CreateTable<T>();
+            _sqliteConnection.DeleteAll<T>();
         }
 
         public void Clear<T>(TimeSpan age) where T : IObservation, new()
         {
             var oldestDate = DateTime.UtcNow - age;
-            InvokeDbOperation((connection) =>
-            {
-                connection.CreateTable<T>();
-                var mapping = connection.GetMapping<T>();
-                var query = $"delete from {mapping.TableName} where Timestamp <= ?";
-                connection.Execute(query, oldestDate);
-            });
+            _sqliteConnection.CreateTable<T>();
+            var mapping = _sqliteConnection.GetMapping<T>();
+            var query = $"delete from {mapping.TableName} where Timestamp <= ?";
+            _sqliteConnection.Execute(query, oldestDate);
         }
     }
 }
