@@ -36,19 +36,20 @@ namespace Tello.App.MvvM
 
         public string DisplayName { get; set; }
 
-        public void Open(OpenEventArgs args)
+        public void Open(OpenEventArgs args = null)
         {
             OnOpen(args);
         }
 
         public bool Close()
         {
-            var args = new ClosingEventArgs { CanClose = CanClose };
             if (CanClose)
             {
+                var args = new ClosingEventArgs { CanClose = true };
                 OnClosing(args);
+                CanClose = args.CanClose;
             }
-            return args.CanClose;
+            return CanClose;
         }
 
         private bool _canClose = true;
