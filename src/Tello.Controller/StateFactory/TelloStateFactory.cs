@@ -10,15 +10,22 @@ namespace Tello.Controller
         private static IAttitude _attitude = new Attitude();
         private static IBattery _battery = new Battery();
         private static IHobbsMeter _hobbsMeter = new HobbsMeter();
+        private static DateTime _timestamp = DateTime.UtcNow;
+        private static string _data = String.Empty;
 
         public static ITelloState GetState()
         {
-            return new TelloState(
-                new Position(_position),
-                new Attitude(_attitude),
-                new AirSpeed(_airSpeed),
-                new Battery(_battery),
-                new HobbsMeter(_hobbsMeter));
+            return _positionGate.WithReadLock(() =>
+            {
+                return new TelloState(
+                    new Position(_position),
+                    new Attitude(_attitude),
+                    new AirSpeed(_airSpeed),
+                    new Battery(_battery),
+                    new HobbsMeter(_hobbsMeter),
+                    _timestamp,
+                    _data);
+            });
         }
 
         public static void Update(IRawDroneState rawDroneState)//, bool useMissionPad = false)
@@ -27,6 +34,12 @@ namespace Tello.Controller
             {
                 throw new ArgumentNullException(nameof(rawDroneState));
             }
+
+            _positionGate.WithWriteLock(() =>
+            {
+                _timestamp = DateTime.UtcNow;
+                _data = rawDroneState.Data;
+            });
 
             //if (useMissionPad)
             //{
@@ -42,16 +55,20 @@ namespace Tello.Controller
             //}
             //else
             //{
-                _positionGate.WithReadLock(() =>
-                {
-                    _position = new Position(rawDroneState, _x, _y, _heading);
-                });
+            var position = _positionGate.WithReadLock(() =>
+            {
+                return new Position(rawDroneState, _x, _y, _heading);
+            });
             //}
 
-            _airSpeed = new AirSpeed(rawDroneState);
-            _attitude = new Attitude(rawDroneState, false); //, useMissionPad);
-            _battery = new Battery(rawDroneState);
-            _hobbsMeter = new HobbsMeter(rawDroneState);
+            _positionGate.WithWriteLock(() =>
+            {
+                _position = position;
+                _airSpeed = new AirSpeed(rawDroneState);
+                _attitude = new Attitude(rawDroneState, false); //, useMissionPad);
+                _battery = new Battery(rawDroneState);
+                _hobbsMeter = new HobbsMeter(rawDroneState);
+            });
         }
 
         #region Position State

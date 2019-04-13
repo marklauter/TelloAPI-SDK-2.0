@@ -67,6 +67,7 @@ namespace Tello.Emulator.SDKV2
         public double AccelerationY { get; internal set; }
         public double AccelerationZ { get; internal set; }
 
+        public string Data => ToString();
 
         public override string ToString()
         {

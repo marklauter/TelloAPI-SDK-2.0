@@ -104,7 +104,7 @@ namespace Tello.Repository.Test
             var battery = new Battery() { PercentRemaining = 0, TemperatureLowC = 1, TemperatureHighC = 2 };
             var hobbsMeter = new HobbsMeter() { DistanceTraversedInCm = 0, MotorTimeInSeconds = 1 };
 
-            var telloState = new TelloState(position, attitude, airSpeed, battery, hobbsMeter);
+            var telloState = new TelloState(position, attitude, airSpeed, battery, hobbsMeter, DateTime.UtcNow, "[raw data]");
             var groupId = Guid.NewGuid().ToString();
 
             repo.Clear<PositionObservation>();

@@ -7,14 +7,15 @@ namespace Tello.Controller
     {
         public TelloState() { }
 
-        public TelloState(IPosition position, IAttitude attitude, IAirSpeed airSpeed, IBattery battery, IHobbsMeter hobbsMeter)
+        public TelloState(IPosition position, IAttitude attitude, IAirSpeed airSpeed, IBattery battery, IHobbsMeter hobbsMeter, DateTime timestamp, string data)
         {
-            Timestamp = DateTime.UtcNow;
+            Timestamp = timestamp;
             Position = position ?? throw new ArgumentNullException(nameof(position));
             Attitude = attitude ?? throw new ArgumentNullException(nameof(attitude));
             AirSpeed = airSpeed ?? throw new ArgumentNullException(nameof(airSpeed));
             Battery = battery ?? throw new ArgumentNullException(nameof(battery));
             HobbsMeter = hobbsMeter ?? throw new ArgumentNullException(nameof(hobbsMeter));
+            Data = data;
         }
 
         public DateTime Timestamp { get; }
@@ -23,5 +24,6 @@ namespace Tello.Controller
         public IAirSpeed AirSpeed { get; }
         public IBattery Battery { get; }
         public IHobbsMeter HobbsMeter { get; }
+        public string Data { get; }
     }
 }

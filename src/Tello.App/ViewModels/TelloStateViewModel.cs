@@ -41,10 +41,13 @@ namespace Tello.App.ViewModels
                 }
             }, 
             State);
+
             State = e.State;
+
             if (_repository != null)
             {
                 var groupId = Guid.NewGuid().ToString();
+                _repository.Write(new TelloStateObservation(e.State, groupId));
                 _repository.Write(new PositionObservation(e.State, groupId));
                 _repository.Write(new AttitudeObservation(e.State, groupId));
                 _repository.Write(new AirSpeedObservation(e.State, groupId));
@@ -71,6 +74,7 @@ namespace Tello.App.ViewModels
                 _repository.Clear<AirSpeedObservation>();
                 _repository.Clear<BatteryObservation>();
                 _repository.Clear<HobbsMeterObservation>();
+                _repository.Clear<TelloStateObservation>();
             }
         }
 

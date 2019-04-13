@@ -62,5 +62,6 @@ namespace Tello.Messaging
         IAirSpeed AirSpeed { get; }
         IBattery Battery { get; }
         IHobbsMeter HobbsMeter { get; }
+        string Data { get; }
     }
 }

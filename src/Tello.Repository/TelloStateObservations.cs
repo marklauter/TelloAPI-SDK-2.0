@@ -3,11 +3,24 @@ using Tello.Messaging;
 
 namespace Tello.Repository
 {
+    public sealed class TelloStateObservation : Observation
+    {
+        public TelloStateObservation() : base() { }
+
+        public TelloStateObservation(ITelloState telloState, string groupId) : base(groupId)
+        {
+            Timestamp = telloState.Timestamp;
+            Data = telloState.Data;
+        }
+
+        public string Data { get; set; }
+    }
+
     public sealed class PositionObservation : Observation, IPosition
     {
         public PositionObservation() : base() { }
 
-        public PositionObservation(IPosition position, string groupId) : base(groupId)
+        private PositionObservation(IPosition position, string groupId) : base(groupId)
         {
             if (position == null)
             {
@@ -20,7 +33,10 @@ namespace Tello.Repository
             Y = position.Y;
         }
 
-        public PositionObservation(ITelloState telloState, string groupId) : this(telloState?.Position, groupId) { }
+        public PositionObservation(ITelloState telloState, string groupId) : this(telloState?.Position, groupId)
+        {
+            Timestamp = telloState.Timestamp;
+        }
 
         public int AltitudeAGLInCm { get; set; }
 
@@ -37,7 +53,7 @@ namespace Tello.Repository
     {
         public AttitudeObservation() : base() { }
 
-        public AttitudeObservation(IAttitude attitude, string groupId) : base(groupId)
+        private AttitudeObservation(IAttitude attitude, string groupId) : base(groupId)
         {
             if (attitude == null)
             {
@@ -48,8 +64,10 @@ namespace Tello.Repository
             Yaw = attitude.Yaw;
         }
 
-        public AttitudeObservation(ITelloState telloState, string groupId) : this(telloState?.Attitude, groupId) { }
-
+        public AttitudeObservation(ITelloState telloState, string groupId) : this(telloState?.Attitude, groupId)
+        {
+            Timestamp = telloState.Timestamp;
+        }
         public int Pitch { get; set; }
 
         public int Roll { get; set; }
@@ -61,7 +79,7 @@ namespace Tello.Repository
     {
         public AirSpeedObservation() : base() { }
 
-        public AirSpeedObservation(IAirSpeed airspeed, string groupId) : base(groupId)
+        private AirSpeedObservation(IAirSpeed airspeed, string groupId) : base(groupId)
         {
             if (airspeed == null)
             {
@@ -75,7 +93,10 @@ namespace Tello.Repository
             AccelerationZ = airspeed.AccelerationZ;
         }
 
-        public AirSpeedObservation(ITelloState telloState, string groupId) : this(telloState?.AirSpeed, groupId) { }
+        public AirSpeedObservation(ITelloState telloState, string groupId) : this(telloState?.AirSpeed, groupId)
+        {
+            Timestamp = telloState.Timestamp;
+        }
 
         public int SpeedX { get; set; }
 
@@ -94,7 +115,7 @@ namespace Tello.Repository
     {
         public BatteryObservation() : base() { }
 
-        public BatteryObservation(IBattery battery, string groupId) : base(groupId)
+        private BatteryObservation(IBattery battery, string groupId) : base(groupId)
         {
             if (battery == null)
             {
@@ -105,7 +126,10 @@ namespace Tello.Repository
             PercentRemaining = battery.PercentRemaining;
         }
 
-        public BatteryObservation(ITelloState telloState, string groupId) : this(telloState?.Battery, groupId) { }
+        public BatteryObservation(ITelloState telloState, string groupId) : this(telloState?.Battery, groupId)
+        {
+            Timestamp = telloState.Timestamp;
+        }
 
         public int TemperatureLowC { get; set; }
 
@@ -118,7 +142,7 @@ namespace Tello.Repository
     {
         public HobbsMeterObservation() : base() { }
 
-        public HobbsMeterObservation(IHobbsMeter hobbsMeter, string groupId) : base(groupId)
+        private HobbsMeterObservation(IHobbsMeter hobbsMeter, string groupId) : base(groupId)
         {
             if (hobbsMeter == null)
             {
@@ -128,7 +152,10 @@ namespace Tello.Repository
             MotorTimeInSeconds = hobbsMeter.MotorTimeInSeconds;
         }
 
-        public HobbsMeterObservation(ITelloState telloState, string groupId) : this(telloState?.HobbsMeter, groupId) { }
+        public HobbsMeterObservation(ITelloState telloState, string groupId) : this(telloState?.HobbsMeter, groupId)
+        {
+            Timestamp = telloState.Timestamp;
+        }
 
         public int DistanceTraversedInCm { get; set; }
 

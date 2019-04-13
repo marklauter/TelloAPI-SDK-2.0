@@ -28,7 +28,7 @@ namespace Tello.Udp
                 .ToArray();
 
             _properties = new Dictionary<string, PropertyInfo>();
-            for(var i = 0; i < properties.Length; ++i)
+            for (var i = 0; i < properties.Length; ++i)
             {
                 var property = properties[i];
                 var stateName = property.GetCustomAttribute<DroneStateNameAttribute>().Name;
@@ -59,7 +59,10 @@ namespace Tello.Udp
                 .ToArray();
             var values = new object[_properties.Count];
 
-            var result = new RawDroneStateUdp();
+            var result = new RawDroneStateUdp
+            {
+                Data = message
+            };
             for (var i = 0; i < keyValues.Length; i += 2)
             {
                 var key = keyValues[i];
@@ -83,7 +86,7 @@ namespace Tello.Udp
                     }
                 }
                 else
-                { 
+                {
                     var mpry = keyValues[i + 1].Split(',');
                     for (var j = 0; j < mpry.Length; ++j)
                     {
@@ -93,7 +96,7 @@ namespace Tello.Udp
                             property.SetValue(result, parsedValue);
                         }
                     }
-                } 
+                }
             }
 
             return result;
@@ -203,6 +206,8 @@ namespace Tello.Udp
         public double AccelerationY { get; private set; }
         [DroneStateName("agz")]
         public double AccelerationZ { get; private set; }
+
+        public string Data { get; private set; }
         #endregion
 
         public override string ToString()

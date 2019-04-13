@@ -26,5 +26,6 @@
         double AccelerationX { get; }
         double AccelerationY { get; }
         double AccelerationZ { get; }
+        string Data { get; }
     }
 }
