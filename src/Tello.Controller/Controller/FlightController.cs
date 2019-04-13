@@ -297,7 +297,7 @@ namespace Tello.Controller
             var timeout = commandTuple.Item3;
             var args = commandTuple.Item4;
 
-            var initiated = DateTime.Now;
+            var initiated = DateTime.UtcNow;
             var response = default(IResponse);
             var clock = Stopwatch.StartNew();
             try
