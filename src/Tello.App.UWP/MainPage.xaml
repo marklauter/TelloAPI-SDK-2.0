@@ -41,8 +41,8 @@
                 </StackPanel>
 
                 <StackPanel BorderBrush="White" BorderThickness="1" Margin="5" Padding="5">
-                    <Button Command="{Binding Path=ControllerViewModel.SetSpeedCommand}" CommandParameter="50">set speed 50</Button>
-                    <Button Command="{Binding Path=ControllerViewModel.GoForwardCommand}" CommandParameter="500">forward 500</Button>
+                    <Button Command="{Binding Path=ControllerViewModel.SetSpeedCommand}" CommandParameter="100">set speed 100</Button>
+                    <Button Command="{Binding Path=ControllerViewModel.GoForwardCommand}" CommandParameter="200">forward 200</Button>
                 </StackPanel>
 
                 <StackPanel BorderBrush="White" BorderThickness="1" Margin="5" Padding="5">
@@ -208,7 +208,7 @@
                 </StackPanel>
             </Grid>
 
-            <!-- vertical speed indicator -->
+            <!-- vertical speed indicator BUG - VSI is showing data in reverse -->
             <Grid Grid.Row="1" Grid.Column="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="3*"/>
