@@ -1,6 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Threading.Tasks;
 using Tello.Controller;
 using Tello.Messaging;
 
@@ -61,33 +60,33 @@ namespace Tello.Repository.Test
     public class RepositoryTest
     {
         [TestMethod]
-        public async Task WriteTestObservation()
+        public void WriteTestObservation()
         {
             var repo = new ObservationRepository($"{nameof(WriteTestObservation)}.sqlite");
-            await repo.Clear<TestObservation>();
+            repo.Clear<TestObservation>();
 
             var observation = new TestObservation("test");
-            await repo.Write(observation);
+            repo.Write(observation);
 
-            var results = await repo.Read<TestObservation>();
+            var results = repo.Read<TestObservation>();
             Assert.AreEqual(1, results.Length);
         }
 
         [TestMethod]
-        public async Task ReadTestObservation()
+        public void ReadTestObservation()
         {
             var repo = new ObservationRepository($"{nameof(ReadTestObservation)}.sqlite");
-            await repo.Clear<TestObservation>();
+            repo.Clear<TestObservation>();
 
-            await repo.Write(new TestObservation("one"));
-            await repo.Write(new TestObservation("two"));
+            repo.Write(new TestObservation("one"));
+            repo.Write(new TestObservation("two"));
 
-            var results = await repo.Read<TestObservation>(o => o.Name == "one");
+            var results = repo.Read<TestObservation>(o => o.Name == "one");
             Assert.AreEqual(1, results.Length);
         }
 
         [TestMethod]
-        public async Task WriteTelloStateObservation()
+        public void WriteTelloStateObservation()
         {
             var repo = new ObservationRepository($"{nameof(WriteTelloStateObservation)}.sqlite");
 
@@ -108,23 +107,23 @@ namespace Tello.Repository.Test
             var telloState = new TelloState(position, attitude, airSpeed, battery, hobbsMeter);
             var groupId = Guid.NewGuid().ToString();
 
-            await repo.Clear<PositionObservation>();
-            await repo.Clear<AttitudeObservation>();
-            await repo.Clear<AirSpeedObservation>();
-            await repo.Clear<BatteryObservation>();
-            await repo.Clear<HobbsMeterObservation>();
+            repo.Clear<PositionObservation>();
+            repo.Clear<AttitudeObservation>();
+            repo.Clear<AirSpeedObservation>();
+            repo.Clear<BatteryObservation>();
+            repo.Clear<HobbsMeterObservation>();
 
-            await repo.Write(new PositionObservation(telloState, groupId));
-            await repo.Write(new AttitudeObservation(telloState, groupId));
-            await repo.Write(new AirSpeedObservation(telloState, groupId));
-            await repo.Write(new BatteryObservation(telloState, groupId));
-            await repo.Write(new HobbsMeterObservation(telloState, groupId));
+            repo.Write(new PositionObservation(telloState, groupId));
+            repo.Write(new AttitudeObservation(telloState, groupId));
+            repo.Write(new AirSpeedObservation(telloState, groupId));
+            repo.Write(new BatteryObservation(telloState, groupId));
+            repo.Write(new HobbsMeterObservation(telloState, groupId));
 
-            Assert.AreEqual(1, (await repo.Read<PositionObservation>()).Length);
-            Assert.AreEqual(1, (await repo.Read<AttitudeObservation>()).Length);
-            Assert.AreEqual(1, (await repo.Read<AirSpeedObservation>()).Length);
-            Assert.AreEqual(1, (await repo.Read<BatteryObservation>()).Length);
-            Assert.AreEqual(1, (await repo.Read<HobbsMeterObservation>()).Length);
+            Assert.AreEqual(1, repo.Read<PositionObservation>().Length);
+            Assert.AreEqual(1, repo.Read<AttitudeObservation>().Length);
+            Assert.AreEqual(1, repo.Read<AirSpeedObservation>().Length);
+            Assert.AreEqual(1, repo.Read<BatteryObservation>().Length);
+            Assert.AreEqual(1, repo.Read<HobbsMeterObservation>().Length);
         }
     }
 }
