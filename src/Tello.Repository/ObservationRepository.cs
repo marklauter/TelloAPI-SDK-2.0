@@ -30,7 +30,7 @@ namespace Tello.Repository
 
         public ObservationRepository(string sessionPrefix, string databaseName = null)
         {
-            SessionId = $"{sessionPrefix}-Guid.NewGuid()";
+            SessionId = $"{sessionPrefix}-{Guid.NewGuid()}";
 
             var path = Environment.GetEnvironmentVariable("sqlite_connectionstring_path", EnvironmentVariableTarget.Machine);
             _databaseName = String.IsNullOrEmpty(databaseName)
