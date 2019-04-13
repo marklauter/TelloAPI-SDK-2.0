@@ -62,7 +62,7 @@ namespace Tello.Repository.Test
         [TestMethod]
         public void WriteTestObservation()
         {
-            var repo = new ObservationRepository($"{nameof(WriteTestObservation)}.sqlite");
+            var repo = new ObservationRepository("test", $"{nameof(WriteTestObservation)}.sqlite");
             repo.Clear<TestObservation>();
 
             var observation = new TestObservation("test");
@@ -75,7 +75,7 @@ namespace Tello.Repository.Test
         [TestMethod]
         public void ReadTestObservation()
         {
-            var repo = new ObservationRepository($"{nameof(ReadTestObservation)}.sqlite");
+            var repo = new ObservationRepository("test", $"{nameof(ReadTestObservation)}.sqlite");
             repo.Clear<TestObservation>();
 
             repo.Write(new TestObservation("one"));
@@ -88,7 +88,7 @@ namespace Tello.Repository.Test
         [TestMethod]
         public void WriteTelloStateObservation()
         {
-            var repo = new ObservationRepository($"{nameof(WriteTelloStateObservation)}.sqlite");
+            var repo = new ObservationRepository("test", $"{nameof(WriteTelloStateObservation)}.sqlite");
 
             var position = new Position() { Heading = 0, AltitudeAGLInCm = 1, AltitudeMSLInCm = 2, X = 3, Y = 4 };
             var attitude = new Attitude() { Pitch = 0, Roll = 1, Yaw = 2 };
