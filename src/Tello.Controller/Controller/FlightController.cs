@@ -297,6 +297,7 @@ namespace Tello.Controller
             var timeout = commandTuple.Item3;
             var args = commandTuple.Item4;
 
+            var initiated = DateTime.Now;
             var response = default(IResponse);
             var clock = Stopwatch.StartNew();
             try
@@ -328,7 +329,7 @@ namespace Tello.Controller
                     }
                     else
                     {
-                        CommandResponseReceived?.Invoke(this, new CommandResponseReceivedArgs(command, responseValue, clock.Elapsed));
+                        CommandResponseReceived?.Invoke(this, new CommandResponseReceivedArgs(command, responseValue, initiated, clock.Elapsed));
                     }
                 }
                 else
