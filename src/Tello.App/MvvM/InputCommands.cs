@@ -97,7 +97,7 @@ namespace Tello.App.MvvM
 
         public override void ExecuteInternal(object parameter)
         {
-            _action((T)parameter);
+            _action((T)Convert.ChangeType(parameter, typeof(T)));
         }
     }
 
