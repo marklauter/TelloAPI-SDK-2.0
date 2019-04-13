@@ -34,7 +34,12 @@ namespace Tello.App.UWP
 
             _uiDispatcher = new UIDispatcher(SynchronizationContext.Current);
             _uiNotifier = new UINotifier();
-            _repository = new ObservationRepository();
+
+            var sessionPrefix = "drone";
+#if EMULATOR
+            sessionPrefix = "emulator";
+#endif
+            _repository = new ObservationRepository(sessionPrefix);
 
 #if EMULATOR
             var tello = new TelloEmulator();
@@ -58,30 +63,29 @@ namespace Tello.App.UWP
         {
             ViewModel.Close();
 
-
             base.OnNavigatedFrom(e);
         }
 
-        private async void PowerUpButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void PowerUpButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
 #if EMULATOR
             (_tello as TelloEmulator).PowerOn();
-            var dialog = new MessageDialog("Powered On", "Tello SDK Emulator");
+            ViewModel.ControllerViewModel.ControlLog.Insert(0, "Tello SDK Emulator Powered On");
 #else
             var dialog = new MessageDialog("This method is for the SDK emulator.", "Tello Drone");
+            dialog.ShowAsync();
 #endif
-            await dialog.ShowAsync();
         }
 
-        private async void PowerDownButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void PowerDownButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
 #if EMULATOR
             (_tello as TelloEmulator).PowerOff();
-            var dialog = new MessageDialog("Powered Off", "Tello SDK Emulator");
+            ViewModel.ControllerViewModel.ControlLog.Insert(0, "Tello SDK Emulator Powered Off");
 #else
             var dialog = new MessageDialog("This method is for the SDK emulator.", "Tello Drone");
+            dialog.ShowAsync();
 #endif
-            await dialog.ShowAsync();
         }
     }
 }
