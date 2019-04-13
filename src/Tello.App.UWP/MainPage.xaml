@@ -208,8 +208,8 @@
                 <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
                     <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center">VSI (cm/s)</TextBlock>
                     <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=State.AirSpeed.SpeedZ}"></TextBlock>
-                    <!--<TextBlock>ACEL (cm/s/s)</TextBlock>
-                    <TextBlock Text="{Binding Path=State.AirSpeed.AccelerationZ}"></TextBlock>-->
+                    <TextBlock>ACEL (cm/s/s)</TextBlock>
+                    <TextBlock Text="{Binding Path=State.AirSpeed.AccelerationZ}"></TextBlock>
                 </StackPanel>
             </Grid>
 

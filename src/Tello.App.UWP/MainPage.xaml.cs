@@ -46,11 +46,11 @@ namespace Tello.App.UWP
 
             _flightController = new FlightController(tello, tello.StateServer, tello.VideoServer, tello.VideoSampleProvider);
 
-            ControllerViewModel = new TelloControllerViewModel(_uiDispatcher, _uiNotifier, _flightController);
             StateViewModel = new TelloStateViewModel(_uiDispatcher, _uiNotifier, _flightController, _repository);
-
-            ControllerGrid.DataContext = ControllerViewModel;
             StateGrid.DataContext = StateViewModel;
+
+            ControllerViewModel = new TelloControllerViewModel(_uiDispatcher, _uiNotifier, _flightController);
+            ControllerGrid.DataContext = ControllerViewModel;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
