@@ -28,7 +28,7 @@
                 <Button Command="{Binding Path=EnterSdkModeCommand}">connect</Button>
                 <Button Command="{Binding Path=DisconnectCommand}">disconnect</Button>
                 <Button Command="{Binding Path=TakeOffCommand}">takeoff</Button>
-                <Button Command="{Binding Path=ForwardCommand}" CommandParameter="100">forward 100</Button>
+                <Button Command="{Binding Path=GoForwardCommand}" CommandParameter="100">forward 100</Button>
                 <StackPanel BorderBrush="Black" BorderThickness="1">
                     <!-- sides, length, speed, clock-->
                     <StackPanel>
