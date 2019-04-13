@@ -7,6 +7,8 @@ namespace Tello.Repository
 {
     public interface IRepository
     {
+        string SessionId { get; }
+
         void Write<T>(T observation) where T : IObservation, new();
 
         T[] Read<T>() where T : IObservation, new();
@@ -24,8 +26,12 @@ namespace Tello.Repository
         private readonly string _connectionString;
         private static SQLiteConnection _sqliteConnection;
 
-        public ObservationRepository(string databaseName = null)
+        public string SessionId { get; }
+
+        public ObservationRepository(string sessionPrefix, string databaseName = null)
         {
+            SessionId = $"{sessionPrefix}-Guid.NewGuid()";
+
             var path = Environment.GetEnvironmentVariable("sqlite_connectionstring_path", EnvironmentVariableTarget.Machine);
             _databaseName = String.IsNullOrEmpty(databaseName)
                 ? _databaseName
@@ -44,6 +50,7 @@ namespace Tello.Repository
                 throw new ArgumentNullException(nameof(observation));
             }
 
+            observation.SessionId = SessionId;
             _sqliteConnection.CreateTable<T>();
             _sqliteConnection.Insert(observation);
         }

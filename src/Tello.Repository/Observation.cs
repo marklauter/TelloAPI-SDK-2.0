@@ -10,6 +10,9 @@ namespace Tello.Repository
         [SQLite.Indexed]
         [SQLite.PrimaryKey]
         string Id { get; set; }
+
+        [SQLite.Indexed]
+        string SessionId { get; set; }
     }
 
     public abstract class Observation : IObservation
@@ -43,5 +46,7 @@ namespace Tello.Repository
             get => Timestamp.ToString("o");
             set { }
         }
+
+        public string SessionId { get; set; }
     }
 }
