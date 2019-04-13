@@ -25,6 +25,8 @@ Since the Tello operates synchronously, the flight controller had to provide an 
 * UWP UI - command buttons tab, script tab, real time operations log display, gauges based on aviation 6 pack
 * operations and flight data logging in SQLite
 * script improvements
+* video (decoding H264) without crap UWP media control
+* incorporate OpenCV
 
 ### May 2019 Goals
 * Nuget
