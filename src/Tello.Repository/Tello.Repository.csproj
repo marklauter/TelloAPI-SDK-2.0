@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj" />
     <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj" />
   </ItemGroup>
 
