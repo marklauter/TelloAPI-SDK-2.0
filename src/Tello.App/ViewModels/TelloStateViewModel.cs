@@ -61,5 +61,22 @@ namespace Tello.App.ViewModels
             get => _state;
             set => SetProperty(ref _state, value);
         }
+
+        internal void ClearDatabase()
+        {
+            if (_repository != null)
+            {
+                _repository.Clear<PositionObservation>();
+                _repository.Clear<AttitudeObservation>();
+                _repository.Clear<AirSpeedObservation>();
+                _repository.Clear<BatteryObservation>();
+                _repository.Clear<HobbsMeterObservation>();
+            }
+        }
+
+#pragma warning disable IDE1006 // Naming Styles
+        private IInputCommand _ClearDatabaseCommand;
+        public IInputCommand ClearDatabaseCommand => _ClearDatabaseCommand = _ClearDatabaseCommand ?? new InputCommand(ClearDatabase);
+#pragma warning restore IDE1006 // Naming Styles
     }
 }

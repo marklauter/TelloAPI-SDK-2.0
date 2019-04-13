@@ -78,7 +78,18 @@ namespace Tello.App.ViewModels
 
         public ObservableCollection<string> ControlLog { get; } = new ObservableCollection<string>();
 
+        internal void ClearDatabase()
+        {
+            if (_repository != null)
+            {
+                _repository.Clear<TelloCommandObservation>();
+            }
+        }
+
 #pragma warning disable IDE1006 // Naming Styles
+        private IInputCommand _ClearDatabaseCommand;
+        public IInputCommand ClearDatabaseCommand => _ClearDatabaseCommand = _ClearDatabaseCommand ?? new InputCommand(ClearDatabase);
+
         private IInputCommand _EnterSdkModeCommand;
         public IInputCommand EnterSdkModeCommand => _EnterSdkModeCommand = _EnterSdkModeCommand ?? new InputCommand(_controller.Connect);
 
