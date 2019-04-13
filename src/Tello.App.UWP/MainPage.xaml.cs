@@ -49,7 +49,7 @@ namespace Tello.App.UWP
             StateViewModel = new TelloStateViewModel(_uiDispatcher, _uiNotifier, _flightController, _repository);
             StateGrid.DataContext = StateViewModel;
 
-            ControllerViewModel = new TelloControllerViewModel(_uiDispatcher, _uiNotifier, _flightController);
+            ControllerViewModel = new TelloControllerViewModel(_uiDispatcher, _uiNotifier, _flightController, _repository);
             ControllerGrid.DataContext = ControllerViewModel;
         }
 
