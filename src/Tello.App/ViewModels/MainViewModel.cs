@@ -70,7 +70,5 @@ namespace Tello.App.ViewModels
 
         private IInputCommand _clearDatabaseCommand;
         public IInputCommand ClearDatabaseCommand => _clearDatabaseCommand = _clearDatabaseCommand ?? new InputCommand(ClearDatabase);
-
-
     }
 }
