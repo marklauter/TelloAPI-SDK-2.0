@@ -36,5 +36,12 @@ namespace Tello.Repository
 
         [SQLite.Indexed]
         public DateTime Timestamp { get; set; }
+
+        // this is just to put a human readable value in sqlite for debugging
+        public string TimestampString
+        {
+            get => Timestamp.ToString("o");
+            set { }
+        }
     }
 }
