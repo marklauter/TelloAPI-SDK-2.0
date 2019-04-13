@@ -30,7 +30,7 @@ namespace Tello.App.ViewModels
             _telloStateChangedNotifier.StateChanged -= OnTelloStateChanged;
         }
 
-        private async void OnTelloStateChanged(object sender, StateChangedArgs e)
+        private void OnTelloStateChanged(object sender, StateChangedArgs e)
         {
             Dispatcher.Invoke((state) =>
             {
@@ -45,11 +45,11 @@ namespace Tello.App.ViewModels
             if (_repository != null)
             {
                 var groupId = Guid.NewGuid().ToString();
-                await _repository.Write(new PositionObservation(e.State, groupId));
-                await _repository.Write(new AttitudeObservation(e.State, groupId));
-                await _repository.Write(new AirSpeedObservation(e.State, groupId));
-                await _repository.Write(new BatteryObservation(e.State, groupId));
-                await _repository.Write(new HobbsMeterObservation(e.State, groupId));
+                _repository.Write(new PositionObservation(e.State, groupId));
+                _repository.Write(new AttitudeObservation(e.State, groupId));
+                _repository.Write(new AirSpeedObservation(e.State, groupId));
+                _repository.Write(new BatteryObservation(e.State, groupId));
+                _repository.Write(new HobbsMeterObservation(e.State, groupId));
             }
         }
 
