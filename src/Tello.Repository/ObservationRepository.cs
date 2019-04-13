@@ -1,5 +1,4 @@
 ﻿using SQLite;
-using Sumo.Retry;
 using Sumo.Retry.Policies;
 using System;
 using System.Linq.Expressions;
@@ -9,14 +8,14 @@ namespace Tello.Repository
 {
     public interface IRepository
     {
-        Task Write<T>(T observation) where T : IObservation, new();
+        void Write<T>(T observation) where T : IObservation, new();
 
-        Task<T[]> Read<T>() where T : IObservation, new();
-        Task<T[]> Read<T>(Expression<Func<T, bool>> predicate) where T : IObservation, new();
-        Task<T[]> Read<T>(TimeSpan age) where T : IObservation, new();
+        T[] Read<T>() where T : IObservation, new();
+        T[] Read<T>(Expression<Func<T, bool>> predicate) where T : IObservation, new();
+        T[] Read<T>(TimeSpan age) where T : IObservation, new();
 
-        Task Clear<T>() where T : IObservation, new();
-        Task Clear<T>(TimeSpan age) where T : IObservation, new();
+        void Clear<T>() where T : IObservation, new();
+        void Clear<T>(TimeSpan age) where T : IObservation, new();
     }
 
     public class ObservationRepository : IRepository
@@ -24,6 +23,7 @@ namespace Tello.Repository
         private readonly RetryPolicy _retryPolicy = new SqliteTransientRetryPolicy(600, TimeSpan.FromMinutes(3), TimeSpan.FromMilliseconds(100));
         private readonly string _databaseName = "tello.sqlite";
         private readonly string _connectionString;
+        private static SQLiteConnection _sqliteConnection;
 
         public ObservationRepository(string databaseName = null)
         {
@@ -34,48 +34,43 @@ namespace Tello.Repository
             _connectionString = path != null
                 ? $"{path}/{_databaseName}"
                 : _databaseName;
+
+            _sqliteConnection = _sqliteConnection ?? new SQLiteConnection(_connectionString, SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex);
         }
 
-        private async Task InvokeDbOperation(Action<SQLiteConnection> action)
+        private void InvokeDbOperation(Action<SQLiteConnection> action)
         {
-            await WithRetry.InvokeAsync(_retryPolicy, () =>
+            _sqliteConnection.BeginTransaction();
+            try
             {
-                //todo: look into SQLiteOpenFlags - the mobile app is encountering db locked exceptions and I think SQLiteOpenFlags might be the solution
-                using (var connection = new SQLiteConnection(_connectionString))
-                {
-                    connection.BeginTransaction();
-                    try
-                    {
-                        action(connection);
-                        connection.Commit();
-                    }
-                    catch
-                    {
-                        connection.Rollback();
-                        throw;
-                    }
-                }
-            });
+                action(_sqliteConnection);
+                _sqliteConnection.Commit();
+            }
+            catch
+            {
+                _sqliteConnection.Rollback();
+                throw;
+            }
         }
 
-        public async Task Write<T>(T observation) where T : IObservation, new()
+        public void Write<T>(T observation) where T : IObservation, new()
         {
             if (observation == null)
             {
                 throw new ArgumentNullException(nameof(observation));
             }
 
-            await InvokeDbOperation((connection) =>
+            InvokeDbOperation((connection) =>
             {
                 connection.CreateTable<T>();
                 connection.Insert(observation);
             });
         }
 
-        public async Task<T[]> Read<T>() where T : IObservation, new()
+        public T[] Read<T>() where T : IObservation, new()
         {
             var result = default(T[]);
-            await InvokeDbOperation((connection) =>
+            InvokeDbOperation((connection) =>
             {
                 connection.CreateTable<T>();
                 result = connection.Table<T>()
@@ -84,7 +79,7 @@ namespace Tello.Repository
             return result;
         }
 
-        public async Task<T[]> Read<T>(Expression<Func<T, bool>> predicate) where T : IObservation, new()
+        public T[] Read<T>(Expression<Func<T, bool>> predicate) where T : IObservation, new()
         {
             if (predicate == null)
             {
@@ -92,7 +87,7 @@ namespace Tello.Repository
             }
 
             var result = default(T[]);
-            await InvokeDbOperation((connection) =>
+            InvokeDbOperation((connection) =>
             {
                 connection.CreateTable<T>();
                 result = connection.Table<T>()
@@ -102,10 +97,10 @@ namespace Tello.Repository
             return result;
         }
 
-        public async Task<T[]> Read<T>(TimeSpan age) where T : IObservation, new()
+        public T[] Read<T>(TimeSpan age) where T : IObservation, new()
         {
             var result = default(T[]);
-            await InvokeDbOperation((connection) =>
+            InvokeDbOperation((connection) =>
             {
                 connection.CreateTable<T>();
                 result = connection
@@ -116,22 +111,23 @@ namespace Tello.Repository
             return result;
         }
 
-        public async Task Clear<T>() where T : IObservation, new()
+        public void Clear<T>() where T : IObservation, new()
         {
-            await InvokeDbOperation((connection) =>
+            InvokeDbOperation((connection) =>
             {
                 connection.CreateTable<T>();
                 connection.DeleteAll<T>();
             });
         }
 
-        public async Task Clear<T>(TimeSpan age) where T : IObservation, new()
+        public void Clear<T>(TimeSpan age) where T : IObservation, new()
         {
             var oldestDate = DateTime.UtcNow - age;
-            var query = $"delete from {typeof(T).Name} where Timestamp <= ?";
-            await InvokeDbOperation((connection) =>
+            InvokeDbOperation((connection) =>
             {
                 connection.CreateTable<T>();
+                var mapping = connection.GetMapping<T>();
+                var query = $"delete from {mapping.TableName} where Timestamp <= ?";
                 connection.Execute(query, oldestDate);
             });
         }
