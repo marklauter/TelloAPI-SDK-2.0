@@ -4,8 +4,6 @@ using System.Runtime.CompilerServices;
 
 namespace Repository.Sqlite.Test
 {
-
-
     [TestClass]
     public class SqliteRepositoryTests
     {
