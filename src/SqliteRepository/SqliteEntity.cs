@@ -1,6 +1,4 @@
-﻿using Repository;
-
-namespace SqliteRepository
+﻿namespace Repository.Sqlite
 {
     [System.Diagnostics.DebuggerDisplay("{Id}")]
     public class SqliteEntity : IEntity

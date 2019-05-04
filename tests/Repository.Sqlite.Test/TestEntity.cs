@@ -1,7 +1,7 @@
 ﻿using Repository;
 using System;
 
-namespace SqliteRepository.Test
+namespace Repository.Sqlite.Test
 {
     [System.Diagnostics.DebuggerDisplay("{Id}: {Name}, {Timestamp}")]
     public class TestEntity : SqliteEntity

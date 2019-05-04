@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace SQliteRepository.Test
+namespace Repository.Sqlite.Test
 {
 
 

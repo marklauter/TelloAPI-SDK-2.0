@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Repository\Repository.csproj" />
-    <ProjectReference Include="..\SqliteRepository\SqliteRepository.csproj" />
+    <ProjectReference Include="..\..\src\Repository\Repository.csproj" />
+    <ProjectReference Include="..\..\src\SqliteRepository\Repository.Sqlite.csproj" />
   </ItemGroup>
 
 </Project>

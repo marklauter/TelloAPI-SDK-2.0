@@ -1,11 +1,10 @@
-﻿using Repository;
-using SQLite;
+﻿using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace SqliteRepository
+namespace Repository.Sqlite
 {
     public class SqliteRepository : IRepository
     {
@@ -70,7 +69,7 @@ namespace SqliteRepository
             return _sqlite.Delete<T>(id);
         }
 
-        public int Delete<T>(T entity) 
+        public int Delete<T>(T entity)
             where T : IEntity, new()
         {
             return Delete<T>(entity.Id);
