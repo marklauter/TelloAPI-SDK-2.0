@@ -1,5 +1,4 @@
-﻿using Repository;
-using System;
+﻿using System;
 
 namespace Repository.Sqlite.Test
 {
@@ -8,10 +7,13 @@ namespace Repository.Sqlite.Test
     {
         public TestEntity()
         {
+            Timestamp = DateTime.Now;
         }
 
         public TestEntity(TestEntity entity) : base(entity)
         {
+            Name = entity.Name;
+            Timestamp = entity.Timestamp;
         }
 
         public TestEntity(string name)
