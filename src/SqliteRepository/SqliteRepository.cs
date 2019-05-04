@@ -38,43 +38,66 @@ namespace SqliteRepository
         #endregion
 
         public bool CreateCatalog<T>()
+            where T : IEntity, new()
         {
             return _sqlite.CreateTable<T>() == CreateTableResult.Created;
         }
 
-        public int Delete<T>() where T : IEntity, new()
+        public T NewEntity<T>(params object[] args)
+            where T : IEntity, new()
+        {
+            var result = (T)Activator.CreateInstance(typeof(T), args);
+            // inserts fresh, updates ID with auto inc value
+            if (Insert(result) == 1)
+            {
+                return result;
+            }
+            else
+            {
+                throw new Exception($"failed to insert type {typeof(T).Name}");
+            }
+        }
+
+        public int Delete<T>()
+            where T : IEntity, new()
         {
             return _sqlite.DeleteAll<T>();
         }
 
-        public int Delete<T>(int id) where T : IEntity, new()
+        public int Delete<T>(int id)
+            where T : IEntity, new()
         {
             return _sqlite.Delete<T>(id);
         }
 
-        public int Delete<T>(T entity) where T : IEntity, new()
+        public int Delete<T>(T entity) 
+            where T : IEntity, new()
         {
             return Delete<T>(entity.Id);
         }
 
-        public int Delete<T>(Expression<Func<T, bool>> predicate) where T : IEntity, new()
+        public int Delete<T>(Expression<Func<T, bool>> predicate)
+            where T : IEntity, new()
         {
             return _sqlite.Delete(predicate);
         }
 
-        public T Read<T>(int id) where T : IEntity, new()
+        public T Read<T>(int id)
+            where T : IEntity, new()
         {
             return _sqlite.Find<T>(id);
         }
 
-        public T[] Read<T>() where T : IEntity, new()
+        public T[] Read<T>()
+            where T : IEntity, new()
         {
             return _sqlite
                 .Table<T>()
                 .ToArray();
         }
 
-        public T[] Read<T>(Expression<Func<T, bool>> predicate) where T : IEntity, new()
+        public T[] Read<T>(Expression<Func<T, bool>> predicate)
+            where T : IEntity, new()
         {
             return _sqlite
                 .Table<T>()
@@ -82,7 +105,8 @@ namespace SqliteRepository
                 ToArray();
         }
 
-        public int Insert<T>(T entity) where T : IEntity, new()
+        public int Insert<T>(T entity)
+            where T : IEntity, new()
         {
             if (entity == null)
             {
@@ -92,7 +116,8 @@ namespace SqliteRepository
             return _sqlite.Insert(entity);
         }
 
-        public int Insert<T>(IEnumerable<T> entities) where T : IEntity, new()
+        public int Insert<T>(IEnumerable<T> entities)
+            where T : IEntity, new()
         {
             if (entities == null)
             {
@@ -102,12 +127,19 @@ namespace SqliteRepository
             return entities.Sum(e => Insert(e));
         }
 
-        public int Update<T>(T entity) where T : IEntity, new()
+        public int Update<T>(T entity)
+            where T : IEntity, new()
         {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
             return _sqlite.Update(entity);
         }
 
-        public int Update<T>(IEnumerable<T> entities) where T : IEntity, new()
+        public int Update<T>(IEnumerable<T> entities)
+            where T : IEntity, new()
         {
             if (entities == null)
             {

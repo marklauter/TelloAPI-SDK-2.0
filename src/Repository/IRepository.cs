@@ -6,7 +6,9 @@ namespace Repository
 {
     public interface IRepository
     {
-        bool CreateCatalog<T>();
+        bool CreateCatalog<T>() where T : IEntity, new();
+
+        T NewEntity<T>(params object[] args) where T : IEntity, new();
 
         int Insert<T>(T entity) where T : IEntity, new();
         int Insert<T>(IEnumerable<T> entities) where T : IEntity, new();

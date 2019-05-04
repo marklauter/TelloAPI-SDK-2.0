@@ -2,11 +2,12 @@
 
 namespace SqliteRepository
 {
+    [System.Diagnostics.DebuggerDisplay("{Id}")]
     public class SqliteEntity : IEntity
     {
         public SqliteEntity() { }
 
-        public SqliteEntity(IEntity entity)
+        protected SqliteEntity(IEntity entity)
         {
             Id = entity.Id;
         }
