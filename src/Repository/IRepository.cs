@@ -24,6 +24,8 @@ namespace Repository
         int Delete<T>(int id) where T : IEntity, new();
         int Delete<T>(T entity) where T : IEntity, new();
         int Delete<T>(Expression<Func<T, bool>> predicate) where T : IEntity, new();
+
+        void Shrink();
     }
 }
 

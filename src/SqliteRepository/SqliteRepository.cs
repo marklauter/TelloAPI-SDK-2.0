@@ -1,12 +1,13 @@
 ﻿using SQLite;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 
 namespace Repository.Sqlite
 {
-    public class SqliteRepository : IRepository
+    public class SqliteRepository : IRepository, IDisposable
     {
         private readonly SQLiteConnection _sqlite;
 
@@ -23,7 +24,7 @@ namespace Repository.Sqlite
 
             var connectionString = String.IsNullOrEmpty(settings.databasePath)
                 ? databaseName
-                : $"{settings.databasePath}/{databaseName}";
+                : Path.Combine(settings.databasePath, databaseName);
 
             _sqlite = _sqlite ??
                 new SQLiteConnection(
@@ -72,13 +73,25 @@ namespace Repository.Sqlite
         public int Delete<T>(T entity)
             where T : IEntity, new()
         {
+            if(entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
             return Delete<T>(entity.Id);
         }
 
         public int Delete<T>(Expression<Func<T, bool>> predicate)
             where T : IEntity, new()
         {
-            return _sqlite.Delete(predicate);
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
+            var entities = Read(predicate);
+
+            return entities.Sum(e => Delete(e));
         }
 
         public T Read<T>(int id)
@@ -98,6 +111,11 @@ namespace Repository.Sqlite
         public T[] Read<T>(Expression<Func<T, bool>> predicate)
             where T : IEntity, new()
         {
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
             return _sqlite
                 .Table<T>()
                 .Where(predicate).
@@ -147,5 +165,36 @@ namespace Repository.Sqlite
 
             return entities.Sum(e => Update(e));
         }
+
+        public void Shrink()
+        {
+            _sqlite.Execute("vacuum");
+        }
+
+        #region IDisposable Support
+        private bool _disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    _sqlite.Dispose();
+                }
+
+                _disposedValue = true;
+            }
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }
