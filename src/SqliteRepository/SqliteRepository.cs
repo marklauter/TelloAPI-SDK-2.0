@@ -32,7 +32,8 @@ namespace SqliteRepository
                     SQLiteOpenFlags.Create
                         | SQLiteOpenFlags.ReadWrite
                         | SQLiteOpenFlags.FullMutex,
-                    true);
+                    true)
+                { BusyTimeout = TimeSpan.FromSeconds(10) };
         }
         #endregion
 
