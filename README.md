@@ -23,14 +23,17 @@ Since the Tello operates synchronously, the flight controller had to provide an 
 * automated tests
 * simplified scipting
 
-### April 2019 Goals
+### April 2019 Goals - COMPLETE
 * UWP UI - command buttons tab, script tab, real time operations log display, gauges based on aviation 6 pack
 * operations and flight data logging in SQLite
+
+### May 2019 Goals
+* refactor based on value objects vid featuring Pim Elshoff: https://www.youtube.com/watch?v=aKBkpLj9-88
 * script improvements
 * video (decoding H264) without crap UWP media control
 * incorporate OpenCV
 
-### May 2019 Goals
+### June 2019 Goals
 * Nuget
 * Add physics to emulator
 
