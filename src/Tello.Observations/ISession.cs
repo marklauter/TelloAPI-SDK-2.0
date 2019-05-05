@@ -5,7 +5,7 @@ namespace Tello.Observations
 {
     public interface ISession : IEntity
     {
-        DateTime Start { get; set; }
+        DateTime StartTime { get; set; }
         TimeSpan Duration { get; set; }
     }
 }
