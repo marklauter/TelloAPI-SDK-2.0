@@ -5,7 +5,7 @@ namespace Tello.Observations
 {
     public interface IObservation : IEntity
     {
-        int SessionId { get; set; }
+        int GroupId { get; set; }
         DateTime Timestamp { get; set; }
     }
 }
