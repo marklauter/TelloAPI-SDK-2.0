@@ -12,12 +12,12 @@ namespace Tello.Observations.Sqlite
 
         public Session(DateTime start, TimeSpan duration)
         {
-            Start = start;
+            StartTime = start;
             Duration = duration;
         }
 
         [SQLite.Indexed]
-        public DateTime Start { get; set; }
+        public DateTime StartTime { get; set; }
 
         [SQLite.Ignore]
         public TimeSpan Duration { get; set; }
