@@ -2,7 +2,7 @@
 using Tello.Controller;
 using Tello.Messaging;
 
-namespace Tello.Repository
+namespace Tello.Observations
 {
     public sealed class TelloCommandObservation : Observation, ICommandResponseReceivedArgs
     {
