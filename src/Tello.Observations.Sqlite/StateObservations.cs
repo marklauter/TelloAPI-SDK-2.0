@@ -7,7 +7,8 @@ namespace Tello.Observations.Sqlite
     {
         public StateObservation() : base() { }
 
-        public StateObservation(int groupId, ITelloState telloState) : base(groupId, telloState.Timestamp)
+        public StateObservation(int groupId, ITelloState telloState) 
+            : base(groupId, telloState.Timestamp)
         {
             Data = telloState.Data;
         }

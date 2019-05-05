@@ -7,6 +7,9 @@ namespace Tello.Observations.Sqlite
     {
         public BatteryObservation() : base() { }
 
+        public BatteryObservation(IObservationGroup group, ITelloState state)
+            : this(group.Id, state.Timestamp, state.Battery) { }
+
         public BatteryObservation(int groupId, ITelloState state)
             : this(groupId, state.Timestamp, state.Battery) { }
 

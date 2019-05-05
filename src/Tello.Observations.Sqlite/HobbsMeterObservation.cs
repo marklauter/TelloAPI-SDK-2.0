@@ -7,6 +7,9 @@ namespace Tello.Observations.Sqlite
     {
         public HobbsMeterObservation() : base() { }
 
+        public HobbsMeterObservation(IObservationGroup group, ITelloState state)
+            : this(group.Id, state.Timestamp, state.HobbsMeter) { }
+
         public HobbsMeterObservation(int groupId, ITelloState state)
             : this(groupId, state.Timestamp, state.HobbsMeter) { }
 

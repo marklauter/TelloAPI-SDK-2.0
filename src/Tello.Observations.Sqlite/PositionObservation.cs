@@ -7,6 +7,9 @@ namespace Tello.Observations.Sqlite
     {
         public PositionObservation() : base() { }
 
+        public PositionObservation(IObservationGroup group, ITelloState state)
+            : this(group.Id, state) { }
+
         public PositionObservation(int groupId, ITelloState state)
             : this(groupId, state.Timestamp, state.Position) { }
 
