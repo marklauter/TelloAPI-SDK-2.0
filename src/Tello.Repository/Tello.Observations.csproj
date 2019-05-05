@@ -5,12 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Repository\Repository.csproj" />
-    <ProjectReference Include="..\SqliteRepository\Repository.Sqlite.csproj" />
     <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj" />
     <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj" />
   </ItemGroup>
