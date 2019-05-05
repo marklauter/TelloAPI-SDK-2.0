@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace Repository
 {
-    public interface IRepository
+    public interface IRepository : IDisposable
     {
         bool CreateCatalog<T>() where T : IEntity, new();
 
