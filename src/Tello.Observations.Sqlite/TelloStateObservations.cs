@@ -1,7 +1,7 @@
 ﻿using System;
 using Tello.Messaging;
 
-namespace Tello.Observations
+namespace Tello.Observations.Sqlite
 {
     public sealed class TelloStateObservation : Observation
     {

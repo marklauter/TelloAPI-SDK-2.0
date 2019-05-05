@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -9,7 +9,7 @@
     <ProjectReference Include="..\SqliteRepository\Repository.Sqlite.csproj" />
     <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj" />
     <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj" />
-    <ProjectReference Include="..\Tello.Repository\Tello.Observations.csproj" />
+    <ProjectReference Include="..\Tello.Observations\Tello.Observations.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace Tello.Observations
+namespace Tello.Observations.Sqlite
 {
     public class TrackingSession : ITrackingSession
     {
