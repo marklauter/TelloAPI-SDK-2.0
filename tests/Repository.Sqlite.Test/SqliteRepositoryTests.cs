@@ -7,7 +7,7 @@ namespace Repository.Sqlite.Test
     [TestClass]
     public class SqliteRepositoryTests
     {
-        private SqliteRepository CreateRepository(bool deleteFile = true, [CallerMemberName]string callerName = null)
+        private IRepository CreateRepository(bool deleteFile = true, [CallerMemberName]string callerName = null)
         {
             var path = Path.GetTempPath();
             var fileName = $"{callerName}.sqlite";
