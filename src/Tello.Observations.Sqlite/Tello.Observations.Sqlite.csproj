@@ -9,6 +9,7 @@
     <ProjectReference Include="..\SqliteRepository\Repository.Sqlite.csproj" />
     <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj" />
     <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj" />
+    <ProjectReference Include="..\Tello.Repository\Tello.Observations.csproj" />
   </ItemGroup>
 
 </Project>
