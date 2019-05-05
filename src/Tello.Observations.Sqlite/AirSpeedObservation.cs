@@ -7,6 +7,9 @@ namespace Tello.Observations.Sqlite
     {
         public AirSpeedObservation() : base() { }
 
+        public AirSpeedObservation(IObservationGroup group, ITelloState state)
+            : this(group.Id, state) { }
+
         public AirSpeedObservation(int groupId, ITelloState state)
             : this(groupId, state.Timestamp, state.AirSpeed) { }
 
