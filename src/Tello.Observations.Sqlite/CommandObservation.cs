@@ -4,11 +4,15 @@ using Tello.Messaging;
 
 namespace Tello.Observations.Sqlite
 {
-    public sealed class TelloCommandObservation : Observation, ITelloCommandObservation
+    public sealed class CommandObservation : Observation, ICommandObservation
     {
-        public TelloCommandObservation() : base() { }
+        public CommandObservation() : base() { }
 
-        public TelloCommandObservation(int groupId, ICommandResponseReceivedArgs commandArgs) : base(groupId)
+        public CommandObservation(IObservationGroup group, ICommandResponseReceivedArgs commandArgs)
+            : this(group.Id, commandArgs) { }
+
+        public CommandObservation(int groupId, ICommandResponseReceivedArgs commandArgs) 
+            : base(groupId)
         {
             Command = commandArgs.Command;
             Response = commandArgs.Response;

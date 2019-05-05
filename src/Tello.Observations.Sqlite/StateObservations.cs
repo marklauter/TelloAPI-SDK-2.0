@@ -3,11 +3,11 @@
 namespace Tello.Observations.Sqlite
 {
     [System.Diagnostics.DebuggerDisplay("{Id}:{GroupId} {Timestamp} - {Data}")]
-    public sealed class TelloStateObservation : Observation
+    public sealed class StateObservation : Observation
     {
-        public TelloStateObservation() : base() { }
+        public StateObservation() : base() { }
 
-        public TelloStateObservation(int groupId, ITelloState telloState) : base(groupId, telloState.Timestamp)
+        public StateObservation(int groupId, ITelloState telloState) : base(groupId, telloState.Timestamp)
         {
             Data = telloState.Data;
         }
