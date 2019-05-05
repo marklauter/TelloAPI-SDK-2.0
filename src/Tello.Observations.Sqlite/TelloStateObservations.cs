@@ -1,8 +1,8 @@
-﻿using System;
-using Tello.Messaging;
+﻿using Tello.Messaging;
 
 namespace Tello.Observations.Sqlite
 {
+    [System.Diagnostics.DebuggerDisplay("{Id}:{GroupId} {Timestamp} - {Data}")]
     public sealed class TelloStateObservation : Observation
     {
         public TelloStateObservation() : base() { }
