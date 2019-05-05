@@ -4,6 +4,5 @@ namespace Tello.Observations
 {
     public interface IPositionObservation : IObservation, IPosition
     {
-
     }
 }
