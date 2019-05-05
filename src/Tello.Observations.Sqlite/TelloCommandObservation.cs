@@ -4,19 +4,15 @@ using Tello.Messaging;
 
 namespace Tello.Observations.Sqlite
 {
-    public sealed class TelloCommandObservation : Observation, ICommandResponseReceivedArgs
+    public sealed class TelloCommandObservation : Observation, ITelloCommandObservation
     {
         public TelloCommandObservation() : base() { }
 
-        public TelloCommandObservation(ICommandResponseReceivedArgs commandArgs, string groupId) : base(groupId)
+        public TelloCommandObservation(int groupId, ICommandResponseReceivedArgs commandArgs) : base(groupId)
         {
-            if (commandArgs == null)
-            {
-                throw new ArgumentNullException(nameof(commandArgs));
-            }
             Command = commandArgs.Command;
             Response = commandArgs.Response;
-            Initiated = commandArgs.Initiated;
+            Timestamp = Initiated = commandArgs.Initiated;
             Elapsed = commandArgs.Elapsed;
             Completed = Initiated + Elapsed;
         }
@@ -24,6 +20,7 @@ namespace Tello.Observations.Sqlite
         [SQLite.Ignore]
         public TelloCommands Command { get; set; }
 
+        [SQLite.Indexed]
         [SQLite.Column("Command")]
         public string CommandValue
         {
@@ -31,9 +28,12 @@ namespace Tello.Observations.Sqlite
             set => Command = (TelloCommands)Enum.Parse(typeof(TelloCommands), value);
         }
 
+        [SQLite.Indexed]
         public string Response { get; set; }
 
+        [SQLite.Indexed]
         public DateTime Initiated { get; set; }
+        
         // this is just to put a human readable value in sqlite for debugging
         public string InitiatedString
         {
@@ -41,7 +41,9 @@ namespace Tello.Observations.Sqlite
             set { }
         }
 
+        [SQLite.Indexed]
         public DateTime Completed { get; set; }
+
         // this is just to put a human readable value in sqlite for debugging
         public string CompletedString
         {
@@ -51,7 +53,9 @@ namespace Tello.Observations.Sqlite
 
         [SQLite.Ignore]
         public TimeSpan Elapsed { get; set; }
-        public int ElapsedMS
+
+        [SQLite.Indexed]
+        public int ElapsedMs
         {
             get => (int)Elapsed.TotalMilliseconds;
             set => Elapsed = TimeSpan.FromMilliseconds(value);

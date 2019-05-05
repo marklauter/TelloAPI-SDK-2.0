@@ -10,10 +10,12 @@ namespace Tello.Observations.Sqlite
 
         public Observation(IObservationGroup group) : this(group.Id) { }
 
-        public Observation(int groupId) : base()
+        public Observation(int groupId) : this(groupId, DateTime.UtcNow) { }
+
+        public Observation(int groupId, DateTime timestamp) : base()
         {
             GroupId = groupId;
-            Timestamp = DateTime.UtcNow;
+            Timestamp = timestamp;
         }
 
         public Observation(IObservation observation) : base(observation)

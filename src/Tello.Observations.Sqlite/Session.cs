@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Repository.Sqlite;
+using System;
 
 namespace Tello.Observations.Sqlite
 {
     [System.Diagnostics.DebuggerDisplay("{Id} {Start} {Duration}")]
-    public sealed class Session : ISession
+    public sealed class Session : SqliteEntity, ISession
     {
         public Session() : this(DateTime.UtcNow) { }
 
@@ -16,14 +17,16 @@ namespace Tello.Observations.Sqlite
         }
 
         [SQLite.Indexed]
-        [SQLite.PrimaryKey]
-        [SQLite.AutoIncrement]
-        public int Id { get; set; }
-
-        [SQLite.Indexed]
         public DateTime Start { get; set; }
 
-        [SQLite.Indexed]
+        [SQLite.Ignore]
         public TimeSpan Duration { get; set; }
+
+        [SQLite.Indexed]
+        public int ElapsedMs
+        {
+            get => (int)Duration.TotalMilliseconds;
+            set => Duration = TimeSpan.FromMilliseconds(value);
+        }
     }
 }

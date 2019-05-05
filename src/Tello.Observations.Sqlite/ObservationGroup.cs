@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Repository.Sqlite;
+using System;
 
 namespace Tello.Observations.Sqlite
 {
     [System.Diagnostics.DebuggerDisplay("{Id}:{SessionId} {Timestamp}")]
-    public sealed class ObservationGroup : IObservationGroup
+    public sealed class ObservationGroup : SqliteEntity, IObservationGroup
     {
         public ObservationGroup() : this(0, DateTime.UtcNow) { }
 
@@ -18,11 +19,6 @@ namespace Tello.Observations.Sqlite
             SessionId = sessionId;
             Timestamp = timestamp;
         }
-
-        [SQLite.Indexed]
-        [SQLite.PrimaryKey]
-        [SQLite.AutoIncrement]
-        public int Id { get; set; }
 
         [SQLite.Indexed]
         public int SessionId { get; set; }
