@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Repository.Sqlite\Repository.Sqlite.csproj" />
     <ProjectReference Include="..\Repository\Repository.csproj" />
-    <ProjectReference Include="..\SqliteRepository\Repository.Sqlite.csproj" />
     <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj" />
     <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj" />
     <ProjectReference Include="..\Tello.Observations\Tello.Observations.csproj" />
