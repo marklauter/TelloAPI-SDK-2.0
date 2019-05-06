@@ -7,7 +7,7 @@ namespace Messenger
 {
     //https://docs.microsoft.com/en-us/dotnet/api/system.iobservable-1?view=netstandard-2.0
 
-    public abstract class Receiver<T> : IReceiver<T>, IDisposable
+    public abstract class Receiver : IReceiver, IDisposable
     {
         private CancellationTokenSource _cancellationTokenSource = null;
 
@@ -16,7 +16,7 @@ namespace Messenger
             if (_cancellationTokenSource == null)
             {
                 _cancellationTokenSource = new CancellationTokenSource();
-                await Task.Run(() => Listen(_cancellationTokenSource.Token));
+                await Task.Run(async () => await Listen(_cancellationTokenSource.Token));
             }
         }
 
@@ -34,7 +34,7 @@ namespace Messenger
 
         protected abstract Task Listen(CancellationToken cancellationToken);
 
-        protected void MessageReceived(IEnvelope<T> message)
+        protected void MessageReceived(IEnvelope message)
         {
             foreach (var observer in _observers.Keys)
             {
@@ -50,9 +50,9 @@ namespace Messenger
             }
         }
 
-        private readonly ConcurrentDictionary<IObserver<IEnvelope<T>>, object> _observers = new ConcurrentDictionary<IObserver<IEnvelope<T>>, object>();
+        private readonly ConcurrentDictionary<IObserver<IEnvelope>, object> _observers = new ConcurrentDictionary<IObserver<IEnvelope>, object>();
 
-        public IDisposable Subscribe(IObserver<IEnvelope<T>> observer)
+        public IDisposable Subscribe(IObserver<IEnvelope> observer)
         {
             if (!_observers.ContainsKey(observer))
             {
@@ -63,10 +63,10 @@ namespace Messenger
 
         private class Unsubscriber : IDisposable
         {
-            private readonly ConcurrentDictionary<IObserver<IEnvelope<T>>, object> _observers;
-            private readonly IObserver<IEnvelope<T>> _observer;
+            private readonly ConcurrentDictionary<IObserver<IEnvelope>, object> _observers;
+            private readonly IObserver<IEnvelope> _observer;
 
-            public Unsubscriber(ConcurrentDictionary<IObserver<IEnvelope<T>>, object> observers, IObserver<IEnvelope<T>> observer)
+            public Unsubscriber(ConcurrentDictionary<IObserver<IEnvelope>, object> observers, IObserver<IEnvelope> observer)
             {
                 _observers = observers;
                 _observer = observer;

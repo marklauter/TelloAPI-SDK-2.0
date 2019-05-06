@@ -7,6 +7,6 @@ namespace Messenger
         /// <summary>
         /// send request, receive response
         /// </summary>
-        Task<IResponse<T>> SendAsync<T>(IRequest request);
+        Task<IResponse> SendAsync(IRequest request);
     }
 }

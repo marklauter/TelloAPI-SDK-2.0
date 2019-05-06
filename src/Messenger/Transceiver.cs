@@ -1,6 +1,7 @@
 ﻿using Sumo.Retry;
 using Sumo.Retry.Policies;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Messenger
@@ -14,13 +15,21 @@ namespace Messenger
 
         private readonly RetryPolicy _retryPolicy;
 
-        public async Task<IResponse<T>> SendAsync<T>(IRequest request)
+        public async Task<IResponse> SendAsync(IRequest request)
         {
-            return await WithRetry.InvokeAsync(
-                _retryPolicy,
-                async () => await Send<T>(request));
+            var stopwatch = Stopwatch.StartNew();
+            try
+            {
+                return await WithRetry.InvokeAsync(
+                   _retryPolicy,
+                   async () => await Send(request));
+            }
+            catch(Exception ex)
+            {
+                return new Response(request, ex, stopwatch.Elapsed);
+            }
         }
 
-        protected abstract Task<IResponse<T>> Send<T>(IRequest request);
+        protected abstract Task<IResponse> Send(IRequest request);
     }
 }
