@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Tello
+namespace Tello.State
 {
     public class TelloState : ITelloState
     {

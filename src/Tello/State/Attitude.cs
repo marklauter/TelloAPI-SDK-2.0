@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tello
+namespace Tello.State
 {
     internal sealed class Attitude : IAttitude
     {
