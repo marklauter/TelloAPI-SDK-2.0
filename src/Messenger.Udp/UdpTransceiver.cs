@@ -37,17 +37,19 @@ namespace Messenger.Udp
                 {
                     spinWait.SpinOnce();
                 }
-                stopwatch.Stop();
             });
+
+            stopwatch.Stop();
 
             if (_client.Available == 0)
             {
                 throw new TimeoutException(stopwatch.Elapsed.ToString());
             }
 
-            var receiveResult = await _client.ReceiveAsync();
-
-            return new Response(request, receiveResult.Buffer, stopwatch.Elapsed);
+            return new Response(
+                request, 
+                (await _client.ReceiveAsync()).Buffer, 
+                stopwatch.Elapsed);
         }
     }
 }
