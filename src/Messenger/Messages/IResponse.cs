@@ -2,7 +2,7 @@
 
 namespace Messenger
 {
-    public interface IResponse<T> : IEnvelope<T>
+    public interface IResponse : IEnvelope
     {
         /// <summary>
         /// request that initiated the response
@@ -30,4 +30,6 @@ namespace Messenger
         /// </summary>
         Exception Exception { get; }
     }
+
+    public interface IResponse<T> : IResponse, IEnvelope<T> { }
 }

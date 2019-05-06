@@ -2,21 +2,43 @@
 
 namespace Messenger
 {
-    public abstract class Response<T> : IResponse<T>
+    public class Response : IResponse
     {
-        public Response(IRequest request, Exception exception, TimeSpan timeTaken)
+        protected Response(IResponse response)
         {
-            Request = request ?? throw new ArgumentNullException(nameof(request));
-            Exception = exception ?? throw new ArgumentNullException(nameof(exception));
-            StatusMessage = $"{exception.GetType().Name} - {exception.Message}";
-            TimeTaken = timeTaken;
-            Success = false;
+            if (response == null)
+            {
+                throw new ArgumentNullException(nameof(response));
+            }
+
+            Id = response.Id;
+            Timestamp = response.Timestamp;
+            Data = response.Data;
+
+            Request = response.Request;
+            Exception = response.Exception;
+            StatusMessage = response.StatusMessage;
+            TimeTaken = response.TimeTaken;
+            Success = response.Success;
         }
 
-        public Response(IRequest request, byte[] data, TimeSpan timeTaken)
+        private Response(IRequest request, TimeSpan timeTaken, bool success)
         {
             Request = request ?? throw new ArgumentNullException(nameof(request));
+            TimeTaken = timeTaken;
+            Success = success;
+            Timestamp = DateTime.UtcNow;
+            Id = Guid.NewGuid();
+        }
 
+        public Response(IRequest request, Exception exception, TimeSpan timeTaken) : this(request, timeTaken, false)
+        {
+            Exception = exception ?? throw new ArgumentNullException(nameof(exception));
+            StatusMessage = $"{exception.GetType().Name} - {exception.Message}";
+        }
+
+        public Response(IRequest request, byte[] data, TimeSpan timeTaken) : this(request, timeTaken, true)
+        {
             if (data == null)
             {
                 throw new ArgumentNullException(nameof(data));
@@ -28,30 +50,33 @@ namespace Messenger
             }
 
             Data = data;
-            Message = Deserialize(data);
+        }
 
-            TimeTaken = timeTaken;
-            Success = true;
+        public IRequest Request { get; }
+
+        public TimeSpan TimeTaken { get; }
+
+        public bool Success { get; }
+
+        public string StatusMessage { get; }
+
+        public Exception Exception { get; }
+
+        public byte[] Data { get; }
+
+        public DateTime Timestamp { get; }
+
+        public Guid Id { get; }
+    }
+
+    public abstract class Response<T> : Response, IResponse<T>
+    {
+        public Response(IResponse response) : base(response)
+        {
         }
 
         protected abstract T Deserialize(byte[] data);
 
-        public IRequest Request {get;}
-
-        public TimeSpan TimeTaken {get;}
-
-        public bool Success {get;}
-
-        public string StatusMessage {get;}
-
-        public Exception Exception {get;}
-
-        public T Message {get;}
-
-        public byte[] Data {get;}
-
-        public DateTime Timestamp {get;}
-
-        public Guid Id {get;}
+        public T Message => Deserialize(Data);
     }
 }

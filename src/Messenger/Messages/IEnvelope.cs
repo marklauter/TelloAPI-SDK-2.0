@@ -5,9 +5,9 @@ namespace Messenger
     public interface IEnvelope
     {
         /// <summary>
-        /// marshalled data
+        /// id for use in queuing systems
         /// </summary>
-        byte[] Data { get; }
+        Guid Id { get; }
 
         /// <summary>
         /// time that the message was created/initiated
@@ -15,9 +15,9 @@ namespace Messenger
         DateTime Timestamp { get; }
 
         /// <summary>
-        /// id for use in queuing systems
+        /// marshalled data
         /// </summary>
-        Guid Id { get; }
+        byte[] Data { get; }
     }
 
     public interface IEnvelope<T> : IEnvelope
