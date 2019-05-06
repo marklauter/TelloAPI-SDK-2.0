@@ -71,8 +71,8 @@ namespace Tello.Controller.Test
                     var bytes = Encoding.UTF8.GetBytes("command");
                     var request = Request.FromData(bytes);
                     var response = await tello.SendAsync(request);
-                    Assert.IsTrue(response.Successful);
-                    Assert.AreEqual(request.Id, response.RequestId);
+                    Assert.IsTrue(response.Success);
+                    Assert.AreEqual(request.Id, response.Request);
                     Assert.IsNull(response.Exception);
                     var message = Encoding.UTF8.GetString(response.Data);
                     Assert.AreEqual("ok", message.ToLowerInvariant());
@@ -99,8 +99,8 @@ namespace Tello.Controller.Test
                 var bytes = Encoding.UTF8.GetBytes("dummy");
                 var request = Request.FromData(bytes);
                 var response = await tello.SendAsync(request);
-                Assert.IsFalse(response.Successful);
-                Assert.AreEqual(request.Id, response.RequestId);
+                Assert.IsFalse(response.Success);
+                Assert.AreEqual(request.Id, response.Request);
                 Assert.IsNotNull(response.Exception);
                 Assert.IsTrue(response.Exception is InvalidOperationException);
             }
@@ -124,8 +124,8 @@ namespace Tello.Controller.Test
                     var bytes = Encoding.UTF8.GetBytes("dummy");
                     var request = Request.FromData(bytes);
                     var response = await tello.SendAsync(request);
-                    Assert.IsTrue(response.Successful);
-                    Assert.AreEqual(request.Id, response.RequestId);
+                    Assert.IsTrue(response.Success);
+                    Assert.AreEqual(request.Id, response.Request);
                     Assert.IsNull(response.Exception);
                     var message = Encoding.UTF8.GetString(response.Data);
                     Assert.AreEqual("error", message.ToLowerInvariant());
