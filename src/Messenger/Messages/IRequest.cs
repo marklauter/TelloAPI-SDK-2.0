@@ -2,7 +2,7 @@
 
 namespace Messenger
 {
-    public interface IRequest: IMessage
+    public interface IRequest: IEnvelope
     {
         /// <summary>
         /// some requests take longer than others, so this makes it possible to set per-request timeout
@@ -10,7 +10,7 @@ namespace Messenger
         TimeSpan Timeout { get; }
     }
 
-    public interface IRequest<T> : IRequest, IMessage<T>
+    public interface IRequest<T> : IRequest, IEnvelope<T>
     {
     }
 }

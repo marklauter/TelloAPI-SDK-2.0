@@ -2,7 +2,7 @@
 
 namespace Messenger
 {
-    public interface IResponse<T> : IMessage<T>
+    public interface IResponse<T> : IEnvelope<T>
     {
         /// <summary>
         /// request that initiated the response

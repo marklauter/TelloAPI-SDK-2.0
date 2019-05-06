@@ -1,41 +1,57 @@
 ﻿using System;
 
-namespace Tello.Messaging
+namespace Messenger
 {
-    public class Response : IResponse
+    public abstract class Response<T> : IResponse<T>
     {
-        private Response() { }
-
-        public static IResponse FromException(IMessage request, Exception ex, TimeSpan timeElapsed)
+        public Response(IRequest request, Exception exception, TimeSpan timeTaken)
         {
-            return new Response
-            {
-                Success = false,
-                Message = $"{ex.GetType().Name} - {ex.Message}",
-                Exception = ex,
-                Interval = timeElapsed,
-                RequestId = request.Id,
-            };
+            Request = request ?? throw new ArgumentNullException(nameof(request));
+            Exception = exception ?? throw new ArgumentNullException(nameof(exception));
+            StatusMessage = $"{exception.GetType().Name} - {exception.Message}";
+            TimeTaken = timeTaken;
+            Success = false;
         }
 
-        public static IResponse FromData(IMessage request, byte[] data, TimeSpan timeElapsed)
+        public Response(IRequest request, byte[] data, TimeSpan timeTaken)
         {
-            return new Response
+            Request = request ?? throw new ArgumentNullException(nameof(request));
+
+            if (data == null)
             {
-                Success = true,
-                Data = data,
-                Interval = timeElapsed,
-                RequestId = request.Id,
-            };
+                throw new ArgumentNullException(nameof(data));
+            }
+
+            if (data.Length == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(data));
+            }
+
+            Data = data;
+            Message = Deserialize(data);
+
+            TimeTaken = timeTaken;
+            Success = true;
         }
 
-        public byte[] Data { get; private set; }
-        public TimeSpan Interval { get; private set; }
+        protected abstract T Deserialize(byte[] data);
 
-        public bool Success { get; private set; } = false;
-        public string Message { get; private set; }
-        public Exception Exception { get; private set; }
+        public IRequest Request {get;}
 
-        public Guid RequestId { get; private set; }
-}
+        public TimeSpan TimeTaken {get;}
+
+        public bool Success {get;}
+
+        public string StatusMessage {get;}
+
+        public Exception Exception {get;}
+
+        public T Message {get;}
+
+        public byte[] Data {get;}
+
+        public DateTime Timestamp {get;}
+
+        public Guid Id {get;}
+    }
 }

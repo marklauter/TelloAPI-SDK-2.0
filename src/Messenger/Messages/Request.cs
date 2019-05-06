@@ -1,28 +1,49 @@
 ﻿using System;
 
-namespace Tello.Messaging
+namespace Messenger
 {
-    public class Request : IMessage
+    public abstract class Request : IRequest
     {
-        private Request(byte[] data, TimeSpan? timeout = null)
+        protected Request(TimeSpan? timeout = null)
         {
-            Data = data;
-            Timeout = timeout.HasValue
-                ? timeout.Value
-                : TimeSpan.MaxValue;
-
+            Timeout = timeout ?? TimeSpan.MaxValue;
             Id = Guid.NewGuid();
         }
 
-        public static IMessage FromData(byte[] data, TimeSpan? timeout = null)
+        public Request(byte[] data, TimeSpan? timeout = null) : this(timeout)
         {
-            return new Request(data, timeout);
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
+            if (data.Length == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(data));
+            }
+
+            Data = data;
         }
 
-        public byte[] Data { get; }
+        public byte[] Data { get; protected set; }
 
         public Guid Id { get; }
 
         public TimeSpan Timeout { get; }
+
+        public DateTime Timestamp => throw new NotImplementedException();
+    }
+
+    public abstract class Request<T> : Request, IRequest<T>
+    {
+        public Request(T message, TimeSpan? timeout = null) : base(timeout)
+        {
+            Message = message;
+            Data = Serialize(message);
+        }
+
+        protected abstract byte[] Serialize(T messasge);
+
+        public T Message { get; }
     }
 }
