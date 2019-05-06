@@ -34,7 +34,7 @@ namespace Messenger
 
         protected abstract Task Listen(CancellationToken cancellationToken);
 
-        protected void MessageReceived(IMessage<T> message)
+        protected void MessageReceived(IEnvelope<T> message)
         {
             foreach (var observer in _observers.Keys)
             {
@@ -50,9 +50,9 @@ namespace Messenger
             }
         }
 
-        private readonly ConcurrentDictionary<IObserver<IMessage<T>>, object> _observers = new ConcurrentDictionary<IObserver<IMessage<T>>, object>();
+        private readonly ConcurrentDictionary<IObserver<IEnvelope<T>>, object> _observers = new ConcurrentDictionary<IObserver<IEnvelope<T>>, object>();
 
-        public IDisposable Subscribe(IObserver<IMessage<T>> observer)
+        public IDisposable Subscribe(IObserver<IEnvelope<T>> observer)
         {
             if (!_observers.ContainsKey(observer))
             {
@@ -63,10 +63,10 @@ namespace Messenger
 
         private class Unsubscriber : IDisposable
         {
-            private readonly ConcurrentDictionary<IObserver<IMessage<T>>, object> _observers;
-            private readonly IObserver<IMessage<T>> _observer;
+            private readonly ConcurrentDictionary<IObserver<IEnvelope<T>>, object> _observers;
+            private readonly IObserver<IEnvelope<T>> _observer;
 
-            public Unsubscriber(ConcurrentDictionary<IObserver<IMessage<T>>, object> observers, IObserver<IMessage<T>> observer)
+            public Unsubscriber(ConcurrentDictionary<IObserver<IEnvelope<T>>, object> observers, IObserver<IEnvelope<T>> observer)
             {
                 _observers = observers;
                 _observer = observer;

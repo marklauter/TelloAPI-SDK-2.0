@@ -2,7 +2,7 @@
 
 namespace Messenger
 {
-    public interface IReceiver<T> : IObservable<IMessage<T>>
+    public interface IReceiver<T> : IObservable<IEnvelope<T>>
     {
         void Start();
         void Stop();
