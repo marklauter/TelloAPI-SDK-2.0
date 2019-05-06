@@ -2,7 +2,7 @@
 
 namespace Messenger
 {
-    public interface IMessage
+    public interface IEnvelope
     {
         /// <summary>
         /// marshalled data
@@ -20,7 +20,7 @@ namespace Messenger
         Guid Id { get; }
     }
 
-    public interface IMessage<T> : IMessage
+    public interface IEnvelope<T> : IEnvelope
     {
         /// <summary>
         /// typed message
