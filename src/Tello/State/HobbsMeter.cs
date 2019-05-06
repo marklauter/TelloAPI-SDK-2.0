@@ -1,21 +1,26 @@
-﻿using Tello.Messaging;
+﻿using System;
 
-namespace Tello.Controller
+namespace Tello
 {
     internal sealed class HobbsMeter : IHobbsMeter
     {
-        public HobbsMeter() { }
-
         public HobbsMeter(IHobbsMeter hobbsMeter)
         {
+            if (hobbsMeter == null)
+            {
+                throw new ArgumentNullException(nameof(hobbsMeter));
+            }
+
             DistanceTraversedInCm = hobbsMeter.DistanceTraversedInCm;
             MotorTimeInSeconds = hobbsMeter.MotorTimeInSeconds;
+            Timestamp = hobbsMeter.Timestamp;
         }
 
-        public HobbsMeter(IRawDroneState rawDroneState)
+        public HobbsMeter(ITelloState state)
         {
-            DistanceTraversedInCm = rawDroneState.DistanceTraversedInCm;
-            MotorTimeInSeconds = rawDroneState.MotorTimeInSeconds;
+            DistanceTraversedInCm = state.DistanceTraversedInCm;
+            MotorTimeInSeconds = state.MotorTimeInSeconds;
+            Timestamp = state.Timestamp;
         }
 
         public int DistanceTraversedInCm { get; }
@@ -23,6 +28,8 @@ namespace Tello.Controller
 
         // documentation says there's ~ 15 minutes of battery
         public double FlightTimeRemainingInMinutes => (15 * 60 - MotorTimeInSeconds) / 60.0;
+
+        public DateTime Timestamp { get; }
 
         public override string ToString()
         {

@@ -12,9 +12,9 @@ namespace Tello.App.ViewModels
     public class TelloStateViewModel : ViewModel
     {
         private readonly IStateChangedNotifier _telloStateChangedNotifier;
-        private readonly IRepository _repository;
+        private readonly ITrackingSession _repository;
 
-        public TelloStateViewModel(IUIDispatcher dispatcher, IUINotifier userNotifier, IStateChangedNotifier telloStateChangedNotifier, IRepository repository) : base(dispatcher, userNotifier)
+        public TelloStateViewModel(IUIDispatcher dispatcher, IUINotifier userNotifier, IStateChangedNotifier telloStateChangedNotifier, ITrackingSession repository) : base(dispatcher, userNotifier)
         {
             _telloStateChangedNotifier = telloStateChangedNotifier ?? throw new ArgumentNullException(nameof(telloStateChangedNotifier));
             _repository = repository;
@@ -69,12 +69,12 @@ namespace Tello.App.ViewModels
         {
             if (_repository != null)
             {
-                _repository.Clear<PositionObservation>();
-                _repository.Clear<AttitudeObservation>();
-                _repository.Clear<AirSpeedObservation>();
-                _repository.Clear<BatteryObservation>();
-                _repository.Clear<HobbsMeterObservation>();
-                _repository.Clear<TelloStateObservation>();
+                _repository.Delete<PositionObservation>();
+                _repository.Delete<AttitudeObservation>();
+                _repository.Delete<AirSpeedObservation>();
+                _repository.Delete<BatteryObservation>();
+                _repository.Delete<HobbsMeterObservation>();
+                _repository.Delete<TelloStateObservation>();
             }
         }
 

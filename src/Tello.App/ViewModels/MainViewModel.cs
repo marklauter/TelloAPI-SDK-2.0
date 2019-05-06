@@ -12,12 +12,12 @@ namespace Tello.App.ViewModels
         public TelloStateViewModel StateViewModel { get; }
 
         private readonly FlightController _flightController;
-        private readonly IRepository _repository;
+        private readonly ITrackingSession _repository;
 
         public MainViewModel(
             IUIDispatcher dispatcher,
             IUINotifier uiNotifier,
-            IRepository repository,
+            ITrackingSession repository,
             IMessengerService messenger,
             IMessageRelayService<IRawDroneState> stateServer,
             IMessageRelayService<IVideoSample> videoServer,

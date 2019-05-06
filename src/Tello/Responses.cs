@@ -1,4 +1,4 @@
-﻿namespace Tello.Messaging
+﻿namespace Tello
 {
     public enum Responses
     {

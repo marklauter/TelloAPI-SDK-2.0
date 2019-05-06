@@ -73,7 +73,7 @@ namespace Tello.Emulator.SDKV2
             MessengerState = MessengerStates.Disconnected;
         }
 
-        public Task<IResponse> SendAsync(IRequest request)
+        public Task<IResponse> SendAsync(IMessage request)
         {
             if (MessengerState != MessengerStates.Connected)
             {

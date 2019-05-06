@@ -177,10 +177,6 @@
       <Project>{04963A60-6721-4057-B3AE-2D97D025D127}</Project>
       <Name>Tello.Messaging</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tello.Repository\Tello.Repository.csproj">
-      <Project>{930f2846-7650-4bd8-a07a-eef297a8f3e7}</Project>
-      <Name>Tello.Repository</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Tello.Scripting\Tello.Scripting.csproj">
       <Project>{847fe59e-fc20-4b54-b512-3225ee11497d}</Project>
       <Name>Tello.Scripting</Name>

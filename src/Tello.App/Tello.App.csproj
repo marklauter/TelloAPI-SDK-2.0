@@ -7,7 +7,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj" />
     <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj" />
-    <ProjectReference Include="..\Tello.Repository\Tello.Repository.csproj" />
   </ItemGroup>
 
 </Project>

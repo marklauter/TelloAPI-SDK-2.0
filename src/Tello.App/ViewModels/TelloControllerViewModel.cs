@@ -11,9 +11,9 @@ namespace Tello.App.ViewModels
     public class TelloControllerViewModel : ViewModel
     {
         private readonly ITelloController _controller;
-        private readonly IRepository _repository;
+        private readonly ITrackingSession _repository;
 
-        public TelloControllerViewModel(IUIDispatcher dispatcher, IUINotifier userNotifier, ITelloController telloController, IRepository repository) : base(dispatcher, userNotifier)
+        public TelloControllerViewModel(IUIDispatcher dispatcher, IUINotifier userNotifier, ITelloController telloController, ITrackingSession repository) : base(dispatcher, userNotifier)
         {
             _controller = telloController ?? throw new ArgumentNullException(nameof(telloController));
             _repository = repository;
@@ -82,7 +82,7 @@ namespace Tello.App.ViewModels
         {
             if (_repository != null)
             {
-                _repository.Clear<TelloCommandObservation>();
+                _repository.Delete<TelloCommandObservation>();
             }
         }
 

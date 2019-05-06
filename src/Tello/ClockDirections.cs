@@ -1,4 +1,4 @@
-﻿namespace Tello.Controller
+﻿namespace Tello
 {
     public enum ClockDirections
     {

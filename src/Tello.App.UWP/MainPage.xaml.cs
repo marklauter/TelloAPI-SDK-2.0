@@ -24,7 +24,7 @@ namespace Tello.App.UWP
 #endif
         private readonly IUIDispatcher _uiDispatcher;
         private readonly IUINotifier _uiNotifier;
-        private readonly IRepository _repository;
+        private readonly ITrackingSession _repository;
 
         public MainPage()
         {
@@ -37,7 +37,7 @@ namespace Tello.App.UWP
 #if EMULATOR
             sessionPrefix = "emulator";
 #endif
-            _repository = new ObservationRepository(sessionPrefix);
+            _repository = new TrackingSession(sessionPrefix);
 
 #if EMULATOR
             var tello = new TelloEmulator();

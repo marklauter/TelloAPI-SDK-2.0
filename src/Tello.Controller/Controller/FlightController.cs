@@ -313,11 +313,11 @@ namespace Tello.Controller
                 throw new TelloControllerException($"'{message}' command failed with message '{ex.Message}'", ex);
             }
 
-            if (response.Successful)
+            if (response.Success)
             {
                 var responseValue = Encoding.UTF8.GetString(response.Data);
 
-                Log.WriteLine($"response received for '{message}' - '{responseValue}' - ok? {response.Successful}");
+                Log.WriteLine($"response received for '{message}' - '{responseValue}' - ok? {response.Success}");
 
                 if (IsResponseOk(command, responseValue))
                 {
@@ -341,10 +341,10 @@ namespace Tello.Controller
             }
             else // udp receiver pooped
             {
-                Log.WriteLine($"'{message}' command failed with message - '{response.ErrorMessage}'");
+                Log.WriteLine($"'{message}' command failed with message - '{response.Message}'");
 
                 throw new TelloControllerException(
-                    $"'{message}' command failed with message '{response.ErrorMessage}'",
+                    $"'{message}' command failed with message '{response.Message}'",
                     response.Exception);
             }
         }
