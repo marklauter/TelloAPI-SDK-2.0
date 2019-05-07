@@ -173,6 +173,8 @@ namespace Repository.Sqlite.Test
             using (var repo = CreateRepository(false))
             {
                 repo.Shrink();
+                newSize = GetFileSize();
+                Assert.AreEqual(fileSize, newSize);
             }
             newSize = GetFileSize();
             Assert.IsTrue(fileSize > newSize);
