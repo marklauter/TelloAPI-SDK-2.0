@@ -4,8 +4,7 @@ using Repository.Sqlite;
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
-using Tello.Controller;
-using Tello.Messaging;
+using Tello.State;
 
 namespace Tello.Observations.Sqlite.Test
 {
@@ -87,7 +86,7 @@ namespace Tello.Observations.Sqlite.Test
             {
                 Assert.IsTrue(repo.CreateCatalog<Session>());
                 Assert.IsTrue(repo.CreateCatalog<ObservationGroup>());
-                Assert.IsTrue(repo.CreateCatalog<CommandObservation>());
+                Assert.IsTrue(repo.CreateCatalog<ResponseObservation>());
 
                 var start = DateTime.UtcNow;
                 var session = repo.NewEntity<Session>(start, TimeSpan.FromSeconds(1));
@@ -107,19 +106,19 @@ namespace Tello.Observations.Sqlite.Test
                 Assert.AreEqual(start, group.Timestamp);
 
                 var args = new CommandResponseReceivedArgs(
-                    TelloCommands.Takeoff, 
+                    Commands.Takeoff, 
                     "ok", 
                     start, 
                     TimeSpan.FromSeconds(1));
-                var observation = new CommandObservation(group, args);
+                var observation = new ResponseObservation(group, args);
                 Assert.AreEqual(1, repo.Insert(observation));
 
-                observation = repo.Read<CommandObservation>(1);
+                observation = repo.Read<ResponseObservation>(1);
                 Assert.IsNotNull(observation);
                 Assert.AreEqual(1, observation.Id);
                 Assert.AreEqual(1, observation.GroupId);
-                Assert.AreEqual(start, observation.Initiated);
-                Assert.AreEqual(TelloCommands.Takeoff, observation.Command);
+                Assert.AreEqual(start, observation.TimeInitiated);
+                Assert.AreEqual(Commands.Takeoff, observation.Command);
                 Assert.AreEqual("ok", observation.Response);
             }
         }
