@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Tello.Types;
 
 namespace Tello
@@ -37,6 +38,203 @@ namespace Tello
         public static implicit operator Commands(Command command)
         {
             return command.Value;
+        }
+
+        public static explicit operator Command(byte[] bytes)
+        {
+            if (bytes == null)
+            {
+                throw new ArgumentNullException(nameof(bytes));
+            }
+
+            if (bytes.Length == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(bytes));
+            }
+
+            return (Command)Encoding.UTF8.GetString(bytes);
+        }
+
+        public static explicit operator Command(string value)
+        {
+            if (String.IsNullOrEmpty(value))
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            if (value.Length == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+
+            var tokens = value.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (tokens.Length == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+
+            switch (tokens[0])
+            {
+                case "command":
+                    if (tokens.Length > 1)
+                    {
+                        throw new ArgumentOutOfRangeException("no argumenets expected");
+                    }
+                    return Commands.EnterSdkMode;
+                case "takeoff":
+                    if (tokens.Length > 1)
+                    {
+                        throw new ArgumentOutOfRangeException("no argumenets expected");
+                    }
+                    return Commands.Takeoff;
+                case "land":
+                    if (tokens.Length > 1)
+                    {
+                        throw new ArgumentOutOfRangeException("no argumenets expected");
+                    }
+                    return Commands.Land;
+                case "streamon":
+                    if (tokens.Length > 1)
+                    {
+                        throw new ArgumentOutOfRangeException("no argumenets expected");
+                    }
+                    return Commands.StartVideo;
+                case "streamoff":
+                    if (tokens.Length > 1)
+                    {
+                        throw new ArgumentOutOfRangeException("no argumenets expected");
+                    }
+                    return Commands.Stop;
+                case "emergency":
+                    if (tokens.Length > 1)
+                    {
+                        throw new ArgumentOutOfRangeException("no argumenets expected");
+                    }
+                    return Commands.EmergencyStop;
+                case "up":
+                    if (tokens.Length != 2)
+                    {
+                        throw new ArgumentOutOfRangeException("one argument expected");
+                    }
+                    return new Command(Commands.Up, Int32.Parse(tokens[1]));
+                case "down":
+                    if (tokens.Length != 2)
+                    {
+                        throw new ArgumentOutOfRangeException("one argument expected");
+                    }
+                    return new Command(Commands.Down, Int32.Parse(tokens[1]));
+                case "left":
+                    if (tokens.Length != 2)
+                    {
+                        throw new ArgumentOutOfRangeException("one argument expected");
+                    }
+                    return new Command(Commands.Left, Int32.Parse(tokens[1]));
+                case "right":
+                    if (tokens.Length != 2)
+                    {
+                        throw new ArgumentOutOfRangeException("one argument expected");
+                    }
+                    return new Command(Commands.Right, Int32.Parse(tokens[1]));
+                case "forward":
+                    if (tokens.Length != 2)
+                    {
+                        throw new ArgumentOutOfRangeException("one argument expected");
+                    }
+                    return new Command(Commands.Forward, Int32.Parse(tokens[1]));
+                case "back":
+                    if (tokens.Length != 2)
+                    {
+                        throw new ArgumentOutOfRangeException("one argument expected");
+                    }
+                    return new Command(Commands.Back, Int32.Parse(tokens[1]));
+                case "flip":
+                    if (tokens.Length != 2)
+                    {
+                        throw new ArgumentOutOfRangeException("one argument expected");
+                    }
+                    return new Command(Commands.Flip, (CardinalDirection)tokens[1][0]);
+                case "cw":
+                    if (tokens.Length != 2)
+                    {
+                        throw new ArgumentOutOfRangeException("one argument expected");
+                    }
+                    return new Command(Commands.ClockwiseTurn, Int32.Parse(tokens[1]));
+                case "ccw":
+                    if (tokens.Length != 2)
+                    {
+                        throw new ArgumentOutOfRangeException("one argument expected");
+                    }
+                    return new Command(Commands.CounterClockwiseTurn, Int32.Parse(tokens[1]));
+                case "go":
+                    if (tokens.Length != 5)
+                    {
+                        throw new ArgumentOutOfRangeException("four arguments expected");
+                    }
+                    return new Command(Commands.Go,
+                        Int32.Parse(tokens[1]),
+                        Int32.Parse(tokens[2]),
+                        Int32.Parse(tokens[3]),
+                        Int32.Parse(tokens[4]));
+                case "curve":
+                    if (tokens.Length != 8)
+                    {
+                        throw new ArgumentOutOfRangeException("seven arguments expected");
+                    }
+                    return new Command(Commands.Curve,
+                        Int32.Parse(tokens[1]),
+                        Int32.Parse(tokens[2]),
+                        Int32.Parse(tokens[3]),
+                        Int32.Parse(tokens[4]),
+                        Int32.Parse(tokens[5]),
+                        Int32.Parse(tokens[6]),
+                        Int32.Parse(tokens[7]));
+                case "speed":
+                    if (tokens.Length != 2)
+                    {
+                        throw new ArgumentOutOfRangeException("one argument expected");
+                    }
+                    return new Command(Commands.SetSpeed, Int32.Parse(tokens[1]));
+                case "rc":
+                    if (tokens.Length != 4)
+                    {
+                        throw new ArgumentOutOfRangeException("four arguments expected");
+                    }
+                    return new Command(Commands.SetRemoteControl,
+                        Int32.Parse(tokens[1]),
+                        Int32.Parse(tokens[2]),
+                        Int32.Parse(tokens[3]),
+                        Int32.Parse(tokens[4]));
+                case "wifi":
+                    if (tokens.Length != 3)
+                    {
+                        throw new ArgumentOutOfRangeException("two arguments expected");
+                    }
+                    return new Command(Commands.SetWiFiPassword,
+                        tokens[1],
+                        tokens[2]);
+                case "ap":
+                    if (tokens.Length != 3)
+                    {
+                        throw new ArgumentOutOfRangeException("two arguments expected");
+                    }
+                    return new Command(Commands.SetStationMode,
+                        tokens[1],
+                        tokens[2]);
+                case "speed?":
+                    return Commands.GetSpeed;
+                case "battery?":
+                    return Commands.GetBattery;
+                case "time?":
+                    return Commands.GetTime;
+                case "wifi?":
+                    return Commands.GetWIFISnr;
+                case "sdk?":
+                    return Commands.GetSdkVersion;
+                case "sn?":
+                    return Commands.GetSerialNumber;
+                default:
+                    throw new NotSupportedException(value);
+            }
         }
 
         public static explicit operator Responses(Command command)
@@ -429,6 +627,6 @@ namespace Tello
                     throw new NotSupportedException();
             }
         }
-
     }
 }
+
