@@ -1,4 +1,4 @@
-﻿using Tello.Messaging;
+﻿using Tello.State;
 
 namespace Tello.Observations
 {
