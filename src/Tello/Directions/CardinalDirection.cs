@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tello.Directions
+namespace Tello
 {
     public class CardinalDirection
     {
@@ -36,6 +36,23 @@ namespace Tello.Directions
                     return 'f';
                 case CardinalDirections.Back:
                     return 'b';
+                default:
+                    throw new NotSupportedException(direction.ToString());
+            }
+        }
+
+        public static explicit operator CardinalDirection(char direction)
+        {
+            switch (Char.ToLowerInvariant(direction))
+            {
+                case 'l':
+                    return new CardinalDirection(CardinalDirections.Left);
+                case 'r':
+                    return new CardinalDirection(CardinalDirections.Right);
+                case 'f':
+                    return new CardinalDirection(CardinalDirections.Front);
+                case 'b':
+                    return new CardinalDirection(CardinalDirections.Back);
                 default:
                     throw new NotSupportedException(direction.ToString());
             }
