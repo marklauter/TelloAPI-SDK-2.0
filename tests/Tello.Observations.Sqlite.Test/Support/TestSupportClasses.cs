@@ -1,8 +1,14 @@
-﻿using Tello.Messaging;
+﻿using System;
+using Tello.State;
 
 namespace Tello.Observations.Sqlite.Test
 {
-    public class TestPosition : IPosition
+    public class TestObservation : IState
+    {
+        public DateTime Timestamp { get; set; }
+    }
+
+    public class TestPosition : TestObservation, IPosition
     {
         public int AltitudeAGLInCm { get; } = 1;
         public double AltitudeMSLInCm { get; } = 1;
@@ -11,14 +17,14 @@ namespace Tello.Observations.Sqlite.Test
         public double Y { get; } = 1;
     }
 
-    public class TestAttitude : IAttitude
+    public class TestAttitude : TestObservation, IAttitude
     {
         public int Pitch { get; } = 1;
         public int Roll { get; } = 1;
         public int Yaw { get; } = 1;
     }
 
-    public class TestAirSpeed : IAirSpeed
+    public class TestAirSpeed : TestObservation, IAirSpeed
     {
         public int SpeedX { get; } = 1;
         public int SpeedY { get; } = 1;
@@ -28,14 +34,14 @@ namespace Tello.Observations.Sqlite.Test
         public double AccelerationZ { get; } = 1;
     }
 
-    public class TestBattery : IBattery
+    public class TestBattery : TestObservation, IBattery
     {
         public int TemperatureLowC { get; } = 1;
         public int TemperatureHighC { get; } = 1;
         public int PercentRemaining { get; } = 1;
     }
 
-    public class TestHobbsMeter : IHobbsMeter
+    public class TestHobbsMeter : TestObservation, IHobbsMeter
     {
         public int DistanceTraversedInCm { get; } = 1;
         public int MotorTimeInSeconds { get; } = 1;
