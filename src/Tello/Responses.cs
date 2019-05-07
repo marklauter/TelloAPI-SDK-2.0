@@ -2,7 +2,6 @@
 {
     public enum Responses
     {
-        Unknown,
         Ok,
         Error,
         Speed,
