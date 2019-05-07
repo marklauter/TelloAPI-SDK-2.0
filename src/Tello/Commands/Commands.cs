@@ -2,7 +2,6 @@
 {
     public enum Commands
     {
-        Unknown,
         EnterSdkMode,
         Takeoff,
         Land,
