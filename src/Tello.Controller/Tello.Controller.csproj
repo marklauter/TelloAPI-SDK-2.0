@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.5</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Mark Lauter</Authors>
     <Company>Sumo Software Corporation</Company>
     <PackageId>Tello.2.0.API</PackageId>
@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj" />
+    <ProjectReference Include="..\Tello.Messaging\Video.csproj" />
     <ProjectReference Include="..\Tello.Scripting\Tello.Scripting.csproj" />
   </ItemGroup>
 
