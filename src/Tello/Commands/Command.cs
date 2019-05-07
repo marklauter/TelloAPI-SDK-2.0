@@ -195,7 +195,7 @@ namespace Tello
                     }
                     return new Command(Commands.SetSpeed, Int32.Parse(tokens[1]));
                 case "rc":
-                    if (tokens.Length != 4)
+                    if (tokens.Length != 5)
                     {
                         throw new ArgumentOutOfRangeException("four arguments expected");
                     }
