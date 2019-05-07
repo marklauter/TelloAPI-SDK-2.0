@@ -15,7 +15,7 @@ namespace Tello.Observations.Sqlite
         {
             TimeInitiated = response.Request.Timestamp;
             TimeTaken = response.TimeTaken;
-            Command = commandArgs.Command;
+            Command = (Command)response.Request.Data;
             Response = response.Message;
             Success = response.Success;
             StatusMessage = response.StatusMessage;
