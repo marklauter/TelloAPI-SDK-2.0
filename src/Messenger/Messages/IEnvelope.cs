@@ -5,7 +5,7 @@ namespace Messenger
     public interface IEnvelope
     {
         /// <summary>
-        /// id for use in queuing systems
+        /// id for use in queuing systems or logs
         /// </summary>
         Guid Id { get; }
 
