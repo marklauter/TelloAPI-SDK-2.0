@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using Tello.Types;
 
 namespace Tello
 {
@@ -73,189 +72,31 @@ namespace Tello
                 throw new ArgumentOutOfRangeException(nameof(value));
             }
 
-            switch (tokens[0])
+            var rule = CommandRules.Rules(tokens[0]);
+
+            if (rule.Arguments.Length != tokens.Length - 1)
             {
-                case "command":
-                    if (tokens.Length > 1)
-                    {
-                        throw new ArgumentOutOfRangeException("no argumenets expected");
-                    }
-                    return Commands.EnterSdkMode;
-                case "takeoff":
-                    if (tokens.Length > 1)
-                    {
-                        throw new ArgumentOutOfRangeException("no argumenets expected");
-                    }
-                    return Commands.Takeoff;
-                case "land":
-                    if (tokens.Length > 1)
-                    {
-                        throw new ArgumentOutOfRangeException("no argumenets expected");
-                    }
-                    return Commands.Land;
-                case "streamon":
-                    if (tokens.Length > 1)
-                    {
-                        throw new ArgumentOutOfRangeException("no argumenets expected");
-                    }
-                    return Commands.StartVideo;
-                case "streamoff":
-                    if (tokens.Length > 1)
-                    {
-                        throw new ArgumentOutOfRangeException("no argumenets expected");
-                    }
-                    return Commands.Stop;
-                case "emergency":
-                    if (tokens.Length > 1)
-                    {
-                        throw new ArgumentOutOfRangeException("no argumenets expected");
-                    }
-                    return Commands.EmergencyStop;
-                case "up":
-                    if (tokens.Length != 2)
-                    {
-                        throw new ArgumentOutOfRangeException("one argument expected");
-                    }
-                    return new Command(Commands.Up, Int32.Parse(tokens[1]));
-                case "down":
-                    if (tokens.Length != 2)
-                    {
-                        throw new ArgumentOutOfRangeException("one argument expected");
-                    }
-                    return new Command(Commands.Down, Int32.Parse(tokens[1]));
-                case "left":
-                    if (tokens.Length != 2)
-                    {
-                        throw new ArgumentOutOfRangeException("one argument expected");
-                    }
-                    return new Command(Commands.Left, Int32.Parse(tokens[1]));
-                case "right":
-                    if (tokens.Length != 2)
-                    {
-                        throw new ArgumentOutOfRangeException("one argument expected");
-                    }
-                    return new Command(Commands.Right, Int32.Parse(tokens[1]));
-                case "forward":
-                    if (tokens.Length != 2)
-                    {
-                        throw new ArgumentOutOfRangeException("one argument expected");
-                    }
-                    return new Command(Commands.Forward, Int32.Parse(tokens[1]));
-                case "back":
-                    if (tokens.Length != 2)
-                    {
-                        throw new ArgumentOutOfRangeException("one argument expected");
-                    }
-                    return new Command(Commands.Back, Int32.Parse(tokens[1]));
-                case "flip":
-                    if (tokens.Length != 2)
-                    {
-                        throw new ArgumentOutOfRangeException("one argument expected");
-                    }
-                    return new Command(Commands.Flip, (CardinalDirection)tokens[1][0]);
-                case "cw":
-                    if (tokens.Length != 2)
-                    {
-                        throw new ArgumentOutOfRangeException("one argument expected");
-                    }
-                    return new Command(Commands.ClockwiseTurn, Int32.Parse(tokens[1]));
-                case "ccw":
-                    if (tokens.Length != 2)
-                    {
-                        throw new ArgumentOutOfRangeException("one argument expected");
-                    }
-                    return new Command(Commands.CounterClockwiseTurn, Int32.Parse(tokens[1]));
-                case "go":
-                    if (tokens.Length != 5)
-                    {
-                        throw new ArgumentOutOfRangeException("four arguments expected");
-                    }
-                    return new Command(Commands.Go,
-                        Int32.Parse(tokens[1]),
-                        Int32.Parse(tokens[2]),
-                        Int32.Parse(tokens[3]),
-                        Int32.Parse(tokens[4]));
-                case "curve":
-                    if (tokens.Length != 8)
-                    {
-                        throw new ArgumentOutOfRangeException("seven arguments expected");
-                    }
-                    return new Command(Commands.Curve,
-                        Int32.Parse(tokens[1]),
-                        Int32.Parse(tokens[2]),
-                        Int32.Parse(tokens[3]),
-                        Int32.Parse(tokens[4]),
-                        Int32.Parse(tokens[5]),
-                        Int32.Parse(tokens[6]),
-                        Int32.Parse(tokens[7]));
-                case "speed":
-                    if (tokens.Length != 2)
-                    {
-                        throw new ArgumentOutOfRangeException("one argument expected");
-                    }
-                    return new Command(Commands.SetSpeed, Int32.Parse(tokens[1]));
-                case "rc":
-                    if (tokens.Length != 5)
-                    {
-                        throw new ArgumentOutOfRangeException("four arguments expected");
-                    }
-                    return new Command(Commands.SetRemoteControl,
-                        Int32.Parse(tokens[1]),
-                        Int32.Parse(tokens[2]),
-                        Int32.Parse(tokens[3]),
-                        Int32.Parse(tokens[4]));
-                case "wifi":
-                    if (tokens.Length != 3)
-                    {
-                        throw new ArgumentOutOfRangeException("two arguments expected");
-                    }
-                    return new Command(Commands.SetWiFiPassword,
-                        tokens[1],
-                        tokens[2]);
-                case "ap":
-                    if (tokens.Length != 3)
-                    {
-                        throw new ArgumentOutOfRangeException("two arguments expected");
-                    }
-                    return new Command(Commands.SetStationMode,
-                        tokens[1],
-                        tokens[2]);
-                case "speed?":
-                    return Commands.GetSpeed;
-                case "battery?":
-                    return Commands.GetBattery;
-                case "time?":
-                    return Commands.GetTime;
-                case "wifi?":
-                    return Commands.GetWIFISnr;
-                case "sdk?":
-                    return Commands.GetSdkVersion;
-                case "sn?":
-                    return Commands.GetSerialNumber;
-                default:
-                    throw new NotSupportedException(value);
+                throw new ArgumentOutOfRangeException($"{rule.Command}: argument count mismatch. expected: {rule.Arguments.Length} actual: {tokens.Length - 1}");
+            }
+
+            if (rule.Arguments.Length == 0)
+            {
+                return rule.Command;
+            }
+            else
+            {
+                var args = new object[rule.Arguments.Length];
+                for (var i = 1; i < tokens.Length; ++i)
+                {
+                    args[i - 1] = Convert.ChangeType(tokens[i], rule.Arguments[i - 1].Type);
+                }
+                return (Command)Activator.CreateInstance(typeof(Command), args);
             }
         }
 
         public static explicit operator Responses(Command command)
         {
-            switch (command.Value)
-            {
-                case Commands.GetSpeed:
-                    return Responses.Speed;
-                case Commands.GetBattery:
-                    return Responses.Battery;
-                case Commands.GetTime:
-                    return Responses.Time;
-                case Commands.GetWIFISnr:
-                    return Responses.WIFISnr;
-                case Commands.GetSdkVersion:
-                    return Responses.SdkVersion;
-                case Commands.GetSerialNumber:
-                    return Responses.SerialNumber;
-                default:
-                    return Responses.Ok;
-            }
+            return CommandRules.Rules(command).Response;
         }
 
         public static explicit operator TimeSpan(Command command)
@@ -314,329 +155,63 @@ namespace Tello
         }
         #endregion
 
-        //todo: it would be nice to move this out into a set of rules that could be configurable
-        private void Validate(Commands command, params object[] args)
+        private static void Validate(Commands command, params object[] args)
         {
-            bool InRange(int value, int min, int max) => value >= min || value <= max;
+            var rule = CommandRules.Rules(command);
 
-            int expectedLength;
+            if (args == null && rule.Arguments.Length > 0)
+            {
+                throw new ArgumentNullException($"{command}: {nameof(args)}");
+            }
+
+            if (args != null && args.Length != rule.Arguments.Length)
+            {
+                throw new ArgumentException(
+                    $"{command}: argument count mismatch. expected: {rule.Arguments.Length} actual: {(args == null ? 0 : args.Length)}");
+            }
+
+            for (var i = 0; i < args.Length; ++i)
+            {
+                var arg = args[i];
+                if (arg == null)
+                {
+                    throw new ArgumentNullException($"{command}: {nameof(args)}[{i}]");
+                }
+
+                var argumentRule = rule.Arguments[i];
+                if (!argumentRule.IsTypeAllowed(arg))
+                {
+                    throw new ArgumentException($"{command}: {nameof(args)}[{i}] type mismatch. expected: '{argumentRule.Type.Name}' actual: '{arg.GetType().Name}'");
+                }
+
+                if (!argumentRule.IsValueAllowed(args))
+                {
+                    throw new ArgumentOutOfRangeException($"{command}: {nameof(args)}[{i}] argument out of range: {arg}");
+                }
+            }
 
             switch (command)
             {
-                case Commands.EnterSdkMode:
-                case Commands.Takeoff:
-                case Commands.Land:
-                case Commands.Stop:
-                case Commands.StartVideo:
-                case Commands.StopVideo:
-                case Commands.EmergencyStop:
-                case Commands.GetSpeed:
-                case Commands.GetBattery:
-                case Commands.GetTime:
-                case Commands.GetWIFISnr:
-                case Commands.GetSdkVersion:
-                case Commands.GetSerialNumber:
-                    if (args != null && args.Length > 0)
-                    {
-                        throw new ArgumentException($"{command} expected {nameof(args)} == null");
-                    }
-                    break;
-
-                case Commands.Up:
-                case Commands.Down:
-                case Commands.Left:
-                case Commands.Right:
-                case Commands.Forward:
-                case Commands.Back:
-                    expectedLength = 1;
-                    if (args == null || args.Length != expectedLength)
-                    {
-                        throw new ArgumentException($"{command} expected {nameof(args)}.Length == {expectedLength}");
-                    }
-                    if (!args[0].IsNumeric())
-                    {
-                        throw new ArgumentException($"{command} expected {nameof(args)}[0] to be numeric.");
-                    }
-                    if (!InRange((int)args[0], 20, 500))
-                    {
-                        throw new ArgumentOutOfRangeException($"{command} expected {nameof(args)}[0] to match /[20-500]/ .");
-                    }
-                    break;
-
-                case Commands.ClockwiseTurn:
-                case Commands.CounterClockwiseTurn:
-                    expectedLength = 1;
-                    if (args == null || args.Length != expectedLength)
-                    {
-                        throw new ArgumentException($"{command} expected {nameof(args)}.Length == {expectedLength}");
-                    }
-                    if (!args[0].IsNumeric())
-                    {
-                        throw new ArgumentException($"{command} expected {nameof(args)}[0] to be numeric.");
-                    }
-                    if (!InRange((int)args[0], 1, 360))
-                    {
-                        throw new ArgumentOutOfRangeException($"{command} expected {nameof(args)}[0] to match /[1-360]/ .");
-                    }
-                    break;
-
-                case Commands.Flip:
-                    expectedLength = 1;
-                    if (args == null || args.Length != expectedLength)
-                    {
-                        throw new ArgumentException($"{command} expected {nameof(args)}.Length == {expectedLength}");
-                    }
-                    if (!args[0].IsString())
-                    {
-                        throw new ArgumentException($"{command} expected {nameof(args)}[0] to be character.");
-                    }
-                    if (args[0].ToString().Length != 1)
-                    {
-                        throw new ArgumentOutOfRangeException($"{command} expected {nameof(args)}[0] to be single character.");
-                    }
-                    if (!"lrfb".Contains(args[0].ToString().ToLowerInvariant()))
-                    {
-                        throw new ArgumentOutOfRangeException($"{command} expected {nameof(args)}[0] to match /[lrfb]/.");
-                    }
-                    break;
-
                 case Commands.Go:
-                    expectedLength = 4;
-                    if (args == null || args.Length != expectedLength)
-                    {
-                        throw new ArgumentException($"{command} expected {nameof(args)}.Length == {expectedLength}");
-                    }
-                    var twentyCheck = 0;
-                    for (var i = 0; i < args.Length; ++i)
-                    {
-                        if (!args[i].IsNumeric())
-                        {
-                            throw new ArgumentException($"{command} expected {nameof(args)}[{i}] to be numeric.");
-                        }
-                        if (i < 3)
-                        {
-                            if (!InRange((int)args[i], -500, 500))
-                            {
-                                throw new ArgumentOutOfRangeException($"{command} expected {nameof(args)}[{i}] to match /[-500-500]/.");
-                            }
-                            else
-                            {
-                                twentyCheck += InRange((int)args[i], -20, 20)
-                                    ? 1
-                                    : 0;
-                            }
-                        }
-                        if (i == 3 && !InRange((int)args[i], 10, 100))
-                        {
-                            throw new ArgumentOutOfRangeException($"{command} expected {nameof(args)}[{i}] to match /[10-100]/.");
-                        }
-                    }
-                    if (twentyCheck == 3)
-                    {
-                        throw new ArgumentOutOfRangeException($"{command} {nameof(args)} x, y and z can't match /[-20-20]/ simultaneously.");
-                    }
-                    break;
-
                 case Commands.Curve:
-                    expectedLength = 7;
-                    if (args == null || args.Length != expectedLength)
+                    var twentyCount = 0;
+                    for (var i = 0; i < args.Length - 1; ++i)
                     {
-                        throw new ArgumentException($"{command} expected {nameof(args)}.Length == {expectedLength}");
-                    }
-                    for (var i = 0; i < args.Length; ++i)
-                    {
-                        if (!args[i].IsNumeric())
+                        twentyCount += Math.Abs((int)args[i]) <= 20
+                            ? 1
+                            : 0;
+                        if (twentyCount > 1)
                         {
-                            throw new ArgumentException($"{command} expected {nameof(args)}[{i}] to be numeric.");
-                        }
-                        if (i < 6 && !InRange((int)args[i], -500, 500))
-                        {
-                            throw new ArgumentOutOfRangeException($"{command} expected {nameof(args)}[{i}] to match /[-500-500]/.");
-                        }
-                        if (i == 6 && !InRange((int)args[i], 10, 60))
-                        {
-                            throw new ArgumentOutOfRangeException($"{command} expected {nameof(args)}[{i}] to match /[10-60]/.");
+                            throw new ArgumentOutOfRangeException($"{command}: {nameof(args)} x, y and z can't match /[-20-20]/ simultaneously.");
                         }
                     }
                     break;
-
-                case Commands.SetSpeed:
-                    expectedLength = 1;
-                    if (args == null || args.Length != expectedLength)
-                    {
-                        throw new ArgumentException($"{command} expected {nameof(args)}.Length == {expectedLength}");
-                    }
-                    if (!args[0].IsNumeric())
-                    {
-                        throw new ArgumentException($"{command} expected {nameof(args)}[0] to be numeric.");
-                    }
-                    if (!InRange((int)args[0], 10, 100))
-                    {
-                        throw new ArgumentOutOfRangeException($"{command} expected {nameof(args)}[0] to match /[10-100]/.");
-                    }
-                    break;
-
-                case Commands.SetRemoteControl:
-                    expectedLength = 4;
-                    if (args == null || args.Length != expectedLength)
-                    {
-                        throw new ArgumentException($"{command} expected {nameof(args)}.Length == {expectedLength}");
-                    }
-                    for (var i = 0; i < args.Length; ++i)
-                    {
-                        if (!args[i].IsNumeric())
-                        {
-                            throw new ArgumentException($"{command} expected {nameof(args)}[{i}] to be numeric.");
-                        }
-                        if (i < 6 && !InRange((int)args[i], -100, 100))
-                        {
-                            throw new ArgumentOutOfRangeException($"{command} expected {nameof(args)}[{i}] to match /[-100-100]/.");
-                        }
-                    }
-                    break;
-
-                case Commands.SetWiFiPassword:
-                    expectedLength = 2;
-                    if (args == null || args.Length != expectedLength)
-                    {
-                        throw new ArgumentException($"{command} expected {nameof(args)}.Length == {expectedLength}");
-                    }
-                    break;
-
-                //case Commands.SetMissionPadOn:
-                //    break;
-                //case Commands.SetMissionPadOff:
-                //    break;
-                //case Commands.SetMissionPadDirection:
-                //    break;
-
-                case Commands.SetStationMode:
-                    expectedLength = 2;
-                    if (args == null || args.Length != expectedLength)
-                    {
-                        throw new ArgumentException($"{command} expected {nameof(args)}.Length == {expectedLength}");
-                    }
-                    break;
-
-                default:
-                    throw new NotSupportedException();
             }
         }
 
         public override string ToString()
         {
-            string message;
-            switch (Value)
-            {
-                // no args
-                case Commands.EnterSdkMode:
-                    return "command";
-
-                case Commands.Takeoff:
-                    return Value.ToString().ToLowerInvariant();
-
-                case Commands.Land:
-                    return Value.ToString().ToLowerInvariant();
-
-                case Commands.Stop:
-                    return Value.ToString().ToLowerInvariant();
-
-                case Commands.StartVideo:
-                    return "streamon";
-
-                case Commands.StopVideo:
-                    return "streamoff";
-
-                case Commands.EmergencyStop:
-                    return "emergency";
-
-                // 1 arg
-                case Commands.Up:
-                case Commands.Down:
-                case Commands.Left:
-                case Commands.Right:
-                case Commands.Forward:
-                case Commands.Back:
-                case Commands.Flip:
-                    return $"{Value.ToString().ToLowerInvariant()} {Arguments[0]}";
-
-                case Commands.ClockwiseTurn:
-                    return $"cw {Arguments[0]}";
-
-                case Commands.CounterClockwiseTurn:
-                    return $"ccw {Arguments[0]}";
-
-                case Commands.Go:
-                case Commands.Curve:
-                    message = $"{Value.ToString().ToLowerInvariant()}";
-                    for (var i = 0; i < Arguments.Length; ++i)
-                    {
-                        message += $" {Arguments[0]}";
-                    }
-                    return message;
-
-                case Commands.SetSpeed:
-                    message = "speed";
-                    for (var i = 0; i < Arguments.Length; ++i)
-                    {
-                        message += $" {Arguments[0]}";
-                    }
-                    return message;
-
-                case Commands.SetRemoteControl:
-                    message = "rc";
-                    for (var i = 0; i < Arguments.Length; ++i)
-                    {
-                        message += $" {Arguments[0]}";
-                    }
-                    return message;
-
-                case Commands.SetWiFiPassword:
-                    message = "wifi";
-                    for (var i = 0; i < Arguments.Length; ++i)
-                    {
-                        message += $" {Arguments[0]}";
-                    }
-
-                    return message;
-
-                //case Commands.SetMissionPadOn:
-                //    return "mon";
-                //case Commands.SetMissionPadOff:
-                //    return "moff";
-                //case Commands.SetMissionPadDirection:
-                //    return "mdirection";
-
-                case Commands.SetStationMode:
-                    message = "ap";
-                    for (var i = 0; i < Arguments.Length; ++i)
-                    {
-                        message += $" {Arguments[0]}";
-                    }
-                    return message;
-
-                case Commands.GetSpeed:
-                    return "speed?";
-
-                case Commands.GetBattery:
-                    return "battery?";
-
-                case Commands.GetTime:
-                    return "time?";
-
-                case Commands.GetWIFISnr:
-                    return "wifi?";
-
-                case Commands.GetSdkVersion:
-                    return "sdk?";
-
-                case Commands.GetSerialNumber:
-                    return "sn?";
-
-                default:
-                    throw new NotSupportedException();
-            }
+            return CommandRules.Rules(Value).ToString(Arguments);
         }
     }
 }
-
