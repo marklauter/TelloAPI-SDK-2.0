@@ -11,7 +11,7 @@ namespace Tello.Observations.Sqlite.Test
     public class TestPosition : TestObservation, IPosition
     {
         public int AltitudeAGLInCm { get; } = 1;
-        public double AltitudeMSLInCm { get; } = 1;
+        public double BarometricPressueInCm { get; } = 1;
         public int Heading { get; } = 1;
         public double X { get; } = 1;
         public double Y { get; } = 1;
