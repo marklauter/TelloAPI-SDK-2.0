@@ -314,6 +314,7 @@ namespace Tello
         }
         #endregion
 
+        //todo: it would be nice to move this out into a set of rules that could be configurable
         private void Validate(Commands command, params object[] args)
         {
             bool InRange(int value, int min, int max) => value >= min || value <= max;
@@ -335,7 +336,7 @@ namespace Tello
                 case Commands.GetWIFISnr:
                 case Commands.GetSdkVersion:
                 case Commands.GetSerialNumber:
-                    if (args != null)
+                    if (args != null && args.Length > 0)
                     {
                         throw new ArgumentException($"{command} expected {nameof(args)} == null");
                     }
