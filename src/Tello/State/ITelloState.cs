@@ -45,7 +45,7 @@ namespace Tello.State
     public interface IPosition : IState
     {
         int AltitudeAGLInCm { get; }
-        double AltitudeMSLInCm { get; }
+        double BarometricPressueInCm { get; }
         int Heading { get; }
         double X { get; }
         double Y { get; }

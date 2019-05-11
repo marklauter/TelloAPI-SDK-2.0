@@ -21,7 +21,7 @@ namespace Tello.State
 
             if (altitudeMSLInCm.HasValue)
             {
-                AltitudeMSLInCm = altitudeMSLInCm.Value;
+                BarometricPressueInCm = altitudeMSLInCm.Value;
             }
 
             if (heading.HasValue)
@@ -48,7 +48,7 @@ namespace Tello.State
         public Position(IPosition position) :
             this(
                 position?.AltitudeAGLInCm,
-                position?.AltitudeMSLInCm,
+                position?.BarometricPressueInCm,
                 position?.Heading,
                 position?.X,
                 position?.Y,
@@ -60,6 +60,7 @@ namespace Tello.State
             }
         }
 
+        //todo: fix "this" calls to look like : (state ?? throw new ArgumentNullException(nameof(state))).HeightInCm
         public Position(ITelloState state, Vector vector)
             : this(
                  state?.HeightInCm,
@@ -101,7 +102,7 @@ namespace Tello.State
         /// for this value to be meaningful you have to zero the altimeter by calling the static method ZeroAltimeter 
         /// value is measured in cm
         /// </summary>
-        public double AltitudeMSLInCm { get; }
+        public double BarometricPressueInCm { get; }
 
         /// <summary>
         /// heading in degrees, from starting position, not from north
@@ -122,7 +123,7 @@ namespace Tello.State
 
         public override string ToString()
         {
-            var mslFt = AltitudeMSLInCm / 30.48;
+            var mslFt = BarometricPressueInCm / 30.48;
             return $"X: {X.ToString("F2")} cm, Y: {Y.ToString("F2")} cm, MSL: {mslFt.ToString("F2")} ft, AGL: {AltitudeAGLInCm} cm, Hd: {Heading} deg, AD: {_altitudeDelta.ToString("F2")} cm";
         }
     }
