@@ -531,16 +531,22 @@ namespace Tello
                 // no args
                 case Commands.EnterSdkMode:
                     return "command";
+
                 case Commands.Takeoff:
                     return Value.ToString().ToLowerInvariant();
+
                 case Commands.Land:
                     return Value.ToString().ToLowerInvariant();
+
                 case Commands.Stop:
                     return Value.ToString().ToLowerInvariant();
+
                 case Commands.StartVideo:
                     return "streamon";
+
                 case Commands.StopVideo:
                     return "streamoff";
+
                 case Commands.EmergencyStop:
                     return "emergency";
 
@@ -553,8 +559,10 @@ namespace Tello
                 case Commands.Back:
                 case Commands.Flip:
                     return $"{Value.ToString().ToLowerInvariant()} {Arguments[0]}";
+
                 case Commands.ClockwiseTurn:
                     return $"cw {Arguments[0]}";
+
                 case Commands.CounterClockwiseTurn:
                     return $"ccw {Arguments[0]}";
 
@@ -565,7 +573,6 @@ namespace Tello
                     {
                         message += $" {Arguments[0]}";
                     }
-
                     return message;
 
                 case Commands.SetSpeed:
@@ -574,7 +581,6 @@ namespace Tello
                     {
                         message += $" {Arguments[0]}";
                     }
-
                     return message;
 
                 case Commands.SetRemoteControl:
@@ -583,7 +589,6 @@ namespace Tello
                     {
                         message += $" {Arguments[0]}";
                     }
-
                     return message;
 
                 case Commands.SetWiFiPassword:
@@ -608,19 +613,23 @@ namespace Tello
                     {
                         message += $" {Arguments[0]}";
                     }
-
                     return message;
 
                 case Commands.GetSpeed:
                     return "speed?";
+
                 case Commands.GetBattery:
                     return "battery?";
+
                 case Commands.GetTime:
                     return "time?";
+
                 case Commands.GetWIFISnr:
                     return "wifi?";
+
                 case Commands.GetSdkVersion:
                     return "sdk?";
+
                 case Commands.GetSerialNumber:
                     return "sn?";
 
