@@ -8,6 +8,7 @@ namespace Messenger
         {
             Timeout = timeout ?? TimeSpan.MaxValue;
             Id = Guid.NewGuid();
+            Timestamp = DateTime.UtcNow;
         }
 
         public Request(byte[] data, TimeSpan? timeout = null) : this(timeout)
@@ -31,7 +32,7 @@ namespace Messenger
 
         public TimeSpan Timeout { get; }
 
-        public DateTime Timestamp => throw new NotImplementedException();
+        public DateTime Timestamp { get; }
     }
 
     public abstract class Request<T> : Request, IRequest<T>
@@ -42,7 +43,7 @@ namespace Messenger
             Data = Serialize(message);
         }
 
-        protected abstract byte[] Serialize(T messasge);
+        protected abstract byte[] Serialize(T message);
 
         public T Message { get; }
     }
