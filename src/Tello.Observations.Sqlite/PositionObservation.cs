@@ -17,7 +17,7 @@ namespace Tello.Observations.Sqlite
             : base(groupId, timestamp)
         {
             AltitudeAGLInCm = position.AltitudeAGLInCm;
-            AltitudeMSLInCm = position.AltitudeMSLInCm;
+            BarometricPressueInCm = position.BarometricPressueInCm;
             Heading = position.Heading;
             X = position.X;
             Y = position.Y;
@@ -25,7 +25,7 @@ namespace Tello.Observations.Sqlite
 
         public int AltitudeAGLInCm { get; set; }
 
-        public double AltitudeMSLInCm { get; set; }
+        public double BarometricPressueInCm { get; set; }
 
         public int Heading { get; set; }
 
