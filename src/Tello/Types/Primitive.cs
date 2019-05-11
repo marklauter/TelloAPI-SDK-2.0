@@ -4,13 +4,18 @@ namespace Tello.Types
 {
     internal static class Primitive
     {
-        public static bool IsNumeric<T>(this T value)
+        public static bool IsNumeric(object value)
         {
             if (value == null)
             {
                 return false;
             }
 
+            return value.IsNumeric();
+        }
+
+        public static bool IsNumeric<T>(this T _)
+        {
             var type = typeof(T);
             var code = Type.GetTypeCode(type);
             switch (code)
@@ -32,13 +37,18 @@ namespace Tello.Types
             }
         }
 
-        public static bool IsString<T>(this T value)
+        public static bool IsString(object value)
         {
             if (value == null)
             {
                 return false;
             }
 
+            return value.IsString();
+        }
+
+        public static bool IsString<T>(this T _)
+        {
             var type = typeof(T);
             var code = Type.GetTypeCode(type);
             switch (code)
