@@ -54,6 +54,11 @@ namespace Tello
             return (Command)Encoding.UTF8.GetString(bytes);
         }
 
+        public static explicit operator string(Command command)
+        {
+            return command?.ToString();
+        }
+
         public static explicit operator Command(string value)
         {
             if (String.IsNullOrEmpty(value))
@@ -170,42 +175,45 @@ namespace Tello
                     $"{command}: argument count mismatch. expected: {rule.Arguments.Length} actual: {(args == null ? 0 : args.Length)}");
             }
 
-            for (var i = 0; i < args.Length; ++i)
+            if (rule.Arguments.Length > 0)
             {
-                var arg = args[i];
-                if (arg == null)
+                for (var i = 0; i < args.Length; ++i)
                 {
-                    throw new ArgumentNullException($"{command}: {nameof(args)}[{i}]");
-                }
-
-                var argumentRule = rule.Arguments[i];
-                if (!argumentRule.IsTypeAllowed(arg))
-                {
-                    throw new ArgumentException($"{command}: {nameof(args)}[{i}] type mismatch. expected: '{argumentRule.Type.Name}' actual: '{arg.GetType().Name}'");
-                }
-
-                if (!argumentRule.IsValueAllowed(args))
-                {
-                    throw new ArgumentOutOfRangeException($"{command}: {nameof(args)}[{i}] argument out of range: {arg}");
-                }
-            }
-
-            switch (command)
-            {
-                case Commands.Go:
-                case Commands.Curve:
-                    var twentyCount = 0;
-                    for (var i = 0; i < args.Length - 1; ++i)
+                    var arg = args[i];
+                    if (arg == null)
                     {
-                        twentyCount += Math.Abs((int)args[i]) <= 20
-                            ? 1
-                            : 0;
-                        if (twentyCount > 1)
-                        {
-                            throw new ArgumentOutOfRangeException($"{command}: {nameof(args)} x, y and z can't match /[-20-20]/ simultaneously.");
-                        }
+                        throw new ArgumentNullException($"{command}: {nameof(args)}[{i}]");
                     }
-                    break;
+
+                    var argumentRule = rule.Arguments[i];
+                    if (!argumentRule.IsTypeAllowed(arg))
+                    {
+                        throw new ArgumentException($"{command}: {nameof(args)}[{i}] type mismatch. expected: '{argumentRule.Type.Name}' actual: '{arg.GetType().Name}'");
+                    }
+
+                    if (!argumentRule.IsValueAllowed(args))
+                    {
+                        throw new ArgumentOutOfRangeException($"{command}: {nameof(args)}[{i}] argument out of range: {arg}");
+                    }
+                }
+
+                switch (command)
+                {
+                    case Commands.Go:
+                    case Commands.Curve:
+                        var twentyCount = 0;
+                        for (var i = 0; i < args.Length - 1; ++i)
+                        {
+                            twentyCount += Math.Abs((int)args[i]) <= 20
+                                ? 1
+                                : 0;
+                            if (twentyCount > 1)
+                            {
+                                throw new ArgumentOutOfRangeException($"{command}: {nameof(args)} x, y and z can't match /[-20-20]/ simultaneously.");
+                            }
+                        }
+                        break;
+                }
             }
         }
 
