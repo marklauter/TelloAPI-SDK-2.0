@@ -71,7 +71,18 @@ namespace Messenger
 
     public abstract class Response<T> : Response, IResponse<T>
     {
-        public Response(IResponse response) : base(response)
+        public Response(IResponse response) 
+            : base(response)
+        {
+        }
+
+        public Response(IRequest request, Exception exception, TimeSpan timeTaken) 
+            : base(request, exception, timeTaken)
+        {
+        }
+
+        public Response(IRequest request, byte[] data, TimeSpan timeTaken) 
+            : base(request, data, timeTaken)
         {
         }
 
