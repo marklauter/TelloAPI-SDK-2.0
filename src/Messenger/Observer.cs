@@ -42,6 +42,6 @@ namespace Messenger
 
         public abstract void OnError(Exception error);
 
-        public abstract void OnNext(T value);
+        public abstract void OnNext(T message);
     }
 }
