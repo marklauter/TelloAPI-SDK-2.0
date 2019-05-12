@@ -11,7 +11,8 @@ namespace Messenger
             Timestamp = DateTime.UtcNow;
         }
 
-        public Request(byte[] data, TimeSpan? timeout = null) : this(timeout)
+        public Request(byte[] data, TimeSpan? timeout = null) 
+            : this(timeout)
         {
             if (data == null)
             {
