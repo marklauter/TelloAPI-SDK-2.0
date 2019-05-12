@@ -9,7 +9,7 @@ using Tello.Scripting;
 
 namespace Tello.Controller
 {
-    public class FlightController : ITelloController, IStateChangedNotifier, IVideoSampleReadyNotifier, IVideoSampleProvider
+    public class FlightController : ITello, IStateChangedNotifier, IVideoSampleReadyNotifier, IVideoSampleProvider
     {
         // TimeSpan commandTimeout, string ip = "192.168.10.1", int commandPort = 8889, int statePort = 8890, int videoPort = 11111
 
@@ -923,7 +923,7 @@ namespace Tello.Controller
             }
         }
 
-        public void GetWIFISerialNumber()
+        public void GetSerialNumber()
         {
             if (ConnectionState == ConnectionStates.CommandLinkEstablished)
             {

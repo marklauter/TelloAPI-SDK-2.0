@@ -14,6 +14,7 @@ namespace Tello
 
         public readonly Type Type;
         public readonly Func<object, bool> IsTypeAllowed;
+
         public abstract bool IsValueAllowed(object value);
     }
 
@@ -25,28 +26,29 @@ namespace Tello
         }
     }
 
-    internal sealed class Range
+    internal sealed class Range<T>
+        where T :IComparable
     {
-        public Range(int min, int max)
+        public Range(T min, T max)
         {
             Min = min;
             Max = max;
         }
 
-        public readonly int Min;
-        public readonly int Max;
+        public readonly T Min;
+        public readonly T Max;
 
-        public bool Contains(int value)
+        public bool Contains(T value)
         {
-            return value >= Min && value <= Max;
+            return value.CompareTo(Min) >= 0 && value.CompareTo(Max) <= 0;
         }
     }
 
     internal sealed class IntegerRule : ArgumentRule<int>
     {
-        private readonly Range _range;
+        private readonly Range<int> _range;
 
-        public IntegerRule(Range range)
+        public IntegerRule(Range<int> range)
             : base(Primitive.IsNumeric)
         {
             _range = range;
@@ -54,7 +56,7 @@ namespace Tello
 
         public override bool IsValueAllowed(object value)
         {
-            return value != null && _range.Contains((int)value);
+            return value is int && _range.Contains((int)value);
         }
     }
 
@@ -70,8 +72,7 @@ namespace Tello
 
         public override bool IsValueAllowed(object value)
         {
-            return value != null
-                && value.ToString().Length == 1
+            return (value is char)
                 && _allowedValues.Contains(value.ToString());
         }
     }
@@ -85,7 +86,8 @@ namespace Tello
 
         public override bool IsValueAllowed(object value)
         {
-            return value != null && ((string)value).Length > 0;
+            return value != null 
+                && ((string)value).Length > 0;
         }
     }
 
@@ -135,17 +137,17 @@ namespace Tello
 
             var movementArgs = new ArgumentRule[]
             {
-                new IntegerRule(new Range(20, 500))
+                new IntegerRule(new Range<int>(20, 500))
             };
 
             var turnArgs = new ArgumentRule[]
             {
-                new IntegerRule(new Range(1, 360))
+                new IntegerRule(new Range<int>(1, 360))
             };
 
             _rulesByCommand = new Dictionary<Commands, CommandRule>()
             {
-                { Commands.EnterSdkMode, new CommandRule(Commands.EnterSdkMode, Responses.Ok, "command", emptyArgs) },
+                { Commands.EnterSdkMode, new CommandRule(Commands.EnterSdkMode, Responses.Ok, "command", emptyArgs, true) },
                 { Commands.Takeoff, new CommandRule(Commands.Takeoff, Responses.Ok,"takeoff", emptyArgs) },
                 { Commands.Land, new CommandRule(Commands.Land, Responses.Ok, "land", emptyArgs) },
                 { Commands.Stop, new CommandRule(Commands.Stop, Responses.Ok, "stop", emptyArgs, true) },
@@ -174,7 +176,7 @@ namespace Tello
                     Commands.SetSpeed, new CommandRule(Commands.SetSpeed, Responses.Ok, "speed",
                         new ArgumentRule[]
                         {
-                            new IntegerRule(new Range(10, 100))
+                            new IntegerRule(new Range<int>(10, 100))
                         })
                 },
 
@@ -190,33 +192,33 @@ namespace Tello
                     Commands.Go, new CommandRule(Commands.Go, Responses.Ok, "go",
                         new ArgumentRule[]
                         {
-                            new IntegerRule(new Range(-500, 500)),
-                            new IntegerRule(new Range(-500, 500)),
-                            new IntegerRule(new Range(-500, 500)),
-                            new IntegerRule(new Range(10, 100))
+                            new IntegerRule(new Range<int>(-500, 500)),
+                            new IntegerRule(new Range<int>(-500, 500)),
+                            new IntegerRule(new Range<int>(-500, 500)),
+                            new IntegerRule(new Range<int>(10, 100))
                         })
                 },
                 {
                     Commands.Curve, new CommandRule(Commands.Curve, Responses.Ok, "curve",
                         new ArgumentRule[]
                         {
-                            new IntegerRule(new Range(-500, 500)),
-                            new IntegerRule(new Range(-500, 500)),
-                            new IntegerRule(new Range(-500, 500)),
-                            new IntegerRule(new Range(-500, 500)),
-                            new IntegerRule(new Range(-500, 500)),
-                            new IntegerRule(new Range(-500, 500)),
-                            new IntegerRule(new Range(10, 60))
+                            new IntegerRule(new Range<int>(-500, 500)),
+                            new IntegerRule(new Range<int>(-500, 500)),
+                            new IntegerRule(new Range<int>(-500, 500)),
+                            new IntegerRule(new Range<int>(-500, 500)),
+                            new IntegerRule(new Range<int>(-500, 500)),
+                            new IntegerRule(new Range<int>(-500, 500)),
+                            new IntegerRule(new Range<int>(10, 60))
                         })
                 },
                 {
                     Commands.SetRemoteControl, new CommandRule(Commands.SetRemoteControl, Responses.Ok, "rc",
                         new ArgumentRule[]
                         {
-                            new IntegerRule(new Range(-100, 100)),
-                            new IntegerRule(new Range(-100, 100)),
-                            new IntegerRule(new Range(-100, 100)),
-                            new IntegerRule(new Range(-100, 100))
+                            new IntegerRule(new Range<int>(-100, 100)),
+                            new IntegerRule(new Range<int>(-100, 100)),
+                            new IntegerRule(new Range<int>(-100, 100)),
+                            new IntegerRule(new Range<int>(-100, 100))
                         })
                 },
                 {

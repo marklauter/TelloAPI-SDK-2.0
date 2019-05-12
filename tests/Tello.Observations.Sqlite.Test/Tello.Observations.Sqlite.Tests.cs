@@ -153,7 +153,7 @@ namespace Tello.Observations.Sqlite.Test
                 Assert.AreEqual(start, group.Timestamp);
 
                 var stateString = "mid:-1;x:0;y:0;z:0;mpry:0,0,0;pitch:1;roll:2;yaw:3;vgx:4;vgy:5;vgz:6;templ:7;temph:8;tof:9;h:10;bat:11;baro:12.13;time:14;agx:15.16;agy:17.18;agz:19.20;";
-                var state = new TelloState(stateString, start);
+                var state = new TelloState(stateString);
 
                 var observation = new PositionObservation(group, state);
                 Assert.AreEqual(1, repo.Insert(observation));
@@ -161,7 +161,7 @@ namespace Tello.Observations.Sqlite.Test
                 observation = repo.Read<PositionObservation>(1);
                 Assert.IsNotNull(observation);
                 Assert.AreEqual(1, observation.Id);
-                Assert.AreEqual(start, observation.Timestamp);
+                Assert.AreEqual(state.Timestamp, observation.Timestamp);
                 Assert.AreEqual(1, observation.GroupId);
                 Assert.AreEqual(10, observation.AltitudeAGLInCm);
                 Assert.AreEqual(12.13, observation.BarometricPressueInCm);
@@ -198,7 +198,7 @@ namespace Tello.Observations.Sqlite.Test
                 Assert.AreEqual(start, group.Timestamp);
 
                 var stateString = "mid:-1;x:0;y:0;z:0;mpry:0,0,0;pitch:1;roll:2;yaw:3;vgx:4;vgy:5;vgz:6;templ:7;temph:8;tof:9;h:10;bat:11;baro:12.13;time:14;agx:15.16;agy:17.18;agz:19.20;";
-                var state = new TelloState(stateString, start);
+                var state = new TelloState(stateString);
 
                 var observation = new AirSpeedObservation(group, state);
                 Assert.AreEqual(1, repo.Insert(observation));
@@ -206,7 +206,7 @@ namespace Tello.Observations.Sqlite.Test
                 observation = repo.Read<AirSpeedObservation>(1);
                 Assert.IsNotNull(observation);
                 Assert.AreEqual(1, observation.Id);
-                Assert.AreEqual(start, observation.Timestamp);
+                Assert.AreEqual(state.Timestamp, observation.Timestamp);
                 Assert.AreEqual(1, observation.GroupId);
                 Assert.AreEqual(15.16, observation.AccelerationX);
                 Assert.AreEqual(17.18, observation.AccelerationY);
@@ -244,7 +244,7 @@ namespace Tello.Observations.Sqlite.Test
                 Assert.AreEqual(start, group.Timestamp);
 
                 var stateString = "mid:-1;x:0;y:0;z:0;mpry:0,0,0;pitch:1;roll:2;yaw:3;vgx:4;vgy:5;vgz:6;templ:7;temph:8;tof:9;h:10;bat:11;baro:12.13;time:14;agx:15.16;agy:17.18;agz:19.20;";
-                var state = new TelloState(stateString, start);
+                var state = new TelloState(stateString);
 
                 var observation = new AttitudeObservation(group, state);
                 Assert.AreEqual(1, repo.Insert(observation));
@@ -252,7 +252,7 @@ namespace Tello.Observations.Sqlite.Test
                 observation = repo.Read<AttitudeObservation>(1);
                 Assert.IsNotNull(observation);
                 Assert.AreEqual(1, observation.Id);
-                Assert.AreEqual(start, observation.Timestamp);
+                Assert.AreEqual(state.Timestamp, observation.Timestamp);
                 Assert.AreEqual(1, observation.GroupId);
                 Assert.AreEqual(1, observation.Pitch);
                 Assert.AreEqual(2, observation.Roll);
@@ -287,7 +287,7 @@ namespace Tello.Observations.Sqlite.Test
                 Assert.AreEqual(start, group.Timestamp);
 
                 var stateString = "mid:-1;x:0;y:0;z:0;mpry:0,0,0;pitch:1;roll:2;yaw:3;vgx:4;vgy:5;vgz:6;templ:7;temph:8;tof:9;h:10;bat:11;baro:12.13;time:14;agx:15.16;agy:17.18;agz:19.20;";
-                var state = new TelloState(stateString, start);
+                var state = new TelloState(stateString);
 
                 var observation = new BatteryObservation(group, state);
                 Assert.AreEqual(1, repo.Insert(observation));
@@ -295,7 +295,7 @@ namespace Tello.Observations.Sqlite.Test
                 observation = repo.Read<BatteryObservation>(1);
                 Assert.IsNotNull(observation);
                 Assert.AreEqual(1, observation.Id);
-                Assert.AreEqual(start, observation.Timestamp);
+                Assert.AreEqual(state.Timestamp, observation.Timestamp);
                 Assert.AreEqual(1, observation.GroupId);
                 Assert.AreEqual(11, observation.PercentRemaining);
                 Assert.AreEqual(8, observation.TemperatureHighC);
@@ -330,7 +330,7 @@ namespace Tello.Observations.Sqlite.Test
                 Assert.AreEqual(start, group.Timestamp);
 
                 var stateString = "mid:-1;x:0;y:0;z:0;mpry:0,0,0;pitch:1;roll:2;yaw:3;vgx:4;vgy:5;vgz:6;templ:7;temph:8;tof:9;h:10;bat:11;baro:12.13;time:14;agx:15.16;agy:17.18;agz:19.20;";
-                var state = new TelloState(stateString, start);
+                var state = new TelloState(stateString);
 
                 var observation = new HobbsMeterObservation(group, state);
                 Assert.AreEqual(1, repo.Insert(observation));
@@ -338,7 +338,7 @@ namespace Tello.Observations.Sqlite.Test
                 observation = repo.Read<HobbsMeterObservation>(1);
                 Assert.IsNotNull(observation);
                 Assert.AreEqual(1, observation.Id);
-                Assert.AreEqual(start, observation.Timestamp);
+                Assert.AreEqual(state.Timestamp, observation.Timestamp);
                 Assert.AreEqual(1, observation.GroupId);
                 Assert.AreEqual(9, observation.DistanceTraversedInCm);
                 Assert.AreEqual(14, observation.MotorTimeInSeconds);

@@ -8,15 +8,10 @@ namespace Tello.Types
         {
             if (value == null)
             {
-                return false;
+                throw new ArgumentNullException(nameof(value));
             }
 
-            return value.IsNumeric();
-        }
-
-        public static bool IsNumeric<T>(this T _)
-        {
-            var type = typeof(T);
+            var type = value.GetType();
             var code = Type.GetTypeCode(type);
             switch (code)
             {
@@ -37,19 +32,14 @@ namespace Tello.Types
             }
         }
 
-        public static bool IsString(object value)
+        public static bool IsString<T>(T value)
         {
             if (value == null)
             {
-                return false;
+                throw new ArgumentNullException(nameof(value));
             }
 
-            return value.IsString();
-        }
-
-        public static bool IsString<T>(this T _)
-        {
-            var type = typeof(T);
+            var type = value.GetType();
             var code = Type.GetTypeCode(type);
             switch (code)
             {

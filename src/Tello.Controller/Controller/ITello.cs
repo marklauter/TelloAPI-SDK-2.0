@@ -1,25 +1,19 @@
-﻿using System;
-using Tello.Messaging;
-using Tello.Scripting;
+﻿using System.Threading.Tasks;
 
-namespace Tello.Controller
+namespace Tello
 {
-    public interface ITelloController
+    public interface ITello
     {
-        event EventHandler<QueryResponseReceivedArgs> QueryResponseReceived;
-        event EventHandler<CommandResponseReceivedArgs> CommandResponseReceived;
+        //event EventHandler<QueryResponseReceivedArgs> QueryResponseReceived;
+        //event EventHandler<CommandResponseReceivedArgs> CommandResponseReceived;
 
-        event EventHandler<ExceptionThrownArgs> ExceptionThrown;
-        event EventHandler<CommandExceptionThrownArgs> CommandExceptionThrown;
-
-        void ExecuteScript(TelloScript script);
-
-        void ExecuteScript(string json);
+        //event EventHandler<ExceptionThrownArgs> ExceptionThrown;
+        //event EventHandler<CommandExceptionThrownArgs> CommandExceptionThrown;
 
         /// <summary>
         /// establish a command link with Tello - validates network connection, connects to UDP, sends "command" to Tello
         /// </summary>
-        void Connect();
+        Task Connect();
 
         void Disconnect();
 
@@ -36,12 +30,12 @@ namespace Tello.Controller
         /// <summary>
         /// stops moving and hovers
         /// </summary>
-        void Stop();
+        Task Stop();
 
         /// <summary>
         /// stops motors immediately
         /// </summary>
-        void EmergencyStop();
+        Task EmergencyStop();
 
         /// <summary>
         /// begins H264 encoded video stream to port 11111, subscribe to FrameReady events to take advantage of video
@@ -185,6 +179,6 @@ namespace Tello.Controller
 
         void GetSdkVersion();
 
-        void GetWIFISerialNumber();
+        void GetSerialNumber();
     }
 }

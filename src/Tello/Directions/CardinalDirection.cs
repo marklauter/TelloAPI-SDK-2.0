@@ -14,17 +14,17 @@ namespace Tello
         public CardinalDirections Value { get; }
 
         #region operators
-        public static implicit operator CardinalDirection(CardinalDirections direction)
+        public static explicit operator CardinalDirection(CardinalDirections direction)
         {
             return new CardinalDirection(direction);
         }
 
-        public static implicit operator CardinalDirections(CardinalDirection direction)
+        public static explicit operator CardinalDirections(CardinalDirection direction)
         {
             return direction.Value;
         }
 
-        public static explicit operator char(CardinalDirection direction)
+        public static implicit operator char(CardinalDirection direction)
         {
             switch (direction.Value)
             {
@@ -41,7 +41,7 @@ namespace Tello
             }
         }
 
-        public static explicit operator CardinalDirection(char direction)
+        public static implicit operator CardinalDirection(char direction)
         {
             switch (Char.ToLowerInvariant(direction))
             {

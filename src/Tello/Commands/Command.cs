@@ -193,7 +193,7 @@ namespace Tello
                         throw new ArgumentException($"{command}: {nameof(args)}[{i}] type mismatch. expected: '{argumentRule.Type.Name}' actual: '{arg.GetType().Name}'");
                     }
 
-                    if (!argumentRule.IsValueAllowed(args))
+                    if (!argumentRule.IsValueAllowed(Convert.ChangeType(arg, argumentRule.Type)))
                     {
                         throw new ArgumentOutOfRangeException($"{command}: {nameof(args)}[{i}] argument out of range: {arg}");
                     }
