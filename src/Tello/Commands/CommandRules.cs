@@ -95,18 +95,21 @@ namespace Tello
             Commands command,
             Responses response,
             string token,
-            ArgumentRule[] arguments)
+            ArgumentRule[] arguments,
+            bool immediate = false)
         {
             Command = command;
             Response = response;
             Token = token;
             Arguments = arguments;
+            Immediate = immediate;
         }
 
         public readonly Commands Command;
         public readonly string Token;
         public readonly ArgumentRule[] Arguments;
         public readonly Responses Response;
+        public readonly bool Immediate;
 
         public string ToString(params object[] args)
         {
@@ -145,10 +148,10 @@ namespace Tello
                 { Commands.EnterSdkMode, new CommandRule(Commands.EnterSdkMode, Responses.Ok, "command", emptyArgs) },
                 { Commands.Takeoff, new CommandRule(Commands.Takeoff, Responses.Ok,"takeoff", emptyArgs) },
                 { Commands.Land, new CommandRule(Commands.Land, Responses.Ok, "land", emptyArgs) },
-                { Commands.Stop, new CommandRule(Commands.Stop, Responses.Ok, "stop", emptyArgs) },
+                { Commands.Stop, new CommandRule(Commands.Stop, Responses.Ok, "stop", emptyArgs, true) },
                 { Commands.StartVideo, new CommandRule(Commands.StartVideo, Responses.Ok, "streamon", emptyArgs) },
                 { Commands.StopVideo, new CommandRule(Commands.StopVideo, Responses.Ok, "streamoff", emptyArgs) },
-                { Commands.EmergencyStop, new CommandRule(Commands.EmergencyStop, Responses.Ok, "emergency", emptyArgs) },
+                { Commands.EmergencyStop, new CommandRule(Commands.EmergencyStop, Responses.Ok, "emergency", emptyArgs, true) },
 
                 { Commands.GetSpeed, new CommandRule(Commands.GetSpeed, Responses.Speed,"speed?", emptyArgs) },
                 { Commands.GetBattery, new CommandRule(Commands.GetBattery, Responses.Battery, "battery?", emptyArgs) },

@@ -22,11 +22,13 @@ namespace Tello
             Validate(command, args);
             Value = command;
             Arguments = args;
+            Immediate = CommandRules.Rules(command).Immediate;
         }
         #endregion
 
-        public Commands Value { get; }
-        public object[] Arguments { get; }
+        public readonly Commands Value;
+        public readonly object[] Arguments;
+        public readonly bool Immediate;
 
         #region operators
         public static implicit operator Command(Commands command)

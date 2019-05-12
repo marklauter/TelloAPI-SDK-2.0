@@ -2,29 +2,27 @@
 
 namespace Messenger
 {
-    public abstract class EnvelopeObserver : IObserver<IEnvelope>
+    public abstract class Observer<T> : IObserver<T>
     {
         private IDisposable _unsubscriber;
 
-        public EnvelopeObserver()
+        public Observer() { }
+
+        public Observer(IObservable<T> observable)
         {
+            Subscribe(observable);
         }
 
-        public EnvelopeObserver(Receiver receiver)
+        public void Subscribe(IObservable<T> observable)
         {
-            Subscribe(receiver);
-        }
-
-        public void Subscribe(Receiver receiver)
-        {
-            if (receiver == null)
+            if (observable == null)
             {
-                throw new ArgumentNullException(nameof(receiver));
+                throw new ArgumentNullException(nameof(observable));
             }
 
             if (_unsubscriber == null)
             {
-                _unsubscriber = receiver.Subscribe(this);
+                _unsubscriber = observable.Subscribe(this);
             }
         }
 
@@ -44,6 +42,6 @@ namespace Messenger
 
         public abstract void OnError(Exception error);
 
-        public abstract void OnNext(IEnvelope value);
+        public abstract void OnNext(T value);
     }
 }
