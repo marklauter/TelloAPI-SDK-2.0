@@ -2,20 +2,17 @@
 using Messenger.Tello;
 using System;
 using System.Threading.Tasks;
+using Tello.State;
 
 namespace Tello.Controller
 {
-
-    //public abstract class EnvelopeObserver : Observer<IEnvelope>
-    //{
-
-    //}
-
     public sealed class Tello : Observer<IResponse<string>>, ITello
     {
         private readonly TelloMessenger _messenger;
         private readonly IReceiver _stateReceiver;
         private readonly IReceiver _videoReceiver;
+        private readonly StateObserver _stateObserver;
+        private readonly VideoObserver _videoObserver;
 
         public Tello(
             ITransceiver transceiver,
@@ -27,50 +24,148 @@ namespace Tello.Controller
             Subscribe(_messenger);
 
             _stateReceiver = stateReceiver ?? throw new ArgumentNullException(nameof(stateReceiver));
+            _stateObserver = new StateObserver(_stateReceiver);
+
             _videoReceiver = videoReceiver ?? throw new ArgumentNullException(nameof(videoReceiver));
+            _videoObserver = new VideoObserver(_videoReceiver);
         }
 
-        #region Observer<IResponse<string>>
+        #region Observer<IResponse<string>> - transceiver reponse handling
         public override void OnError(Exception error)
         {
             throw new NotImplementedException();
         }
 
-        public override void OnNext(IResponse<string> response)
+        public void HandleOk(IResponse<string> response, Command command)
         {
-            throw new NotImplementedException();
-            //var observation = new ResponseObservation(group, response);
-            //_repository.Insert(observation);
-        }
-        #endregion
-
-        #region ITello
-
-        private bool _connected = false;
-
-        public async Task Connect()
-        {
-            if (!_connected)
+            switch ((Commands)command)
             {
-                var response = await _messenger.SendAsync(Commands.EnterSdkMode);
-                _connected = response != null && response.Success;
-                StartLisenters();
+                case Commands.EnterSdkMode:
+                    _isConnected = true;
+                    RunKeepAlive();
+                    break;
+                case Commands.Takeoff:
+                    _isFlying = true;
+                    break;
+                case Commands.Land:
+                case Commands.EmergencyStop:
+                    _isFlying = false;
+                    break;
+                case Commands.StartVideo:
+                    _isVideoStreaming = true;
+                    break;
+                case Commands.StopVideo:
+                    _isVideoStreaming = false;
+                    break;
+
+                case Commands.Left:
+                    Position = Position.Move(CardinalDirections.Left, (int)((Command)response.Request.Data).Arguments[0]);
+                    break;
+                case Commands.Right:
+                    Position = Position.Move(CardinalDirections.Right, (int)((Command)response.Request.Data).Arguments[0]);
+                    break;
+                case Commands.Forward:
+                    Position = Position.Move(CardinalDirections.Front, (int)((Command)response.Request.Data).Arguments[0]);
+                    break;
+                case Commands.Back:
+                    Position = Position.Move(CardinalDirections.Back, (int)((Command)response.Request.Data).Arguments[0]);
+                    break;
+                case Commands.ClockwiseTurn:
+                    Position = Position.Turn(ClockDirections.Clockwise, (int)((Command)response.Request.Data).Arguments[0]);
+                    break;
+                case Commands.CounterClockwiseTurn:
+                    Position = Position.Turn(ClockDirections.CounterClockwise, (int)((Command)response.Request.Data).Arguments[0]);
+                    break;
+                case Commands.Go:
+                    Position = Position.Go((int)((Command)response.Request.Data).Arguments[0], (int)((Command)response.Request.Data).Arguments[1]);
+                    break;
+
+                case Commands.SetSpeed:
+                    InterogativeState.Speed = (int)((Command)response.Request.Data).Arguments[0];
+                    break;
+
+                case Commands.Stop:
+                    break;
+                case Commands.Up:
+                    break;
+                case Commands.Down:
+                    break;
+                case Commands.Curve:
+                    break;
+                case Commands.Flip:
+                    break;
+
+                case Commands.SetRemoteControl:
+                    break;
+                case Commands.SetWiFiPassword:
+                    break;
+                case Commands.SetStationMode:
+                    break;
+
+                default:
+                    break;
             }
         }
 
+        public override void OnNext(IResponse<string> response)
+        {
+            response = new TelloResponse(response);
+            if (response.Success)
+            {
+                if (response.Message != Responses.Error.ToString().ToLowerInvariant())
+                {
+                    var command = (Command)response.Request.Data;
+                    switch (command.Rule.Response)
+                    {
+                        case Responses.Ok:
+                            if (response.Message != Responses.Ok.ToString().ToLowerInvariant())
+                            {
+                                HandleOk(response, command);
+                            }
+                            else
+                            {
+                                throw new NotImplementedException("need to handle errors here");
+                            }
+                            break;
+                        case Responses.Speed:
+                            InterogativeState.Speed = Int32.Parse(response.Message);
+                            break;
+                        case Responses.Battery:
+                            InterogativeState.Battery = Int32.Parse(response.Message);
+                            break;
+                        case Responses.Time:
+                            InterogativeState.Time = Int32.Parse(response.Message);
+                            break;
+                        case Responses.WIFISnr:
+                            InterogativeState.WIFISnr = response.Message;
+                            break;
+                        case Responses.SdkVersion:
+                            InterogativeState.SdkVersion = response.Message;
+                            break;
+                        case Responses.SerialNumber:
+                            InterogativeState.SerialNumber = response.Message;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else
+                {
+                    throw new NotImplementedException("need to handle errors here");
+                }
+            }
+            else
+            {
+                throw new NotImplementedException("need to handle errors here");
+            }
+        }
+        #endregion
+
+        #region Listeners
         private void StartLisenters()
         {
             _stateReceiver.Start();
             _videoReceiver.Start();
-        }
-
-        public void Disconnect()
-        {
-            if (_connected)
-            {
-                StopListeners();
-                _connected = false;
-            }
         }
 
         private void StopListeners()
@@ -78,162 +173,344 @@ namespace Tello.Controller
             _stateReceiver.Stop();
             _videoReceiver.Stop();
         }
+        #endregion
+
+        #region ITello
+
+        public readonly InterogativeState InterogativeState = new InterogativeState();
+        public Vector Position { get; private set; }
+
+        /// <summary>
+        /// Tello auto lands after 15 seconds without commands as a safety mesasure, so we're going to send a keep alive message every 5 seconds
+        /// </summary>
+        private async void RunKeepAlive()
+        {
+            await Task.Run(async () =>
+            {
+                while (_isConnected)
+                {
+                    await Task.Delay(1000 * 10);
+                    GetBattery();
+                }
+            });
+        }
+
+        #region controller state
+        private bool _isConnected = false;
+        private bool _isFlying = false;
+        private bool _isVideoStreaming = false;
+        private bool CanManeuver => _isConnected && _isFlying;
+        private bool CanTakeoff => _isConnected && !_isFlying;
+        #endregion
+
+        #region enter/exit sdk mode (connect/disconnect)
+        public async Task Connect()
+        {
+            if (!_isConnected)
+            {
+                var response = await _messenger.SendAsync(Commands.EnterSdkMode);
+                _isConnected = response != null && response.Success;
+                if (_isConnected)
+                {
+                    StartLisenters();
+                }
+            }
+        }
+
+        public void Disconnect()
+        {
+            if (_isConnected)
+            {
+                StopListeners();
+                _isConnected = false;
+            }
+        }
+        #endregion
+
+        #region state interogation
+        public async void GetBattery()
+        {
+            await _messenger.SendAsync(Commands.GetBattery);
+        }
+
+        public async void GetSdkVersion()
+        {
+            await _messenger.SendAsync(Commands.GetSdkVersion);
+        }
+
+        public async void GetSpeed()
+        {
+            await _messenger.SendAsync(Commands.GetSpeed);
+        }
+
+        public async void GetTime()
+        {
+            await _messenger.SendAsync(Commands.GetTime);
+        }
+
+        public async void GetSerialNumber()
+        {
+            await _messenger.SendAsync(Commands.GetSerialNumber);
+        }
+
+        public async void GetWIFISNR()
+        {
+            await _messenger.SendAsync(Commands.GetWIFISnr);
+        }
+        #endregion
+
+        #region maneuver
+        public async void TakeOff()
+        {
+            if (CanTakeoff)
+            {
+                await _messenger.SendAsync(Commands.Takeoff);
+            }
+        }
+
+        public async void Land()
+        {
+            if (CanManeuver)
+            {
+                await _messenger.SendAsync(Commands.Land);
+            }
+        }
 
         public async Task EmergencyStop()
         {
             await _messenger.SendAsync(Commands.EmergencyStop);
+            _isFlying = false;
             Disconnect();
         }
 
         public async Task Stop()
         {
-            await _messenger.SendAsync(Commands.Stop);
+            if (CanManeuver)
+            {
+                await _messenger.SendAsync(Commands.Stop);
+            }
         }
 
-        public void Curve(int x1, int y1, int z1, int x2, int y2, int z2, int speed)
+        public async void Curve(int x1, int y1, int z1, int x2, int y2, int z2, int speed)
         {
-            _messenger.SendAsync(Commands.Curve, x1, y1, z1, x2, y2, z2, speed);
+            if (CanManeuver)
+            {
+                await _messenger.SendAsync(Commands.Curve, x1, y1, z1, x2, y2, z2, speed);
+            }
         }
 
-        public void Flip(CardinalDirections direction)
+        public async void Flip(CardinalDirections direction)
         {
-            _messenger.SendAsync(Commands.Flip, (char)(CardinalDirection)direction);
+            if (CanManeuver)
+            {
+                await _messenger.SendAsync(Commands.Flip, (char)(CardinalDirection)direction);
+            }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sides">3 to 15</param>
+        /// <param name="length">length of each side. 20 to 500 in cm</param>
+        /// <param name="speed">cm/s 10 to 100</param>
         public void FlyPolygon(int sides, int length, int speed, ClockDirections clockDirection, bool land = false)
         {
-            throw new NotImplementedException();
+            if (!CanManeuver)
+            {
+                return;
+            }
+
+            if (sides < 3 || sides > 15)
+            {
+                throw new ArgumentOutOfRangeException($"{nameof(sides)} allowed values: 3 to 15");
+            }
+
+            if (!_isFlying)
+            {
+                TakeOff();
+            }
+
+            SetSpeed(speed);
+
+            var turnMethod = default(Action<int>);
+            switch (clockDirection)
+            {
+                case ClockDirections.Clockwise:
+                    turnMethod = TurnClockwise;
+                    break;
+                case ClockDirections.CounterClockwise:
+                    turnMethod = TurnCounterClockwise;
+                    break;
+            }
+
+            var angle = (int)Math.Round(360.0 / sides);
+            for (var i = 0; i < sides; ++i)
+            {
+                GoForward(length);
+                turnMethod(angle);
+            }
+
+            if (land)
+            {
+                Land();
+            }
         }
 
-        public void GetBattery()
+        public async void Go(int x, int y, int z, int speed)
         {
-            _messenger.SendAsync(Commands.GetBattery);
+            if (CanManeuver)
+            {
+                await _messenger.SendAsync(Commands.Go, x, y, z, speed);
+            }
         }
 
-        public void GetSdkVersion()
+        public async void GoBackward(int cm)
         {
-            _messenger.SendAsync(Commands.GetSdkVersion);
+            if (CanManeuver)
+            {
+                await _messenger.SendAsync(Commands.Back, cm);
+            }
         }
 
-        public void GetSpeed()
+        public async void GoDown(int cm)
         {
-            _messenger.SendAsync(Commands.GetSpeed);
+            if (CanManeuver)
+            {
+                await _messenger.SendAsync(Commands.Down, cm);
+            }
         }
 
-        public void GetTime()
+        public async void GoForward(int cm)
         {
-            _messenger.SendAsync(Commands.GetTime);
+            if (CanManeuver)
+            {
+                await _messenger.SendAsync(Commands.Forward, cm);
+            }
         }
 
-        public void GetSerialNumber()
+        public async void GoLeft(int cm)
         {
-            _messenger.SendAsync(Commands.GetSerialNumber);
+            if (CanManeuver)
+            {
+                await _messenger.SendAsync(Commands.Left, cm);
+            }
         }
 
-        public void GetWIFISNR()
+        public async void GoRight(int cm)
         {
-            _messenger.SendAsync(Commands.GetWIFISnr);
+            if (CanManeuver)
+            {
+                await _messenger.SendAsync(Commands.Right, cm);
+            }
         }
 
-        public void Go(int x, int y, int z, int speed)
+        public async void GoUp(int cm)
         {
-            _messenger.SendAsync(Commands.Go, x, y, z, speed);
+            if (CanManeuver)
+            {
+                await _messenger.SendAsync(Commands.Up, cm);
+            }
         }
 
-        public void GoBackward(int cm)
+        public async void TurnClockwise(int degress)
         {
-            throw new NotImplementedException();
+            if (CanManeuver)
+            {
+                await _messenger.SendAsync(Commands.ClockwiseTurn, degress);
+            }
         }
 
-        public void GoDown(int cm)
+        public async void TurnCounterClockwise(int degress)
         {
-            throw new NotImplementedException();
-        }
-
-        public void GoForward(int cm)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void GoLeft(int cm)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void GoRight(int cm)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void GoUp(int cm)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Land()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Set4ChannelRC(int leftRight, int forwardBackward, int upDown, int yaw)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetHeight(int cm)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetSpeed(int speed)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetStationMode(string ssid, string password)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetWIFIPassword(string ssid, string password)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void StartVideo()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void StopVideo()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void TakeOff()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void TurnClockwise(int degress)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void TurnCounterClockwise(int degress)
-        {
-            throw new NotImplementedException();
+            if (CanManeuver)
+            {
+                await _messenger.SendAsync(Commands.CounterClockwiseTurn, degress);
+            }
         }
 
         public void TurnLeft(int degress)
         {
-            throw new NotImplementedException();
+            TurnCounterClockwise(degress);
         }
 
         public void TurnRight(int degress)
         {
-            throw new NotImplementedException();
+            TurnClockwise(degress);
         }
+
+        public void SetHeight(int cm)
+        {
+            if (CanManeuver)
+            {
+                var delta = cm - _stateObserver.State.HeightInCm;
+                if (delta >= 20 && delta <= 500)
+                {
+                    if (delta < 0)
+                    {
+                        GoDown(Math.Abs(delta));
+                    }
+                    else
+                    {
+                        GoUp(delta);
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region drone configuration
+        public async void Set4ChannelRC(int leftRight, int forwardBackward, int upDown, int yaw)
+        {
+            if (_isConnected)
+            {
+                await _messenger.SendAsync(Commands.SetRemoteControl, leftRight, forwardBackward, upDown, yaw);
+            }
+        }
+
+        public async void SetSpeed(int speed)
+        {
+            if (_isConnected)
+            {
+                await _messenger.SendAsync(Commands.SetSpeed, speed);
+            }
+        }
+
+        public async void SetStationMode(string ssid, string password)
+        {
+            if (_isConnected)
+            {
+                await _messenger.SendAsync(Commands.SetStationMode, ssid, password);
+            }
+        }
+
+        public async void SetWIFIPassword(string ssid, string password)
+        {
+            if (_isConnected)
+            {
+                await _messenger.SendAsync(Commands.SetWiFiPassword, ssid, password);
+            }
+        }
+        #endregion
+
+        #region video state
+        public async void StartVideo()
+        {
+            if (_isConnected && !_isVideoStreaming)
+            {
+                await _messenger.SendAsync(Commands.StartVideo);
+            }
+        }
+
+        public async void StopVideo()
+        {
+            if (_isConnected && _isVideoStreaming)
+            {
+                await _messenger.SendAsync(Commands.StopVideo);
+            }
+        }
+        #endregion
+
         #endregion
     }
 }
