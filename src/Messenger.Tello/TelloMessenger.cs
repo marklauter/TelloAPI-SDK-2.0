@@ -39,14 +39,14 @@ namespace Messenger.Tello
         {
             try
             {
-                if (!command.Immediate)
-                {
-                    Enqueue(command);
-                }
-                else
+                if (command.Immediate)
                 {
                     var response = new TelloResponse(await _transceiver.SendAsync(new TelloRequest(command)));
                     ReponseReceived(response);
+                }
+                else
+                {
+                    Enqueue(command);
                 }
             }
             catch (Exception ex)
