@@ -19,16 +19,18 @@ namespace Tello
 
         public Command(Commands command, params object[] args)
         {
+            Rule = CommandRules.Rules(command);
             Validate(command, args);
             Value = command;
             Arguments = args;
-            Immediate = CommandRules.Rules(command).Immediate;
+            Immediate = Rule.Immediate;
         }
         #endregion
 
         public readonly Commands Value;
         public readonly object[] Arguments;
         public readonly bool Immediate;
+        public readonly CommandRule Rule;
 
         #region operators
         public static implicit operator Command(Commands command)
@@ -103,7 +105,7 @@ namespace Tello
 
         public static explicit operator Responses(Command command)
         {
-            return CommandRules.Rules(command).Response;
+            return command.Rule.Response;
         }
 
         public static explicit operator TimeSpan(Command command)
@@ -162,22 +164,20 @@ namespace Tello
         }
         #endregion
 
-        private static void Validate(Commands command, params object[] args)
+        private void Validate(Commands command, params object[] args)
         {
-            var rule = CommandRules.Rules(command);
-
-            if (args == null && rule.Arguments.Length > 0)
+            if (args == null && Rule.Arguments.Length > 0)
             {
                 throw new ArgumentNullException($"{command}: {nameof(args)}");
             }
 
-            if (args != null && args.Length != rule.Arguments.Length)
+            if (args != null && args.Length != Rule.Arguments.Length)
             {
                 throw new ArgumentException(
-                    $"{command}: argument count mismatch. expected: {rule.Arguments.Length} actual: {(args == null ? 0 : args.Length)}");
+                    $"{command}: argument count mismatch. expected: {Rule.Arguments.Length} actual: {(args == null ? 0 : args.Length)}");
             }
 
-            if (rule.Arguments.Length > 0)
+            if (Rule.Arguments.Length > 0)
             {
                 for (var i = 0; i < args.Length; ++i)
                 {
@@ -187,7 +187,7 @@ namespace Tello
                         throw new ArgumentNullException($"{command}: {nameof(args)}[{i}]");
                     }
 
-                    var argumentRule = rule.Arguments[i];
+                    var argumentRule = Rule.Arguments[i];
                     if (!argumentRule.IsTypeAllowed(arg))
                     {
                         throw new ArgumentException($"{command}: {nameof(args)}[{i}] type mismatch. expected: '{argumentRule.Type.Name}' actual: '{arg.GetType().Name}'");
