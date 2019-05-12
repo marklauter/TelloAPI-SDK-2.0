@@ -74,20 +74,23 @@ namespace Messenger
         public Response(IResponse response) 
             : base(response)
         {
+            Message = Deserialize(Data);
         }
 
         public Response(IRequest request, Exception exception, TimeSpan timeTaken) 
             : base(request, exception, timeTaken)
         {
+            Message = Deserialize(Data);
         }
 
         public Response(IRequest request, byte[] data, TimeSpan timeTaken) 
             : base(request, data, timeTaken)
         {
+            Message = Deserialize(Data);
         }
-
+        
         protected abstract T Deserialize(byte[] data);
 
-        public T Message => Deserialize(Data);
+        public T Message { get; }
     }
 }
