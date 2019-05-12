@@ -174,7 +174,7 @@ namespace Tello
                     Commands.SetSpeed, new CommandRule(Commands.SetSpeed, Responses.Ok, "speed",
                         new ArgumentRule[]
                         {
-                            new IntegerRule(new Range(10,100))
+                            new IntegerRule(new Range(10, 100))
                         })
                 },
 
@@ -244,7 +244,7 @@ namespace Tello
             _rulesByString = new Dictionary<string, CommandRule>(_rulesByCommand.Count);
             foreach (var rule in _rulesByCommand.Values)
             {
-                _rulesByString[rule.Token] = rule;
+                _rulesByString.Add(rule.Token, rule);
             }
         }
 
