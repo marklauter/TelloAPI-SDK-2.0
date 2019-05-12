@@ -22,13 +22,12 @@ namespace Messenger
 
         public void Stop()
         {
-            if (_cancellationTokenSource != null)
+            if (_cancellationTokenSource != null 
+                && !_cancellationTokenSource.IsCancellationRequested)
             {
-                var source = _cancellationTokenSource;
+                _cancellationTokenSource.Cancel(false);
+                _cancellationTokenSource.Dispose();
                 _cancellationTokenSource = null;
-
-                source.Cancel(false);
-                source.Dispose();
             }
         }
 
