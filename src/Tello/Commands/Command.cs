@@ -93,9 +93,9 @@ namespace Tello
             else
             {
                 var args = new object[rule.Arguments.Length];
-                for (var i = 1; i < tokens.Length; ++i)
+                for (var i = 0; i < rule.Arguments.Length; ++i)
                 {
-                    args[i - 1] = Convert.ChangeType(tokens[i], rule.Arguments[i - 1].Type);
+                    args[i] = Convert.ChangeType(tokens[i + 1], rule.Arguments[i].Type);
                 }
                 return (Command)Activator.CreateInstance(typeof(Command), args);
             }
