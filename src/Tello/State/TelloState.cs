@@ -47,6 +47,11 @@ namespace Tello.State
         private readonly Vector _vector;
 
         public TelloState(string state)
+            : this(state, DateTime.UtcNow)
+        {
+        }
+
+        public TelloState(string state, DateTime timestamp)
         {
             // sample from Tello
             // mid:64;x:0;y:0;z:0;mpry:0,0,0;pitch:0;roll:0;yaw:0;vgx:0;vgy:0;vgz:-7;templ:60;temph:63;tof:20;h:10;bat:89;baro:-67.44;time:0;agx:14.00;agy:-12.00;agz:-1094.00;
@@ -57,7 +62,7 @@ namespace Tello.State
                 throw new ArgumentNullException(nameof(state));
             }
 
-            Timestamp = DateTime.UtcNow;
+            Timestamp = timestamp;
 
             Data = state;
 
@@ -108,12 +113,18 @@ namespace Tello.State
         }
 
         public TelloState(string state, Vector vector)
-            : this(state)
+            : this(state, DateTime.UtcNow, vector)
+        {
+        }
+
+        public TelloState(string state, DateTime timestamp, Vector vector)
+            : this(state, timestamp)
         {
             _vector = vector;
         }
 
         public string Data { get; }
+
         public DateTime Timestamp { get; }
 
         public IAirSpeed AirSpeed => new AirSpeed(this);
