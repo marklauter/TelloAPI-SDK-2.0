@@ -1,6 +1,7 @@
 ﻿using Messenger;
 using System;
 using System.Collections.Generic;
+using Tello.Controller.Events;
 
 namespace Tello.Controller
 {
@@ -18,6 +19,7 @@ namespace Tello.Controller
         public override void OnNext(IEnvelope message)
         {
             _videoSegments.Enqueue(message);
+            VideoSampleReady?.Invoke(this, new VideoSampleReadyArgs(message));
         }
 
         private Queue<IEnvelope> _videoSegments = new Queue<IEnvelope>();
@@ -31,5 +33,7 @@ namespace Tello.Controller
                 return result;
             }
         }
+
+        public event EventHandler<VideoSampleReadyArgs> VideoSampleReady;
     }
 }

@@ -1,14 +1,18 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Tello.Controller.Events;
+using Tello.State;
 
-namespace Tello
+namespace Tello.Controller
 {
     public interface ITello
     {
-        //event EventHandler<QueryResponseReceivedArgs> QueryResponseReceived;
-        //event EventHandler<CommandResponseReceivedArgs> CommandResponseReceived;
+        event EventHandler<StateChangedArgs> StateChanged;
+        event EventHandler<ResponseReceivedArgs> ResponseReceived;
+        event EventHandler<ExceptionThrownArgs> ExceptionThrown;
+        event EventHandler<VideoSampleReadyArgs> VideoSampleReady;
 
-        //event EventHandler<ExceptionThrownArgs> ExceptionThrown;
-        //event EventHandler<CommandExceptionThrownArgs> CommandExceptionThrown;
+        ITelloState State { get; }
 
         /// <summary>
         /// establish a command link with Tello - validates network connection, connects to UDP, sends "command" to Tello

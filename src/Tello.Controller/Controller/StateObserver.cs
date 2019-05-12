@@ -1,6 +1,7 @@
 ﻿using Messenger;
 using System;
 using System.Text;
+using Tello.Controller.Events;
 using Tello.State;
 
 namespace Tello.Controller
@@ -19,8 +20,11 @@ namespace Tello.Controller
         public override void OnNext(IEnvelope message)
         {
             State = new TelloState(Encoding.UTF8.GetString(message.Data), message.Timestamp);
+            StateChanged?.Invoke(this, new StateChangedArgs(State));
         }
 
         public ITelloState State { get; private set; }
+
+        public event EventHandler<StateChangedArgs> StateChanged;
     }
 }

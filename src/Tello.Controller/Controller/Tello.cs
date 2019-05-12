@@ -2,6 +2,7 @@
 using Messenger.Tello;
 using System;
 using System.Threading.Tasks;
+using Tello.Controller.Events;
 using Tello.State;
 
 namespace Tello.Controller
@@ -25,9 +26,11 @@ namespace Tello.Controller
 
             _stateReceiver = stateReceiver ?? throw new ArgumentNullException(nameof(stateReceiver));
             _stateObserver = new StateObserver(_stateReceiver);
+            _stateObserver.StateChanged += (object sender, StateChangedArgs e) => StateChanged?.Invoke(this, e);
 
             _videoReceiver = videoReceiver ?? throw new ArgumentNullException(nameof(videoReceiver));
             _videoObserver = new VideoObserver(_videoReceiver);
+            _videoObserver.VideoSampleReady += (object sender, VideoSampleReadyArgs e) => VideoSampleReady?.Invoke(this, e);
         }
 
         #region Observer<IResponse<string>> - transceiver reponse handling
@@ -158,6 +161,7 @@ namespace Tello.Controller
             {
                 throw new NotImplementedException("need to handle errors here");
             }
+            ResponseReceived?.Invoke(this, new ResponseReceivedArgs(response as TelloResponse));
         }
         #endregion
 
@@ -176,6 +180,13 @@ namespace Tello.Controller
         #endregion
 
         #region ITello
+
+        public event EventHandler<StateChangedArgs> StateChanged;
+        public event EventHandler<ResponseReceivedArgs> ResponseReceived;
+        public event EventHandler<ExceptionThrownArgs> ExceptionThrown;
+        public event EventHandler<VideoSampleReadyArgs> VideoSampleReady;
+
+        public ITelloState State => _stateObserver.State;
 
         public readonly InterogativeState InterogativeState = new InterogativeState();
         public Vector Position { get; private set; }
