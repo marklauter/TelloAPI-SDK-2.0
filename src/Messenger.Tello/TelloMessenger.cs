@@ -49,13 +49,9 @@ namespace Messenger.Tello
                 {
                     try
                     {
-                        if (!_commands.IsEmpty)
+                        if (!_commands.IsEmpty && _commands.TryDequeue(out var command))
                         {
-                            if (_commands.TryDequeue(out var command))
-                            {
-                                var response = new TelloResponse(await _transceiver.SendAsync(new TelloRequest(command)));
-                                ReponseReceived(response);
-                            }
+                            ReponseReceived(new TelloResponse(await _transceiver.SendAsync(new TelloRequest(command))));
                         }
                         else
                         {
