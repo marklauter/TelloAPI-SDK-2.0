@@ -1,15 +1,15 @@
-﻿using System;
-using Tello.Messaging;
+﻿using Messenger;
+using System;
 
-namespace Tello.Controller
+namespace Tello.Controller.Events
 {
-    public class VideoSampleReadyArgs : EventArgs
+    public sealed class VideoSampleReadyArgs : EventArgs
     {
-        public VideoSampleReadyArgs(IVideoSample sample)
+        public VideoSampleReadyArgs(IEnvelope message)
         {
-            Sample = sample ?? throw new ArgumentNullException(nameof(sample));
+            Message = message ?? throw new ArgumentNullException(nameof(message));
         }
 
-        public IVideoSample Sample { get; }
+        public IEnvelope Message { get; }
     }
 }

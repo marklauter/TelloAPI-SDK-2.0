@@ -1,27 +1,14 @@
 ﻿using System;
-using Tello.Messaging;
 
-namespace Tello.Controller
+namespace Tello.Controller.Events
 {
-    public class ExceptionThrownArgs : EventArgs
+    public sealed class ExceptionThrownArgs : EventArgs
     {
-        public ExceptionThrownArgs(TelloControllerException ex)
+        public ExceptionThrownArgs(TelloException exception)
         {
-            Exception = ex;
+            Exception = exception ?? throw new ArgumentNullException(nameof(exception));
         }
 
-        public TelloControllerException Exception { get; }
-    }
-
-    public class CommandExceptionThrownArgs : ExceptionThrownArgs
-    {
-        public CommandExceptionThrownArgs(TelloCommands command, TelloControllerException ex, TimeSpan elapsed) : base(ex)
-        {
-            Command = command;
-            Elapsed = elapsed;
-        }
-
-        public TelloCommands Command { get; }
-        public TimeSpan Elapsed { get; }
+        public TelloException Exception { get; }
     }
 }

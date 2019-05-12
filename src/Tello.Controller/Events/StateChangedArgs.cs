@@ -1,13 +1,13 @@
 ﻿using System;
-using Tello.Messaging;
+using Tello.State;
 
-namespace Tello.Controller
+namespace Tello.Controller.Events
 {
-    public class StateChangedArgs : EventArgs
+    public sealed class StateChangedArgs : EventArgs
     {
         public StateChangedArgs(ITelloState state)
         {
-            State = state;
+            State = state ?? throw new ArgumentNullException(nameof(state));
         }
 
         public ITelloState State { get; }
