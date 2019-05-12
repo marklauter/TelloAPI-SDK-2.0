@@ -36,11 +36,11 @@ namespace Messenger.Test
             Assert.IsNotNull(command.Arguments);
             Assert.AreEqual(1, command.Arguments.Length);
 
-            Assert.ThrowsException<ArgumentNullException>(() => { new Command(Commands.Forward); });
+            Assert.ThrowsException<ArgumentNullException>(() => new Command(Commands.Forward));
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => { new Command(Commands.Forward, 5); });
+            Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Command(Commands.Forward, 5));
 
-            Assert.ThrowsException<ArgumentException>(() => { new Command(Commands.Forward, 20, 20); });
+            Assert.ThrowsException<ArgumentException>(() => new Command(Commands.Forward, 20, 20));
         }
     }
 }
