@@ -3,13 +3,13 @@ using System.Collections.Concurrent;
 
 namespace Messenger
 {
-    public class Messenger : IMessenger
+    public class Messenger<T> : IMessenger<T>, IDisposable
     {
-        protected void ReponseReceived(IResponse message)
+        protected void ReponseReceived(IResponse<T> response)
         {
             foreach (var observer in _observers.Keys)
             {
-                observer.OnNext(message);
+                observer.OnNext(response);
             }
         }
 
@@ -21,9 +21,9 @@ namespace Messenger
             }
         }
 
-        private readonly ConcurrentDictionary<IObserver<IResponse>, object> _observers = new ConcurrentDictionary<IObserver<IResponse>, object>();
+        private readonly ConcurrentDictionary<IObserver<IResponse<T>>, object> _observers = new ConcurrentDictionary<IObserver<IResponse<T>>, object>();
 
-        public IDisposable Subscribe(IObserver<IResponse> observer)
+        public IDisposable Subscribe(IObserver<IResponse<T>> observer)
         {
             if (!_observers.ContainsKey(observer))
             {
@@ -34,10 +34,10 @@ namespace Messenger
 
         private class Unsubscriber : IDisposable
         {
-            private readonly ConcurrentDictionary<IObserver<IResponse>, object> _observers;
-            private readonly IObserver<IResponse> _observer;
+            private readonly ConcurrentDictionary<IObserver<IResponse<T>>, object> _observers;
+            private readonly IObserver<IResponse<T>> _observer;
 
-            public Unsubscriber(ConcurrentDictionary<IObserver<IResponse>, object> observers, IObserver<IResponse> observer)
+            public Unsubscriber(ConcurrentDictionary<IObserver<IResponse<T>>, object> observers, IObserver<IResponse<T>> observer)
             {
                 _observers = observers;
                 _observer = observer;

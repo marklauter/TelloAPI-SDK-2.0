@@ -2,7 +2,7 @@
 
 namespace Messenger
 {
-    public interface IMessenger : IObservable<IResponse>
+    public interface IMessenger<T> : IObservable<IResponse<T>>
     {
     }
 }
