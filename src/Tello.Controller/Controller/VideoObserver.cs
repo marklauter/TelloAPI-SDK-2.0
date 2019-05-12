@@ -5,7 +5,7 @@ using Tello.Controller.Events;
 
 namespace Tello.Controller
 {
-    internal sealed class VideoObserver : Observer<IEnvelope>
+    public sealed class VideoObserver : Observer<IEnvelope>, IVideoObserver
     {
         public VideoObserver(IReceiver receiver) : base(receiver)
         {

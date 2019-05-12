@@ -7,42 +7,27 @@ using Tello.State;
 
 namespace Tello.Controller
 {
-    public sealed class Tello : Observer<IResponse<string>>, ITello
+    public sealed class TelloController : Observer<IResponse<string>>, ITelloController
     {
         private readonly TelloMessenger _messenger;
-        private readonly IReceiver _stateReceiver;
-        private readonly IReceiver _videoReceiver;
-        private readonly StateObserver _stateObserver;
-        private readonly VideoObserver _videoObserver;
 
-        public Tello(
-            ITransceiver transceiver,
-            IReceiver stateReceiver,
-            IReceiver videoReceiver)
-            : base()
+        public TelloController(ITransceiver transceiver) : base()
         {
             _messenger = new TelloMessenger(transceiver ?? throw new ArgumentNullException(nameof(transceiver)));
             Subscribe(_messenger);
-
-            _stateReceiver = stateReceiver ?? throw new ArgumentNullException(nameof(stateReceiver));
-            _stateObserver = new StateObserver(_stateReceiver);
-            _stateObserver.StateChanged += (object sender, StateChangedArgs e) => StateChanged?.Invoke(this, e);
-
-            _videoReceiver = videoReceiver ?? throw new ArgumentNullException(nameof(videoReceiver));
-            _videoObserver = new VideoObserver(_videoReceiver);
-            _videoObserver.VideoSampleReady += (object sender, VideoSampleReadyArgs e) => VideoSampleReady?.Invoke(this, e);
         }
 
         #region Observer<IResponse<string>> - transceiver reponse handling
         public override void OnError(Exception error)
         {
-            throw new NotImplementedException();
+            ExceptionThrown?.Invoke(this, new ExceptionThrownArgs(new TelloException("tranceiver error", error)));
         }
 
         public void HandleOk(IResponse<string> response, Command command)
         {
             switch ((Commands)command)
             {
+                // this case should never run
                 case Commands.EnterSdkMode:
                     _isConnected = true;
                     RunKeepAlive();
@@ -165,31 +150,21 @@ namespace Tello.Controller
         }
         #endregion
 
-        #region Listeners
-        private void StartLisenters()
-        {
-            _stateReceiver.Start();
-            _videoReceiver.Start();
-        }
+        #region ITelloController
 
-        private void StopListeners()
-        {
-            _stateReceiver.Stop();
-            _videoReceiver.Stop();
-        }
-        #endregion
-
-        #region ITello
-
-        public event EventHandler<StateChangedArgs> StateChanged;
         public event EventHandler<ResponseReceivedArgs> ResponseReceived;
         public event EventHandler<ExceptionThrownArgs> ExceptionThrown;
-        public event EventHandler<VideoSampleReadyArgs> VideoSampleReady;
-
-        public ITelloState State => _stateObserver.State;
+        public event EventHandler<ConnectionStateChangedArgs> ConnectionStateChanged;
 
         public readonly InterogativeState InterogativeState = new InterogativeState();
         public Vector Position { get; private set; }
+
+        public ITelloState State { get; private set; }
+
+        public void UpdateState(object _, StateChangedArgs e)
+        {
+            State = e.State;
+        }
 
         /// <summary>
         /// Tello auto lands after 15 seconds without commands as a safety mesasure, so we're going to send a keep alive message every 5 seconds
@@ -221,10 +196,8 @@ namespace Tello.Controller
             {
                 var response = await _messenger.SendAsync(Commands.EnterSdkMode);
                 _isConnected = response != null && response.Success;
-                if (_isConnected)
-                {
-                    StartLisenters();
-                }
+                RunKeepAlive();
+                ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedArgs(_isConnected));
             }
         }
 
@@ -232,8 +205,8 @@ namespace Tello.Controller
         {
             if (_isConnected)
             {
-                StopListeners();
                 _isConnected = false;
+                ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedArgs(_isConnected));
             }
         }
         #endregion
@@ -451,9 +424,9 @@ namespace Tello.Controller
 
         public void SetHeight(int cm)
         {
-            if (CanManeuver)
+            if (CanManeuver && State != null)
             {
-                var delta = cm - _stateObserver.State.HeightInCm;
+                var delta = cm - State.HeightInCm;
                 if (delta >= 20 && delta <= 500)
                 {
                     if (delta < 0)

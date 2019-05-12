@@ -6,7 +6,7 @@ using Tello.State;
 
 namespace Tello.Controller
 {
-    internal sealed class StateObserver : Observer<IEnvelope>
+    public sealed class StateObserver : Observer<IEnvelope>, IStateObserver
     {
         public StateObserver(IReceiver receiver) : base(receiver)
         {
@@ -19,8 +19,9 @@ namespace Tello.Controller
 
         public override void OnNext(IEnvelope message)
         {
-            State = new TelloState(Encoding.UTF8.GetString(message.Data), message.Timestamp);
-            StateChanged?.Invoke(this, new StateChangedArgs(State));
+            var state = new TelloState(Encoding.UTF8.GetString(message.Data), message.Timestamp);
+            State = state;
+            StateChanged?.Invoke(this, new StateChangedArgs(state));
         }
 
         public ITelloState State { get; private set; }

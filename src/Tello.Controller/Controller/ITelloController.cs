@@ -5,14 +5,17 @@ using Tello.State;
 
 namespace Tello.Controller
 {
-    public interface ITello
+    public interface ITelloController
     {
-        event EventHandler<StateChangedArgs> StateChanged;
         event EventHandler<ResponseReceivedArgs> ResponseReceived;
         event EventHandler<ExceptionThrownArgs> ExceptionThrown;
-        event EventHandler<VideoSampleReadyArgs> VideoSampleReady;
+        event EventHandler<ConnectionStateChangedArgs> ConnectionStateChanged;
+
+        Vector Position { get; }
 
         ITelloState State { get; }
+
+        void UpdateState(object sender, StateChangedArgs e);
 
         /// <summary>
         /// establish a command link with Tello - validates network connection, connects to UDP, sends "command" to Tello
