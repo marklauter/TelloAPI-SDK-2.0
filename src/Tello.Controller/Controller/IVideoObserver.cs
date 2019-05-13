@@ -9,6 +9,6 @@ namespace Tello.Controller
     {
         event EventHandler<VideoSampleReadyArgs> VideoSampleReady;
 
-        Queue<IEnvelope> VideoSegments { get; }
+        Queue<IEnvelope> VideoSegments();
     }
 }

@@ -24,14 +24,11 @@ namespace Tello.Controller
 
         private Queue<IEnvelope> _videoSegments = new Queue<IEnvelope>();
 
-        public Queue<IEnvelope> VideoSegments
+        public Queue<IEnvelope> VideoSegments()
         {
-            get
-            {
-                var result = _videoSegments;
-                _videoSegments = new Queue<IEnvelope>();
-                return result;
-            }
+            var result = _videoSegments;
+            _videoSegments = new Queue<IEnvelope>();
+            return result;
         }
 
         public event EventHandler<VideoSampleReadyArgs> VideoSampleReady;
