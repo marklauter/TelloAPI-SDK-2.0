@@ -19,7 +19,7 @@ namespace Repository.Sqlite
         public SqliteRepository((string databasePath, string databaseName) settings)
         {
             var databaseName = String.IsNullOrEmpty(settings.databaseName)
-                ? "tello.sqlite"
+                ? "repository.sqlite"
                 : settings.databaseName;
 
             var connectionString = String.IsNullOrEmpty(settings.databasePath)
