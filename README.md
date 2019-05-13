@@ -4,9 +4,10 @@ The project includes a flight controller, Tello emulator, UDP messenger, script 
 Project in action: https://www.youtube.com/watch?v=l6AOf1QZb9g
 
 # ATTENTION - 5 MAY 2019
-The solution is not in a buildable state because I'm conducting a major refactor on the main branch. Oops.
+The entire solution will not buid because I'm conducting a major refactor on the main branch. Oops.
+Update 13 MAY 2019 - Almost finished with the refactor.
 
-##Ryze Robotics Tello Reference
+## Ryze Robotics Tello Reference
 https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf
 
 ## Introduction
