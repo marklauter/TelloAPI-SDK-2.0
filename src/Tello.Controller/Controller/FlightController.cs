@@ -20,18 +20,13 @@ namespace Tello.Controller
         #region Observer<IResponse<string>> - transceiver reponse handling
         public override void OnError(Exception error)
         {
-            ExceptionThrown?.Invoke(this, new ExceptionThrownArgs(new TelloException("tranceiver error", error)));
+            ExceptionThrown?.Invoke(this, new ExceptionThrownArgs(new TelloException("FlightController Error", error)));
         }
 
         public void HandleOk(IResponse<string> response, Command command)
         {
             switch ((Commands)command)
             {
-                // this case should never run
-                case Commands.EnterSdkMode:
-                    _isConnected = true;
-                    RunKeepAlive();
-                    break;
                 case Commands.Takeoff:
                     _isFlying = true;
                     break;
@@ -144,7 +139,7 @@ namespace Tello.Controller
             }
             else
             {
-                throw new NotImplementedException("need to handle errors here");
+                OnError(response.Exception);
             }
             ResponseReceived?.Invoke(this, new ResponseReceivedArgs(response as TelloResponse));
         }
