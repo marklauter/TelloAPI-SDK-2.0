@@ -6,9 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Messenger.Tello\Messenger.Tello.csproj" />
+    <ProjectReference Include="..\Messenger.Udp\Messenger.Udp.csproj" />
+    <ProjectReference Include="..\Messenger\Messenger.csproj" />
     <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj" />
-    <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj" />
-    <ProjectReference Include="..\Tello.Udp\Tello.SDKV2.Udp.csproj" />
+    <ProjectReference Include="..\Tello\Tello.csproj" />
   </ItemGroup>
 
 </Project>
