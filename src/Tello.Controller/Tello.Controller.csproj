@@ -20,9 +20,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Messenger.Tello\Messenger.Tello.csproj" />
     <ProjectReference Include="..\Messenger\Messenger.csproj" />
-    <ProjectReference Include="..\Repository\Repository.csproj" />
-    <ProjectReference Include="..\Tello.Observations.Sqlite\Tello.Observations.Sqlite.csproj" />
-    <ProjectReference Include="..\Tello.Observations\Tello.Observations.csproj" />
     <ProjectReference Include="..\Tello\Tello.csproj" />
   </ItemGroup>
 
