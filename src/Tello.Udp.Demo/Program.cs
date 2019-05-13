@@ -30,6 +30,13 @@ namespace Tello.Udp.Demo
 
         private static void Controller_ResponseReceived(object sender, Controller.Events.ResponseReceivedArgs e)
         {
+            if(!_canMove 
+                && (Command)e.Response.Request.Data == Commands.Takeoff 
+                && e.Response.Success && e.Response.Message == Responses.Ok.ToString().ToLowerInvariant())
+            {
+                _canMove = true;
+            }
+
             Log.WriteLine($"{(Command)e.Response.Request.Data} returned '{e.Response.Message}' in {e.Response.TimeTaken.TotalMilliseconds}ms", ConsoleColor.Cyan);
             Log.WriteLine($"Estimated Position: { _tello.Controller.Position}", ConsoleColor.Blue);
         }
@@ -69,7 +76,7 @@ namespace Tello.Udp.Demo
         }
 
         #endregion
-
+        private static bool _canMove = false;
         private static void RunDemo()
         {
             Log.WriteLine("> get battery");
@@ -77,6 +84,10 @@ namespace Tello.Udp.Demo
 
             Log.WriteLine("> take off");
             _tello.Controller.TakeOff();
+
+            var spinWait = new SpinWait();
+            while (!_canMove)
+                spinWait.SpinOnce();
 
             Log.WriteLine("> go forward");
             _tello.Controller.GoForward(50);
