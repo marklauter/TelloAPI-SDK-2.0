@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Text;
 
 namespace Tello
@@ -95,21 +94,12 @@ namespace Tello
             }
             else
             {
-                var args = new object[rule.Arguments.Length + 1];
-                args[0] = rule.Command;
-                for (var i = 1; i <= rule.Arguments.Length; ++i)
+                var args = new object[rule.Arguments.Length];
+                for (var i = 0; i < rule.Arguments.Length; ++i)
                 {
-                    args[i] = Convert.ChangeType(tokens[i], rule.Arguments[i - 1].Type);
+                    args[i] = Convert.ChangeType(tokens[i + 1], rule.Arguments[i].Type);
                 }
-                try
-                {
-                    return (Command)Activator.CreateInstance(typeof(Command), args);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex);
-                    throw;
-                }
+                return new Command(rule.Command, args);
             }
         }
 
