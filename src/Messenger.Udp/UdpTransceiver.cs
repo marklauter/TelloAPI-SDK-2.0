@@ -20,10 +20,10 @@ namespace Messenger.Udp
 
         protected override async Task<IResponse> Send(IRequest request)
         {
-            var stopwatch = Stopwatch.StartNew();
 
             await _client.SendAsync(request.Data, request.Data.Length, _endPoint);
 
+            var stopwatch = Stopwatch.StartNew();
             await Task.Run(() =>
             {
                 var spinWait = new SpinWait();
@@ -32,7 +32,6 @@ namespace Messenger.Udp
                     spinWait.SpinOnce();
                 }
             });
-
             stopwatch.Stop();
 
             if (_client.Available == 0)
@@ -50,6 +49,5 @@ namespace Messenger.Udp
         {
             _client.Dispose();
         }
-
     }
 }
