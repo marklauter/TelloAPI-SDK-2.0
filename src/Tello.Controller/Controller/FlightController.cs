@@ -43,24 +43,31 @@ namespace Tello.Controller
 
                 case Commands.Left:
                     Position = Position.Move(CardinalDirections.Left, (int)((Command)response.Request.Data).Arguments[0]);
+                    PositionChanged?.Invoke(this, new PositionChangedArgs(Position));
                     break;
                 case Commands.Right:
                     Position = Position.Move(CardinalDirections.Right, (int)((Command)response.Request.Data).Arguments[0]);
+                    PositionChanged?.Invoke(this, new PositionChangedArgs(Position));
                     break;
                 case Commands.Forward:
                     Position = Position.Move(CardinalDirections.Front, (int)((Command)response.Request.Data).Arguments[0]);
+                    PositionChanged?.Invoke(this, new PositionChangedArgs(Position));
                     break;
                 case Commands.Back:
                     Position = Position.Move(CardinalDirections.Back, (int)((Command)response.Request.Data).Arguments[0]);
+                    PositionChanged?.Invoke(this, new PositionChangedArgs(Position));
                     break;
                 case Commands.ClockwiseTurn:
                     Position = Position.Turn(ClockDirections.Clockwise, (int)((Command)response.Request.Data).Arguments[0]);
+                    PositionChanged?.Invoke(this, new PositionChangedArgs(Position));
                     break;
                 case Commands.CounterClockwiseTurn:
                     Position = Position.Turn(ClockDirections.CounterClockwise, (int)((Command)response.Request.Data).Arguments[0]);
+                    PositionChanged?.Invoke(this, new PositionChangedArgs(Position));
                     break;
                 case Commands.Go:
                     Position = Position.Go((int)((Command)response.Request.Data).Arguments[0], (int)((Command)response.Request.Data).Arguments[1]);
+                    PositionChanged?.Invoke(this, new PositionChangedArgs(Position));
                     break;
 
                 case Commands.SetSpeed:
@@ -150,6 +157,7 @@ namespace Tello.Controller
         public event EventHandler<ResponseReceivedArgs> ResponseReceived;
         public event EventHandler<ExceptionThrownArgs> ExceptionThrown;
         public event EventHandler<ConnectionStateChangedArgs> ConnectionStateChanged;
+        public event EventHandler<PositionChangedArgs> PositionChanged;
 
         public readonly InterogativeState InterogativeState = new InterogativeState();
         public Vector Position { get; private set; } = new Vector();

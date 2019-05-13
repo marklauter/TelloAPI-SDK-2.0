@@ -10,6 +10,7 @@ namespace Tello.Controller
         event EventHandler<ResponseReceivedArgs> ResponseReceived;
         event EventHandler<ExceptionThrownArgs> ExceptionThrown;
         event EventHandler<ConnectionStateChangedArgs> ConnectionStateChanged;
+        event EventHandler<PositionChangedArgs> PositionChanged;
 
         Vector Position { get; }
 

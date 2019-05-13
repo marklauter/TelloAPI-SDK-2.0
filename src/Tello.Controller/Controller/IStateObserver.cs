@@ -9,6 +9,8 @@ namespace Tello.Controller
     {
         event EventHandler<StateChangedArgs> StateChanged;
 
+        void UpdatePosition(object sender, PositionChangedArgs e);
+
         ITelloState State { get; }
     }
 }

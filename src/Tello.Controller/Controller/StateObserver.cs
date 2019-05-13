@@ -19,10 +19,16 @@ namespace Tello.Controller
 
         public override void OnNext(IEnvelope message)
         {
-            var state = new TelloState(Encoding.UTF8.GetString(message.Data), message.Timestamp);
-            State = state;
-            StateChanged?.Invoke(this, new StateChangedArgs(state));
+            State = new TelloState(Encoding.UTF8.GetString(message.Data), message.Timestamp, _position);
+            StateChanged?.Invoke(this, new StateChangedArgs(State));
         }
+
+        public void UpdatePosition(object sender, PositionChangedArgs e)
+        {
+            _position = e.Position;
+        }
+
+        private Vector _position = new Vector();
 
         public ITelloState State { get; private set; }
 
