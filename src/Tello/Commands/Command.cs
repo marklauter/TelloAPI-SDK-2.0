@@ -91,14 +91,15 @@ namespace Tello
 
             if (rule.Arguments.Length == 0)
             {
-                return rule.Command;
+                return new Command(rule.Command);
             }
             else
             {
-                var args = new object[rule.Arguments.Length];
-                for (var i = 0; i < rule.Arguments.Length; ++i)
+                var args = new object[rule.Arguments.Length + 1];
+                args[0] = rule.Command;
+                for (var i = 1; i <= rule.Arguments.Length; ++i)
                 {
-                    args[i] = Convert.ChangeType(tokens[i + 1], rule.Arguments[i].Type);
+                    args[i] = Convert.ChangeType(tokens[i], rule.Arguments[i - 1].Type);
                 }
                 try
                 {
