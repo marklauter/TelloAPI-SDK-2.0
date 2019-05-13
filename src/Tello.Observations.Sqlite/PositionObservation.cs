@@ -7,15 +7,38 @@ namespace Tello.Observations.Sqlite
     {
         public PositionObservation() : base() { }
 
-        public PositionObservation(IObservationGroup group, ITelloState state)
-            : this(group.Id, state) { }
-
-        public PositionObservation(int groupId, ITelloState state)
-            : this(groupId, state.Timestamp, state.Position) { }
-
-        private PositionObservation(int groupId, DateTime timestamp, IPosition position)
-            : base(groupId, timestamp)
+        public PositionObservation(
+            IObservationGroup group,
+            ITelloState state)
+            : this(
+                  (group ?? throw new ArgumentNullException(nameof(group))).Id,
+                  state)
         {
+        }
+
+        public PositionObservation(
+            int groupId,
+            ITelloState state)
+            : this(
+                  groupId,
+                  (state ?? throw new ArgumentNullException(nameof(state))).Timestamp,
+                  (state ?? throw new ArgumentNullException(nameof(state))).Position)
+        {
+        }
+
+        private PositionObservation(
+            int groupId,
+            DateTime timestamp,
+            IPosition position)
+            : base(
+                  groupId,
+                  timestamp)
+        {
+            if (position == null)
+            {
+                throw new ArgumentNullException(nameof(position));
+            }
+
             AltitudeAGLInCm = position.AltitudeAGLInCm;
             BarometricPressueInCm = position.BarometricPressueInCm;
             Heading = position.Heading;

@@ -6,9 +6,15 @@ namespace Tello.Observations.Sqlite
     [System.Diagnostics.DebuggerDisplay("{Id} {Start} {Duration}")]
     public sealed class Session : SqliteEntity, ISession
     {
-        public Session() : this(DateTime.UtcNow) { }
+        public Session() 
+            : this(DateTime.UtcNow)
+        {
+        }
 
-        public Session(DateTime start) : this(start, TimeSpan.FromSeconds(0)) { }
+        public Session(DateTime start) 
+            : this(start, TimeSpan.FromSeconds(0))
+        {
+        }
 
         public Session(DateTime start, TimeSpan duration)
         {

@@ -1,18 +1,39 @@
-﻿using System;
-using Messenger;
+﻿using Messenger;
+using System;
 
 namespace Tello.Observations.Sqlite
 {
     public sealed class ResponseObservation : Observation, IResponseObservation
     {
-        public ResponseObservation() : base(){}
+        public ResponseObservation()
+            : base()
+        {
+        }
+
+        public ResponseObservation(IResponse<string> response)
+            : this(
+                  0,
+                  response ?? throw new ArgumentNullException(nameof(response)))
+        {
+        }
 
         public ResponseObservation(IObservationGroup group, IResponse<string> response)
-            : this(group.Id, response ?? throw new ArgumentNullException(nameof(response))) { }
+            : this(
+                  (group ?? throw new ArgumentNullException(nameof(group))).Id,
+                  response ?? throw new ArgumentNullException(nameof(response)))
+        {
+        }
 
         public ResponseObservation(int groupId, IResponse<string> response)
-            : base(groupId, (response ?? throw new ArgumentNullException(nameof(response))).Timestamp)
+            : base(
+                  groupId,
+                  (response ?? throw new ArgumentNullException(nameof(response))).Timestamp)
         {
+            if (response == null)
+            {
+                throw new ArgumentNullException(nameof(response));
+            }
+
             TimeInitiated = response.Request.Timestamp;
             TimeTaken = response.TimeTaken;
             Command = (Command)response.Request.Data;
@@ -75,7 +96,7 @@ namespace Tello.Observations.Sqlite
         public string ExceptionType { get; set; }
 
         public string ExceptionMessage { get; set; }
-        
+
         public string ExceptionStackTrace { get; set; }
     }
 }

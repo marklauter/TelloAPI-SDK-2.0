@@ -7,15 +7,37 @@ namespace Tello.Observations.Sqlite
     {
         public AttitudeObservation() : base() { }
 
-        public AttitudeObservation(IObservationGroup group, ITelloState state)
-            : this(group.Id, state.Timestamp, state.Attitude) { }
+        public AttitudeObservation(
+            IObservationGroup group,
+            ITelloState state)
+            : this(
+                  (group ?? throw new ArgumentNullException(nameof(group))).Id,
+                  (state ?? throw new ArgumentNullException(nameof(state))).Timestamp,
+                  (state ?? throw new ArgumentNullException(nameof(state))).Attitude)
+        { }
 
-        public AttitudeObservation(int groupId, ITelloState state)
-            : this(groupId, state.Timestamp, state.Attitude) { }
+        public AttitudeObservation(
+            int groupId,
+            ITelloState state)
+            : this(
+                  groupId,
+                  (state ?? throw new ArgumentNullException(nameof(state))).Timestamp,
+                  (state ?? throw new ArgumentNullException(nameof(state))).Attitude)
+        { }
 
-        private AttitudeObservation(int groupId, DateTime timestamp, IAttitude attitude)
-            : base(groupId, timestamp)
+        private AttitudeObservation(
+            int groupId,
+            DateTime timestamp,
+            IAttitude attitude)
+            : base(
+                  groupId,
+                  timestamp)
         {
+            if (attitude == null)
+            {
+                throw new ArgumentNullException(nameof(attitude));
+            }
+
             Pitch = attitude.Pitch;
             Roll = attitude.Roll;
             Yaw = attitude.Yaw;

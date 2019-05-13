@@ -7,15 +7,37 @@ namespace Tello.Observations.Sqlite
     {
         public BatteryObservation() : base() { }
 
-        public BatteryObservation(IObservationGroup group, ITelloState state)
-            : this(group.Id, state.Timestamp, state.Battery) { }
+        public BatteryObservation(
+            IObservationGroup group,
+            ITelloState state)
+            : this(
+                  (group ?? throw new ArgumentNullException(nameof(group))).Id,
+                  state.Timestamp,
+                  state.Battery)
+        { }
 
-        public BatteryObservation(int groupId, ITelloState state)
-            : this(groupId, state.Timestamp, state.Battery) { }
+        public BatteryObservation(
+            int groupId,
+            ITelloState state)
+            : this(
+                  groupId,
+                  state.Timestamp,
+                  state.Battery)
+        { }
 
-        private BatteryObservation(int groupId, DateTime timestamp, IBattery battery)
-            : base(groupId, timestamp)
+        private BatteryObservation(
+            int groupId,
+            DateTime timestamp,
+            IBattery battery)
+            : base(
+                  groupId,
+                  timestamp)
         {
+            if (battery == null)
+            {
+                throw new ArgumentNullException(nameof(battery));
+            }
+
             TemperatureLowC = battery.TemperatureLowC;
             TemperatureHighC = battery.TemperatureHighC;
             PercentRemaining = battery.PercentRemaining;

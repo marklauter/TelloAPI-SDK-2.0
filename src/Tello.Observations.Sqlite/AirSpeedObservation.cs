@@ -5,17 +5,43 @@ namespace Tello.Observations.Sqlite
 {
     public sealed class AirSpeedObservation : Observation, IAirSpeed
     {
-        public AirSpeedObservation() : base() { }
-
-        public AirSpeedObservation(IObservationGroup group, ITelloState state)
-            : this(group.Id, state) { }
-
-        public AirSpeedObservation(int groupId, ITelloState state)
-            : this(groupId, state.Timestamp, state.AirSpeed) { }
-
-        private AirSpeedObservation(int groupId, DateTime timestamp, IAirSpeed airspeed)
-            : base(groupId, timestamp)
+        public AirSpeedObservation()
+            : base()
         {
+        }
+
+        public AirSpeedObservation(
+            IObservationGroup group,
+            ITelloState state)
+            : this(
+                  (group ?? throw new ArgumentNullException(nameof(group))).Id,
+                  state ?? throw new ArgumentNullException(nameof(state)))
+        {
+        }
+
+        public AirSpeedObservation(
+            int groupId,
+            ITelloState state)
+            : this(
+                  groupId,
+                  state.Timestamp,
+                  state.AirSpeed)
+        {
+        }
+
+        private AirSpeedObservation(
+            int groupId,
+            DateTime timestamp,
+            IAirSpeed airspeed)
+            : base(
+                  groupId,
+                  timestamp)
+        {
+            if (airspeed == null)
+            {
+                throw new ArgumentNullException(nameof(airspeed));
+            }
+
             SpeedX = airspeed.SpeedX;
             SpeedY = airspeed.SpeedY;
             SpeedZ = airspeed.SpeedZ;

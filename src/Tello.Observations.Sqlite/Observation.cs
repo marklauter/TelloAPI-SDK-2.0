@@ -6,23 +6,33 @@ namespace Tello.Observations.Sqlite
     [System.Diagnostics.DebuggerDisplay("{Id}:{GroupId} {Timestamp}")]
     public abstract class Observation : SqliteEntity, IObservation
     {
-        public Observation() 
-            : this(0) { }
+        public Observation()
+            : this(0)
+        {
+        }
 
-        public Observation(IObservationGroup group) 
-            : this(group.Id) { }
+        public Observation(IObservationGroup group)
+            : this((group ?? throw new ArgumentNullException(nameof(group))).Id)
+        {
+        }
 
-        public Observation(int groupId) 
-            : this(groupId, DateTime.UtcNow) { }
+        public Observation(int groupId)
+            : this(
+                  groupId, 
+                  DateTime.UtcNow)
+        {
+        }
 
-        public Observation(int groupId, DateTime timestamp) 
+        public Observation(
+            int groupId, 
+            DateTime timestamp)
             : base()
         {
             GroupId = groupId;
             Timestamp = timestamp;
         }
 
-        public Observation(IObservation observation) 
+        public Observation(IObservation observation)
             : base(observation)
         {
             GroupId = observation.GroupId;
