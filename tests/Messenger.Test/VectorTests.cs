@@ -48,6 +48,28 @@ namespace Messenger.Test
             Assert.AreEqual(270, position.Heading);
             Assert.AreEqual(0, position.X);
             Assert.AreEqual(0, position.Y);
+
+            position = position.Turn(Tello.ClockDirections.Clockwise, 90);
+            Assert.AreEqual(0, position.Heading);
+            Assert.AreEqual(0, position.X);
+            Assert.AreEqual(0, position.Y);
+
+            position = position.Turn(Tello.ClockDirections.Clockwise, 360 + 180);
+            Assert.AreEqual(180, position.Heading);
+            Assert.AreEqual(0, position.X);
+            Assert.AreEqual(0, position.Y);
+
+            position = new Vector();
+            position = position.Turn(Tello.ClockDirections.Clockwise, 270 + 180);
+            Assert.AreEqual(90, position.Heading);
+            Assert.AreEqual(0, position.X);
+            Assert.AreEqual(0, position.Y);
+
+            position = new Vector();
+            position = position.Turn(Tello.ClockDirections.CounterClockwise, 90);
+            Assert.AreEqual(270, position.Heading);
+            Assert.AreEqual(0, position.X);
+            Assert.AreEqual(0, position.Y);
         }
     }
 }
