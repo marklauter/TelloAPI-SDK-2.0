@@ -1,5 +1,4 @@
-﻿using Sumo.Retry.Policies;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
@@ -13,15 +12,10 @@ namespace Messenger.Udp
         private readonly IPEndPoint _endPoint;
         private readonly UdpClient _client = new UdpClient();
 
-        public UdpTransceiver(RetryPolicy retryPolicy, IPAddress ipAddress, int port)
-            : base(retryPolicy)
+        public UdpTransceiver(IPAddress ipAddress, int port)
+            : base()
         {
             _endPoint = new IPEndPoint(ipAddress, port);
-        }
-
-        public void Dispose()
-        {
-            _client.Dispose();
         }
 
         protected override async Task<IResponse> Send(IRequest request)
@@ -47,9 +41,15 @@ namespace Messenger.Udp
             }
 
             return new Response(
-                request, 
-                (await _client.ReceiveAsync()).Buffer, 
+                request,
+                (await _client.ReceiveAsync()).Buffer,
                 stopwatch.Elapsed);
         }
+
+        public void Dispose()
+        {
+            _client.Dispose();
+        }
+
     }
 }
