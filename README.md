@@ -4,7 +4,7 @@ The project includes a flight controller, Tello emulator, UDP messenger, script 
 This project in action: https://www.youtube.com/watch?v=l6AOf1QZb9g
 
 # ATTENTION - 5 MAY 2019
-The entire solution will not buid because I'm conducting a major refactor on the main branch. Oops.
+The some projects in the solution won't build because I'm conducting a major refactor on the main branch. Oops.
 
 Update 13 MAY 2019 - Almost finished with the refactor.
 
@@ -21,9 +21,9 @@ I started by playing with a fork of the TelloLib (aTello) project but abandoned 
 My goals for this project are to refine my dependency injection skills, experiment with value objects, lock-free concurrency, machine learning and video processing, play with a thing that I can fly from my desk, and begin to iterate on the larger problem of programmable drone behavior.
 
 ## Flight Controller's Async Command Queue - Why is it coded like this?
-Tello doesn't respond to commands as I expected after first skim of the SDK 1.0 documentation. I thought it would ACK each command as it was received, but this isn't the case. There doesn't appear to be an internal command queue, so Tello doesn't ACK a command until it has been executed. For example, if you send a command like UP (10), it might take a few seconds to complete the maneuver and ACK, but if you send something like FORWARD (500, 10) it's going to take a lot longer to complete the maneuver and you won't get an ACK until it's complete. This makes timing out unreceived commands a bit more complex. Ideally the drone would ACK the command, execute the maneuver, and ACK completion.
+Tello doesn't respond to commands as I expected after first skim of the SDK 1.0 documentation. I thought it would ACK each command as it was received, but this isn't the case. There doesn't appear to be an internal command queue, so Tello doesn't ACK a command until it has been executed. For example, if you send a command like UP (10), it might take a few seconds to complete the maneuver and ACK, but if you send something like FORWARD (500, 10) it's going to take a lot longer to complete the maneuver and you won't get an ACK until it's complete. This makes timing out unreceived commands a bit more complex. Ideally the drone would ACK the command, execute the maneuver, and ACK completion. Unfortunately, it doesn't work that way.
 
-Since the Tello operates synchronously, the flight controller had to provide an asynchronous interface to the Tello messaging system. We can't have a UI sitting around waiting for a 20 second command to complete, right? So command messages are queued up as they are received, program control is returned to the main thread, and a queue consumer running in a seperate thread pulls an item off the queue when it detects that Tello is ready for the next message.
+Since the Tello operates synchronously, the flight controller had to provide an asynchronous interface to the Tello messaging system. We can't have a UI sitting around waiting for a 20 second command to complete, right? So command messages are queued up as they are received, program control is returned to the main thread, and a queue consumer running in a separate thread pulls an item off the queue when it detects that Tello is ready for the next message.
 
 ## Work Plan
 ### February - March 2019 - COMPLETE
@@ -32,7 +32,7 @@ Since the Tello operates synchronously, the flight controller had to provide an 
 * Tello SDK 2.0 emulator
 * sample projects with dependency injection
 * automated tests
-* simplified scipting
+* simple scripting
 
 ### April 2019 Goals - COMPLETE
 * UWP UI - command buttons tab, script tab, real time operations log display, gauges based on aviation 6 pack
@@ -70,4 +70,4 @@ For now a script is a simple JSON list of commands and parameters. The commands 
 I'll add more complex script support once I have the UWP demo working. 
 
 ### Tests
-Writing tests is boring. When I feel really professional and high-speed, I'll add to them, but I'm not in a hurry. If someone wants to round them out, they would have my eternal gratitude and a gift certificate to Taco Bell.
+Writing tests is boring. When I feel really high-speed, I'll add to them, but I'm not in a hurry. If someone wants to round them out, they would have my eternal gratitude and a gift certificate to Taco Bell.
