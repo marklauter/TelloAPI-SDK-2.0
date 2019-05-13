@@ -37,7 +37,7 @@ namespace Tello.Udp.Demo
                 _canMove = true;
             }
 
-            Log.WriteLine($"{(Command)e.Response.Request.Data} returned '{e.Response.Message}' in {e.Response.TimeTaken.TotalMilliseconds}ms", ConsoleColor.Cyan);
+            Log.WriteLine($"{(Command)e.Response.Request.Data} returned '{e.Response.Message}' in {(int)e.Response.TimeTaken.TotalMilliseconds}ms", ConsoleColor.Cyan);
             Log.WriteLine($"Estimated Position: { _tello.Controller.Position}", ConsoleColor.Blue);
         }
 
