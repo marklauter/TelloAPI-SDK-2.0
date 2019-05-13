@@ -152,7 +152,7 @@ namespace Tello.Controller
         public event EventHandler<ConnectionStateChangedArgs> ConnectionStateChanged;
 
         public readonly InterogativeState InterogativeState = new InterogativeState();
-        public Vector Position { get; private set; }
+        public Vector Position { get; private set; } = new Vector();
 
         public ITelloState State { get; private set; }
 
