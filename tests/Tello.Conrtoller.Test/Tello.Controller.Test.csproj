@@ -11,16 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
     <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Tello.Controller\Tello.Controller.csproj" />
-    <ProjectReference Include="..\..\src\Tello.Emulator.SDKV2\Tello.SDKV2.Emulator.csproj" />
-    <ProjectReference Include="..\..\src\Tello.Messaging\Video.csproj" />
-    <ProjectReference Include="..\..\src\Tello.Scripting\Tello.Scripting.csproj" />
   </ItemGroup>
 
 </Project>
