@@ -1,14 +1,20 @@
 ﻿using Messenger.Udp;
+using Repository;
+using Repository.Sqlite;
 using System;
 using System.Net;
 using System.Threading;
 using Tello.Controller;
+using Tello.Observations;
+using Tello.Observations.Sqlite;
 
 namespace Tello.Udp.Demo
 {
     internal class Program
     {
         private static readonly Drone _tello;
+        private static readonly IRepository _repository;
+        private static readonly ISession _session;
 
         static Program()
         {
@@ -24,14 +30,27 @@ namespace Tello.Udp.Demo
 
             _tello.StateObserver.StateChanged += StateObserver_StateChanged;
             _tello.VideoObserver.VideoSampleReady += VideoObserver_VideoSampleReady;
+
+            _repository = new SqliteRepository((null, "tello.udp.sqlite"));
+            _repository.CreateCatalog<Session>();
+            _repository.CreateCatalog<ObservationGroup>();
+            _repository.CreateCatalog<StateObservation>();
+            _repository.CreateCatalog<AirSpeedObservation>();
+            _repository.CreateCatalog<AttitudeObservation>();
+            _repository.CreateCatalog<BatteryObservation>();
+            _repository.CreateCatalog<HobbsMeterObservation>();
+            _repository.CreateCatalog<PositionObservation>();
+            _repository.CreateCatalog<ResponseObservation>();
+
+            _session = _repository.NewEntity<Session>();
         }
 
         #region events
 
         private static void Controller_ResponseReceived(object sender, Controller.Events.ResponseReceivedArgs e)
         {
-            if(!_canMove 
-                && (Command)e.Response.Request.Data == Commands.Takeoff 
+            if (!_canMove
+                && (Command)e.Response.Request.Data == Commands.Takeoff
                 && e.Response.Success && e.Response.Message == Responses.Ok.ToString().ToLowerInvariant())
             {
                 _canMove = true;
@@ -39,6 +58,8 @@ namespace Tello.Udp.Demo
 
             Log.WriteLine($"{(Command)e.Response.Request.Data} returned '{e.Response.Message}' in {(int)e.Response.TimeTaken.TotalMilliseconds}ms", ConsoleColor.Cyan);
             Log.WriteLine($"Estimated Position: { _tello.Controller.Position}", ConsoleColor.Blue);
+
+            _repository.Insert(new ResponseObservation(e.Response));
         }
 
         private static void VideoObserver_VideoSampleReady(object sender, Controller.Events.VideoSampleReadyArgs e)
@@ -57,6 +78,14 @@ namespace Tello.Udp.Demo
             _stateCount = _stateCount < Int32.MaxValue
                 ? _stateCount + 1
                 : 0;
+
+            var group = _repository.NewEntity<ObservationGroup>(_session);
+            _repository.Insert(new StateObservation(group, e.State));
+            _repository.Insert(new AirSpeedObservation(group, e.State));
+            _repository.Insert(new AttitudeObservation(group, e.State));
+            _repository.Insert(new BatteryObservation(group, e.State));
+            _repository.Insert(new HobbsMeterObservation(group, e.State));
+            _repository.Insert(new PositionObservation(group, e.State));
         }
 
         private static void Controller_ExceptionThrown(object sender, Controller.Events.ExceptionThrownArgs e)
@@ -87,7 +116,9 @@ namespace Tello.Udp.Demo
 
             var spinWait = new SpinWait();
             while (!_canMove)
+            {
                 spinWait.SpinOnce();
+            }
 
             Log.WriteLine("> go forward");
             _tello.Controller.GoForward(50);

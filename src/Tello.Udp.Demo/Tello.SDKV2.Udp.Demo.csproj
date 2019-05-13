@@ -9,7 +9,11 @@
     <ProjectReference Include="..\Messenger.Tello\Messenger.Tello.csproj" />
     <ProjectReference Include="..\Messenger.Udp\Messenger.Udp.csproj" />
     <ProjectReference Include="..\Messenger\Messenger.csproj" />
+    <ProjectReference Include="..\Repository.Sqlite\Repository.Sqlite.csproj" />
+    <ProjectReference Include="..\Repository\Repository.csproj" />
     <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj" />
+    <ProjectReference Include="..\Tello.Observations.Sqlite\Tello.Observations.Sqlite.csproj" />
+    <ProjectReference Include="..\Tello.Observations\Tello.Observations.csproj" />
     <ProjectReference Include="..\Tello\Tello.csproj" />
   </ItemGroup>
 
