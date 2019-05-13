@@ -51,6 +51,17 @@ namespace Tello.State
         {
         }
 
+        public TelloState(string state, Vector vector)
+            : this(state, DateTime.UtcNow, vector)
+        {
+        }
+
+        public TelloState(string state, DateTime timestamp, Vector vector)
+            : this(state, timestamp)
+        {
+            _vector = vector;
+        }
+
         public TelloState(string state, DateTime timestamp)
         {
             // sample from Tello
@@ -110,17 +121,6 @@ namespace Tello.State
                     }
                 }
             }
-        }
-
-        public TelloState(string state, Vector vector)
-            : this(state, DateTime.UtcNow, vector)
-        {
-        }
-
-        public TelloState(string state, DateTime timestamp, Vector vector)
-            : this(state, timestamp)
-        {
-            _vector = vector;
         }
 
         public string Data { get; }
