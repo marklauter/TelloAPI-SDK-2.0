@@ -5,10 +5,13 @@ This project in action: https://www.youtube.com/watch?v=l6AOf1QZb9g
 
 # ATTENTION - 5 MAY 2019
 The entire solution will not buid because I'm conducting a major refactor on the main branch. Oops.
+
 Update 13 MAY 2019 - Almost finished with the refactor.
 
 ## Ryze Robotics Tello Reference
+
 Specs: https://www.ryzerobotics.com/tello/specs
+
 SDK Reference: https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf
 
 ## Introduction
