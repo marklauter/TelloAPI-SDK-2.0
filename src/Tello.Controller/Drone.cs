@@ -35,9 +35,11 @@ namespace Tello.Controller
 
             StateObserver = new StateObserver(_stateReceiver);
             StateObserver.StateChanged += Controller.UpdateState;
+            Controller.PositionChanged += StateObserver.UpdatePosition;
 
             VideoObserver = new VideoObserver(_videoReceiver);
         }
+
 
         #region Listeners
         private void StartLisenters()
