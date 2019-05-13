@@ -72,5 +72,10 @@ namespace Tello.State
 
             return new Vector(heading, X, Y);
         }
+
+        public override string ToString()
+        {
+            return $"P({X}, {Y}) \u0398{Heading}";
+        }
     }
 }
