@@ -20,7 +20,7 @@ namespace Messenger.Tello
         protected override string Deserialize(byte[] data)
         {
             return data != null && data.Length > 0
-                ? Encoding.UTF8.GetString(data)
+                ? Encoding.UTF8.GetString(data).Trim()
                 : String.Empty;
         }
     }
