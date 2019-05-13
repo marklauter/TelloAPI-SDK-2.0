@@ -19,7 +19,9 @@ namespace Messenger.Tello
 
         protected override string Deserialize(byte[] data)
         {
-            return Encoding.UTF8.GetString(data);
+            return data != null && data.Length > 0
+                ? Encoding.UTF8.GetString(data)
+                : String.Empty;
         }
     }
 }
