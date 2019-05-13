@@ -4,20 +4,23 @@ using Tello.Controller.Events;
 
 namespace Tello.Controller
 {
-    public class Tello : IDisposable
+    public sealed class Drone
     {
         private readonly ITransceiver _transceiver;
         private readonly IReceiver _stateReceiver;
         private readonly IReceiver _videoReceiver;
 
-        public Tello(
+        public Drone(
             ITransceiver transceiver,
             IReceiver stateReceiver,
             IReceiver videoReceiver)
         {
             _transceiver = transceiver ?? throw new ArgumentNullException(nameof(transceiver));
-            TelloController = new TelloController(_transceiver);
-            TelloController.ConnectionStateChanged +=
+            _stateReceiver = stateReceiver ?? throw new ArgumentNullException(nameof(stateReceiver));
+            _videoReceiver = videoReceiver ?? throw new ArgumentNullException(nameof(videoReceiver));
+
+            Controller = new FlightController(_transceiver);
+            Controller.ConnectionStateChanged +=
                 (object sender, ConnectionStateChangedArgs e) =>
                 {
                     if (e.Connected)
@@ -30,11 +33,9 @@ namespace Tello.Controller
                     }
                 };
 
-            _stateReceiver = stateReceiver ?? throw new ArgumentNullException(nameof(stateReceiver));
             StateObserver = new StateObserver(_stateReceiver);
-            StateObserver.StateChanged += TelloController.UpdateState;
+            StateObserver.StateChanged += Controller.UpdateState;
 
-            _videoReceiver = videoReceiver ?? throw new ArgumentNullException(nameof(videoReceiver));
             VideoObserver = new VideoObserver(_videoReceiver);
         }
 
@@ -52,13 +53,8 @@ namespace Tello.Controller
         }
         #endregion
 
-        public ITelloController TelloController { get; }
+        public IFlightController Controller { get; }
         public IStateObserver StateObserver { get; }
         public IVideoObserver VideoObserver { get; }
-
-        public void Dispose()
-        {
-            StopListeners();
-        }
     }
 }

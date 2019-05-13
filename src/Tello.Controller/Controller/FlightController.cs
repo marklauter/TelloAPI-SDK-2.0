@@ -7,11 +7,11 @@ using Tello.State;
 
 namespace Tello.Controller
 {
-    public sealed class TelloController : Observer<IResponse<string>>, ITelloController
+    public sealed class FlightController : Observer<IResponse<string>>, IFlightController
     {
         private readonly TelloMessenger _messenger;
 
-        public TelloController(ITransceiver transceiver) : base()
+        public FlightController(ITransceiver transceiver) : base()
         {
             _messenger = new TelloMessenger(transceiver ?? throw new ArgumentNullException(nameof(transceiver)));
             Subscribe(_messenger);
@@ -106,7 +106,7 @@ namespace Tello.Controller
                     switch (command.Rule.Response)
                     {
                         case Responses.Ok:
-                            if (response.Message != Responses.Ok.ToString().ToLowerInvariant())
+                            if (response.Message == Responses.Ok.ToString().ToLowerInvariant())
                             {
                                 HandleOk(response, command);
                             }

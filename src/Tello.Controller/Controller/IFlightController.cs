@@ -5,7 +5,7 @@ using Tello.State;
 
 namespace Tello.Controller
 {
-    public interface ITelloController
+    public interface IFlightController
     {
         event EventHandler<ResponseReceivedArgs> ResponseReceived;
         event EventHandler<ExceptionThrownArgs> ExceptionThrown;
