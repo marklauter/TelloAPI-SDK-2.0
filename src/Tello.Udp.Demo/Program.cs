@@ -105,6 +105,7 @@ namespace Tello.Udp.Demo
         }
 
         #endregion
+
         private static bool _canMove = false;
         private static void RunDemo()
         {
@@ -164,13 +165,11 @@ namespace Tello.Udp.Demo
 
         private static async void Connect()
         {
-
             // you have to do this in real life
             //_tello.PowerOn();
 
             Log.WriteLine("> enter sdk mode");
             await _tello.Controller.Connect();
-
         }
 
         private static void Main(string[] _)
@@ -184,6 +183,8 @@ namespace Tello.Udp.Demo
             Console.WriteLine("Remember to turn Tello off to keep it from overheating.");
             Console.WriteLine("press any key when ready to end program...");
             Console.ReadKey(false);
+
+            _repository.Dispose();
         }
     }
 }
