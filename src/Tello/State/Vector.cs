@@ -44,7 +44,7 @@ namespace Tello.State
             var adjacent = Math.Cos(radians) * distance;
             var opposite = Math.Sin(radians) * distance;
 
-            return new Vector(Heading, X + adjacent, Y + opposite);
+            return new Vector(Heading, Math.Round(X + adjacent, 2), Math.Round(Y + opposite, 2));
         }
 
         public Vector Turn(ClockDirections direction, int degrees)
