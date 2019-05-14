@@ -1,7 +1,7 @@
 ﻿using System;
 using Tello.State;
 
-namespace Tello.Observations.Sqlite.Test
+namespace Tello.Entities.Sqlite.Test
 {
     public class TestObservation : IState
     {

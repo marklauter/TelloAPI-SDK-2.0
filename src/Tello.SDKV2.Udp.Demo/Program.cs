@@ -5,8 +5,8 @@ using System;
 using System.Net;
 using System.Threading;
 using Tello.Controller;
-using Tello.Observations;
-using Tello.Observations.Sqlite;
+using Tello.Entities;
+using Tello.Entities.Sqlite;
 
 namespace Tello.Udp.Demo
 {

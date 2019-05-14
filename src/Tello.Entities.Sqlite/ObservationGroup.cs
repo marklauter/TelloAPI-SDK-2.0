@@ -1,7 +1,7 @@
 ﻿using Repository.Sqlite;
 using System;
 
-namespace Tello.Observations.Sqlite
+namespace Tello.Entities.Sqlite
 {
     [System.Diagnostics.DebuggerDisplay("{Id}:{SessionId} {Timestamp}")]
     public sealed class ObservationGroup : SqliteEntity, IObservationGroup

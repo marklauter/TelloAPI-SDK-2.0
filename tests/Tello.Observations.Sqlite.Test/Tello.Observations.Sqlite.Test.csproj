@@ -16,8 +16,8 @@
     <ProjectReference Include="..\..\src\Messenger.Tello\Messenger.Tello.csproj" />
     <ProjectReference Include="..\..\src\Repository.Sqlite\Repository.Sqlite.csproj" />
     <ProjectReference Include="..\..\src\Repository\Repository.csproj" />
-    <ProjectReference Include="..\..\src\Tello.Observations.Sqlite\Tello.Observations.Sqlite.csproj" />
-    <ProjectReference Include="..\..\src\Tello.Observations\Tello.Observations.csproj" />
+    <ProjectReference Include="..\..\src\Tello.Entities.Sqlite\Tello.Entities.Sqlite.csproj" />
+    <ProjectReference Include="..\..\src\Tello.Entities\Tello.Entities.csproj" />
   </ItemGroup>
 
 </Project>

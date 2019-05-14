@@ -1,7 +1,7 @@
 ﻿using Messenger;
 using System;
 
-namespace Tello.Observations.Sqlite
+namespace Tello.Entities.Sqlite
 {
     public sealed class ResponseObservation : Observation, IResponseObservation
     {

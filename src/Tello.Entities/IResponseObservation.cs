@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tello.Observations
+namespace Tello.Entities
 {
     public interface IResponseObservation : IObservation 
     {

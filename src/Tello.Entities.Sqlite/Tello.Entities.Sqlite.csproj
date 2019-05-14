@@ -8,7 +8,7 @@
     <ProjectReference Include="..\Messenger\Messenger.csproj" />
     <ProjectReference Include="..\Repository.Sqlite\Repository.Sqlite.csproj" />
     <ProjectReference Include="..\Repository\Repository.csproj" />
-    <ProjectReference Include="..\Tello.Observations\Tello.Observations.csproj" />
+    <ProjectReference Include="..\Tello.Entities\Tello.Entities.csproj" />
     <ProjectReference Include="..\Tello\Tello.csproj" />
   </ItemGroup>
 

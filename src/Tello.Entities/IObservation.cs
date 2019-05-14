@@ -1,7 +1,7 @@
 ﻿using Repository;
 using System;
 
-namespace Tello.Observations
+namespace Tello.Entities
 {
     public interface IObservation : IEntity
     {

@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Tello.State;
 
-namespace Tello.Observations.Sqlite.Test
+namespace Tello.Entities.Sqlite.Test
 {
     [TestClass]
     public class TelloObservationsSqliteTests

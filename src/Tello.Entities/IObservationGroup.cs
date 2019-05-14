@@ -1,6 +1,6 @@
 ﻿using Repository;
 
-namespace Tello.Observations
+namespace Tello.Entities
 {
     public interface IObservationGroup : IEntity
     {

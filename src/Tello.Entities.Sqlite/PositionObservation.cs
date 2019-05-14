@@ -1,7 +1,7 @@
 ﻿using System;
 using Tello.State;
 
-namespace Tello.Observations.Sqlite
+namespace Tello.Entities.Sqlite
 {
     public sealed class PositionObservation : Observation, IPosition
     {

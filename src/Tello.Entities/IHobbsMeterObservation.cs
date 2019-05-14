@@ -1,6 +1,6 @@
 ﻿using Tello.State;
 
-namespace Tello.Observations
+namespace Tello.Entities
 {
     public interface IHobbsMeterObservation : IObservation, IHobbsMeter
     {

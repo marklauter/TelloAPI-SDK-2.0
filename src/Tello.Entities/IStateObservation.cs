@@ -1,4 +1,4 @@
-﻿namespace Tello.Observations
+﻿namespace Tello.Entities
 {
     public interface IStateObservation : IObservation
     {
