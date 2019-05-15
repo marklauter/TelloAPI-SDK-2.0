@@ -3,7 +3,6 @@ using Tello.State;
 
 namespace Tello.Simulator.Transmitters
 {
-    //todo: when the drone sim does stuff, it will report it's state to the StateTransmitterSim
     public sealed class StateTransmitter : Transmitter
     {
         public void SetState(ITelloState telloState)
