@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Messenger.Udp
 {
-    public sealed class UdpTransceiver : Transceiver, ITransceiver, IDisposable
+    public sealed class UdpTransceiver : Transceiver, ITransceiver
     {
         private readonly IPEndPoint _endPoint;
         private readonly UdpClient _client = new UdpClient();
@@ -20,7 +20,6 @@ namespace Messenger.Udp
 
         protected override async Task<IResponse> Send(IRequest request)
         {
-
             await _client.SendAsync(request.Data, request.Data.Length, _endPoint);
 
             var stopwatch = Stopwatch.StartNew();
@@ -45,7 +44,7 @@ namespace Messenger.Udp
                 stopwatch.Elapsed);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             _client.Dispose();
         }
