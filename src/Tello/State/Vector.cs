@@ -13,7 +13,8 @@ namespace Tello.State
 
         public Vector()
             : this(0, 0, 0)
-        { }
+        {
+        }
 
         public int Heading { get; }
         public double X { get; }
@@ -49,7 +50,12 @@ namespace Tello.State
 
         public Vector Turn(ClockDirections direction, int degrees)
         {
-            degrees = Math.Abs(degrees) % 360;
+            if (degrees <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(degrees));
+            }
+
+            degrees %= 360;
 
             var heading = Heading;
             switch (direction)
