@@ -45,7 +45,7 @@ namespace Tello.Udp.Demo
             _session = _repository.NewEntity<Session>();
         }
 
-        #region events
+        #region event handlers
 
         private static void Controller_ResponseReceived(object sender, Controller.Events.ResponseReceivedArgs e)
         {
