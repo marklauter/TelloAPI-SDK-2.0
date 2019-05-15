@@ -86,7 +86,7 @@ namespace Tello
 
         public override bool IsValueAllowed(object value)
         {
-            return value != null 
+            return value != null
                 && ((string)value).Length > 0;
         }
     }
@@ -242,16 +242,9 @@ namespace Tello
                 //{Commands.SetMissionPadOff, new CommandRule(Commands.SetMissionPadOff,Responses.Ok, "", null) },
                 //{Commands.SetMissionPadDirection, new CommandRule(Commands.SetMissionPadDirection, Responses.Ok,"", null) },
             };
-
-            _rulesByString = new Dictionary<string, CommandRule>(_rulesByCommand.Count);
-            foreach (var rule in _rulesByCommand.Values)
-            {
-                _rulesByString.Add(rule.Token, rule);
-            }
         }
 
         private static readonly Dictionary<Commands, CommandRule> _rulesByCommand;
-        private static readonly Dictionary<string, CommandRule> _rulesByString;
 
         public static CommandRule Rules(Commands command)
         {
@@ -260,7 +253,11 @@ namespace Tello
 
         public static CommandRule Rules(string command)
         {
-            return _rulesByString[command];
+            if (Enum.TryParse<Commands>(command, true, out var result))
+            {
+                return _rulesByCommand[result];
+            }
+            throw new ArgumentOutOfRangeException($"matching command not found for string: '{command}'");
         }
     }
 }
