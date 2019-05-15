@@ -2,7 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Tello;
 
-namespace Messenger.Test
+namespace Tello.Test
 {
     [TestClass]
     public class CommandTests

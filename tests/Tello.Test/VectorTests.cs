@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Tello.State;
 
-namespace Messenger.Test
+namespace Tello.Test
 {
     [TestClass]
     public class VectorTests
