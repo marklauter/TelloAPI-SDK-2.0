@@ -7,7 +7,9 @@ namespace Messenger.Tello
     public sealed class TelloRequest : Request<string>
     {
         public TelloRequest(Command command) 
-            : base((string)command, (TimeSpan)command)
+            : base(
+                  (string)command, 
+                  (TimeSpan)command)
         {
         }
 

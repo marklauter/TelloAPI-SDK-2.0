@@ -5,15 +5,30 @@ namespace Messenger.Tello
 {
     public sealed class TelloResponse : Response<string>
     {
-        public TelloResponse(IResponse response) : base(response)
+        public TelloResponse(IResponse response) 
+            : base(response)
         {
         }
 
-        public TelloResponse(IRequest request, Exception exception, TimeSpan timeTaken) : base(request, exception, timeTaken)
+        public TelloResponse(
+            IRequest request, 
+            Exception exception, 
+            TimeSpan timeTaken) 
+            : base(
+                  request, 
+                  exception, 
+                  timeTaken)
         {
         }
 
-        public TelloResponse(IRequest request, byte[] data, TimeSpan timeTaken) : base(request, data, timeTaken)
+        public TelloResponse(
+            IRequest request, 
+            byte[] data, 
+            TimeSpan timeTaken) 
+            : base(
+                  request, 
+                  data, 
+                  timeTaken)
         {
         }
 
