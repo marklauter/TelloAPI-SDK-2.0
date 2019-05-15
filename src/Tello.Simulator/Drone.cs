@@ -16,11 +16,13 @@ namespace Tello.Simulator
             _videoTransmitter = videoTransmitter ?? throw new ArgumentNullException(nameof(videoTransmitter));
         }
 
-        public Task<byte[]> Invoke(byte[] command)
+        public Task<byte[]> Invoke(byte[] buffer)
         {
-            if (command != null)
+            if (buffer != null)
             {
-                // 1. parse the command string - this should already be done in the Tello.Command class
+                // 1. parse the command string 
+                var command = (Command)buffer;
+                
                 // 2. execute the appropriate command simulation
                 // 3. update state
                 // 4. notify state transmitter
