@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Messenger
 {
-    public interface ITransceiver
+    public interface ITransceiver : IDisposable
     {
         /// <summary>
         /// send request, receive response

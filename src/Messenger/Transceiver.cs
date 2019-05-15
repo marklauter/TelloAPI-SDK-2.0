@@ -20,5 +20,7 @@ namespace Messenger
         }
 
         protected abstract Task<IResponse> Send(IRequest request);
+
+        public abstract void Dispose();
     }
 }
