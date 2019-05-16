@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Tello.Types;
 
 namespace Tello
@@ -242,9 +243,14 @@ namespace Tello
                 //{Commands.SetMissionPadOff, new CommandRule(Commands.SetMissionPadOff,Responses.Ok, "", null) },
                 //{Commands.SetMissionPadDirection, new CommandRule(Commands.SetMissionPadDirection, Responses.Ok,"", null) },
             };
+
+            _rulesByString = _rulesByCommand
+                .Values
+                .ToDictionary((rule) => rule.Token);
         }
 
         private static readonly Dictionary<Commands, CommandRule> _rulesByCommand;
+        private static readonly Dictionary<string, CommandRule> _rulesByString;
 
         public static CommandRule Rules(Commands command)
         {
@@ -253,11 +259,7 @@ namespace Tello
 
         public static CommandRule Rules(string command)
         {
-            if (Enum.TryParse<Commands>(command, true, out var result))
-            {
-                return _rulesByCommand[result];
-            }
-            throw new ArgumentOutOfRangeException($"matching command not found for string: '{command}'");
+            return _rulesByString[command];
         }
     }
 }
