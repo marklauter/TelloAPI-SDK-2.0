@@ -19,18 +19,18 @@ namespace Tello.Test
         public void Commands_enum_cast_to_command()
         {
             var command = new Command(Commands.EnterSdkMode);
-            Assert.AreEqual(Commands.EnterSdkMode, command.Value);
+            Assert.AreEqual(Commands.EnterSdkMode, command.Rule.Command);
             Assert.IsTrue(command.Immediate);
             Assert.IsNull(command.Arguments);
 
             command = new Command(Commands.Forward, 20);
-            Assert.AreEqual(Commands.Forward, command.Value);
+            Assert.AreEqual(Commands.Forward, command.Rule.Command);
             Assert.IsFalse(command.Immediate);
             Assert.IsNotNull(command.Arguments);
             Assert.AreEqual(1, command.Arguments.Length);
 
             command = new Command(Commands.Flip, (char)(CardinalDirection)CardinalDirections.Back);
-            Assert.AreEqual(Commands.Flip, command.Value);
+            Assert.AreEqual(Commands.Flip, command.Rule.Command);
             Assert.IsFalse(command.Immediate);
             Assert.IsNotNull(command.Arguments);
             Assert.AreEqual(1, command.Arguments.Length);
