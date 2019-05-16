@@ -23,7 +23,7 @@ namespace Tello.Controller
             ExceptionThrown?.Invoke(this, new ExceptionThrownArgs(new TelloException("FlightController Error", error)));
         }
 
-        public void HandleOk(IResponse<string> response, Command command)
+        private void HandleOk(IResponse<string> response, Command command)
         {
             switch ((Commands)command)
             {
@@ -159,10 +159,9 @@ namespace Tello.Controller
         public event EventHandler<ConnectionStateChangedArgs> ConnectionStateChanged;
         public event EventHandler<PositionChangedArgs> PositionChanged;
 
-        public readonly InterogativeState InterogativeState = new InterogativeState();
+        public InterogativeState InterogativeState { get; } = new InterogativeState();
         public Vector Position { get; private set; } = new Vector();
-
-        public ITelloState State { get; private set; }
+        public ITelloState State { get; private set; } = new TelloState();
 
         public void UpdateState(object _, StateChangedArgs e)
         {
@@ -304,7 +303,7 @@ namespace Tello.Controller
         /// <param name="sides">3 to 15</param>
         /// <param name="length">length of each side. 20 to 500 in cm</param>
         /// <param name="speed">cm/s 10 to 100</param>
-        public void FlyPolygon(int sides, int length, int speed, ClockDirections clockDirection, bool land = false)
+        public void FlyPolygon(int sides, int length, int speed, ClockDirections clockDirection)
         {
             if (!CanManeuver)
             {
@@ -314,11 +313,6 @@ namespace Tello.Controller
             if (sides < 3 || sides > 15)
             {
                 throw new ArgumentOutOfRangeException($"{nameof(sides)} allowed values: 3 to 15");
-            }
-
-            if (!_isFlying)
-            {
-                TakeOff();
             }
 
             SetSpeed(speed);
@@ -339,11 +333,6 @@ namespace Tello.Controller
             {
                 GoForward(length);
                 turnMethod(angle);
-            }
-
-            if (land)
-            {
-                Land();
             }
         }
 

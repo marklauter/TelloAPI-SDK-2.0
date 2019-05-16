@@ -12,6 +12,8 @@ namespace Tello
         event EventHandler<ConnectionStateChangedArgs> ConnectionStateChanged;
         event EventHandler<PositionChangedArgs> PositionChanged;
 
+        InterogativeState InterogativeState { get; }
+
         Vector Position { get; }
 
         ITelloState State { get; }
@@ -148,7 +150,7 @@ namespace Tello
         /// <param name="sides">3 to 15</param>
         /// <param name="length">length of each side. 20 to 500 in cm</param>
         /// <param name="speed">cm/s 10 to 100</param>
-        void FlyPolygon(int sides, int length, int speed, ClockDirections clockDirection, bool land = false);
+        void FlyPolygon(int sides, int length, int speed, ClockDirections clockDirection);
 
         void SetHeight(int cm);
 
