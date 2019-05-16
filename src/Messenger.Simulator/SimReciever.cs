@@ -6,9 +6,9 @@ namespace Messenger.Simulator
 {
     public sealed class SimReceiver : Receiver
     {
-        private readonly ITransmitter _transmitter;
+        private readonly IDroneTransmitter _transmitter;
 
-        public SimReceiver(ITransmitter transmitter)
+        public SimReceiver(IDroneTransmitter transmitter)
         {
             _transmitter = transmitter ?? throw new ArgumentNullException(nameof(transmitter));
         }

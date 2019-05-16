@@ -2,7 +2,7 @@
 
 namespace Messenger.Simulator
 {
-    public interface ITransmitter
+    public interface IDroneTransmitter
     {
         int Available { get; }
         Task<IReceiveResult> ReceiveAsync();

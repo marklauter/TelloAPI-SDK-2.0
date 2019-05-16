@@ -6,9 +6,9 @@ namespace Messenger.Simulator
 {
     public sealed class SimTransceiver : Transceiver, ITransceiver
     {
-        private readonly IDroneSim _drone;
+        private readonly IDroneMessageHandler _drone;
 
-        public SimTransceiver(IDroneSim drone)
+        public SimTransceiver(IDroneMessageHandler drone)
         {
             _drone = drone ?? throw new ArgumentNullException(nameof(drone));
         }

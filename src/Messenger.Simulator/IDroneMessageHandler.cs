@@ -2,7 +2,7 @@
 
 namespace Messenger.Simulator
 {
-    public interface IDroneSim
+    public interface IDroneMessageHandler
     {
         Task<byte[]> Invoke(byte[] buffer);
     }
