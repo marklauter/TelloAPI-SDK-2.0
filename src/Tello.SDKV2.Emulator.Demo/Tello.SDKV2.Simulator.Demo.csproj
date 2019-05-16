@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Messenger.Simulator\Messenger.Simulator.csproj" />
+    <ProjectReference Include="..\Messenger.Tello\Messenger.Tello.csproj" />
+    <ProjectReference Include="..\Messenger\Messenger.csproj" />
+    <ProjectReference Include="..\Repository.Sqlite\Repository.Sqlite.csproj" />
+    <ProjectReference Include="..\Repository\Repository.csproj" />
+    <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj" />
+    <ProjectReference Include="..\Tello.Entities.Sqlite\Tello.Entities.Sqlite.csproj" />
+    <ProjectReference Include="..\Tello.Entities\Tello.Entities.csproj" />
+    <ProjectReference Include="..\Tello.Simulator\Tello.Simulator.csproj" />
+    <ProjectReference Include="..\Tello\Tello.csproj" />
+  </ItemGroup>
+
+</Project>
