@@ -77,7 +77,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messenger.Tello", "Messenge
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.SDKV2.Udp.Demo", "Tello.SDKV2.Udp.Demo\Tello.SDKV2.Udp.Demo.csproj", "{F8105FD4-4057-4402-A627-BFFFBAAACBCD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.SDKV2.Emulator.Demo", "Tello.SDKV2.Emulator.Demo\Tello.SDKV2.Emulator.Demo.csproj", "{A16F7550-959A-4667-B84C-8171AF1883C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.SDKV2.Simulator.Demo", "Tello.SDKV2.Emulator.Demo\Tello.SDKV2.Simulator.Demo.csproj", "{A16F7550-959A-4667-B84C-8171AF1883C6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messenger.Test", "..\tests\Messenger.Test\Messenger.Test.csproj", "{17E76362-A2AB-4248-8CAE-914B79DB52B8}"
 EndProject
@@ -93,9 +93,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.Entities.Sqlite", "Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.Test", "..\tests\Tello.Test\Tello.Test.csproj", "{00D57A9B-357F-431C-BF19-1FF59754DE76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger.Simulator", "Messenger.Simulator\Messenger.Simulator.csproj", "{6C783138-2976-4603-A617-06E38BF008DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messenger.Simulator", "Messenger.Simulator\Messenger.Simulator.csproj", "{6C783138-2976-4603-A617-06E38BF008DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tello.Simulator", "Tello.Simulator\Tello.Simulator.csproj", "{08529A27-A168-4E98-92E0-3E989C12F377}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tello.Simulator", "Tello.Simulator\Tello.Simulator.csproj", "{08529A27-A168-4E98-92E0-3E989C12F377}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
