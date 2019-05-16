@@ -99,19 +99,22 @@ namespace Tello
             Responses response,
             string token,
             ArgumentRule[] arguments,
+            bool mustBeInflight,
             bool immediate = false)
         {
             Command = command;
             Response = response;
             Token = token;
             Arguments = arguments;
+            MustBeInFlight = mustBeInflight;
             Immediate = immediate;
         }
 
         public readonly Commands Command;
+        public readonly Responses Response;
         public readonly string Token;
         public readonly ArgumentRule[] Arguments;
-        public readonly Responses Response;
+        public readonly bool MustBeInFlight;
         public readonly bool Immediate;
 
         public string ToString(params object[] args)
@@ -148,37 +151,38 @@ namespace Tello
 
             _rulesByCommand = new Dictionary<Commands, CommandRule>()
             {
-                { Commands.EnterSdkMode, new CommandRule(Commands.EnterSdkMode, Responses.Ok, "command", emptyArgs, true) },
-                { Commands.Takeoff, new CommandRule(Commands.Takeoff, Responses.Ok,"takeoff", emptyArgs) },
-                { Commands.Land, new CommandRule(Commands.Land, Responses.Ok, "land", emptyArgs) },
-                { Commands.Stop, new CommandRule(Commands.Stop, Responses.Ok, "stop", emptyArgs, true) },
-                { Commands.StartVideo, new CommandRule(Commands.StartVideo, Responses.Ok, "streamon", emptyArgs) },
-                { Commands.StopVideo, new CommandRule(Commands.StopVideo, Responses.Ok, "streamoff", emptyArgs) },
-                { Commands.EmergencyStop, new CommandRule(Commands.EmergencyStop, Responses.Ok, "emergency", emptyArgs, true) },
+                { Commands.EnterSdkMode, new CommandRule(Commands.EnterSdkMode, Responses.Ok, "command", emptyArgs, false, true) },
+                { Commands.Takeoff, new CommandRule(Commands.Takeoff, Responses.Ok,"takeoff", emptyArgs, false) },
+                { Commands.Land, new CommandRule(Commands.Land, Responses.Ok, "land", emptyArgs, true) },
+                { Commands.Stop, new CommandRule(Commands.Stop, Responses.Ok, "stop", emptyArgs, true, true) },
+                { Commands.StartVideo, new CommandRule(Commands.StartVideo, Responses.Ok, "streamon", emptyArgs, false) },
+                { Commands.StopVideo, new CommandRule(Commands.StopVideo, Responses.Ok, "streamoff", emptyArgs, false) },
+                { Commands.EmergencyStop, new CommandRule(Commands.EmergencyStop, Responses.Ok, "emergency", emptyArgs, false, true) },
 
-                { Commands.GetSpeed, new CommandRule(Commands.GetSpeed, Responses.Speed,"speed?", emptyArgs) },
-                { Commands.GetBattery, new CommandRule(Commands.GetBattery, Responses.Battery, "battery?", emptyArgs) },
-                { Commands.GetTime, new CommandRule(Commands.GetTime, Responses.Time, "time?", emptyArgs) },
-                { Commands.GetWIFISnr, new CommandRule(Commands.GetWIFISnr, Responses.WIFISnr, "wifi?", emptyArgs) },
-                { Commands.GetSdkVersion, new CommandRule(Commands.GetSdkVersion, Responses.SdkVersion, "sdk?", emptyArgs) },
-                { Commands.GetSerialNumber, new CommandRule(Commands.GetSerialNumber, Responses.SerialNumber, "sn?", emptyArgs) },
+                { Commands.GetSpeed, new CommandRule(Commands.GetSpeed, Responses.Speed,"speed?", emptyArgs, false) },
+                { Commands.GetBattery, new CommandRule(Commands.GetBattery, Responses.Battery, "battery?", emptyArgs, false) },
+                { Commands.GetTime, new CommandRule(Commands.GetTime, Responses.Time, "time?", emptyArgs, false) },
+                { Commands.GetWIFISnr, new CommandRule(Commands.GetWIFISnr, Responses.WIFISnr, "wifi?", emptyArgs, false) },
+                { Commands.GetSdkVersion, new CommandRule(Commands.GetSdkVersion, Responses.SdkVersion, "sdk?", emptyArgs, false) },
+                { Commands.GetSerialNumber, new CommandRule(Commands.GetSerialNumber, Responses.SerialNumber, "sn?", emptyArgs, false) },
 
-                { Commands.Up, new CommandRule(Commands.Up, Responses.Ok,"up", movementArgs) },
-                { Commands.Down, new CommandRule(Commands.Down, Responses.Ok, "down", movementArgs) },
-                { Commands.Left, new CommandRule(Commands.Left, Responses.Ok, "left", movementArgs) },
-                { Commands.Right, new CommandRule(Commands.Right, Responses.Ok, "right", movementArgs) },
-                { Commands.Forward, new CommandRule(Commands.Forward, Responses.Ok, "forward", movementArgs) },
-                { Commands.Back, new CommandRule(Commands.Back ,Responses.Ok, "back", movementArgs) },
+                { Commands.Up, new CommandRule(Commands.Up, Responses.Ok,"up", movementArgs, true) },
+                { Commands.Down, new CommandRule(Commands.Down, Responses.Ok, "down", movementArgs, true) },
+                { Commands.Left, new CommandRule(Commands.Left, Responses.Ok, "left", movementArgs, true) },
+                { Commands.Right, new CommandRule(Commands.Right, Responses.Ok, "right", movementArgs, true) },
+                { Commands.Forward, new CommandRule(Commands.Forward, Responses.Ok, "forward", movementArgs, true) },
+                { Commands.Back, new CommandRule(Commands.Back ,Responses.Ok, "back", movementArgs, true) },
 
-                { Commands.ClockwiseTurn, new CommandRule(Commands.ClockwiseTurn, Responses.Ok, "cw", turnArgs) },
-                { Commands.CounterClockwiseTurn, new CommandRule(Commands.CounterClockwiseTurn, Responses.Ok, "ccw", turnArgs) },
+                { Commands.ClockwiseTurn, new CommandRule(Commands.ClockwiseTurn, Responses.Ok, "cw", turnArgs, true) },
+                { Commands.CounterClockwiseTurn, new CommandRule(Commands.CounterClockwiseTurn, Responses.Ok, "ccw", turnArgs, true) },
 
                 {
                     Commands.SetSpeed, new CommandRule(Commands.SetSpeed, Responses.Ok, "speed",
                         new ArgumentRule[]
                         {
                             new IntegerRule(new IntegerRule.Range<int>(10, 100))
-                        })
+                        },
+                        false)
                 },
 
                 {
@@ -186,7 +190,8 @@ namespace Tello
                         new ArgumentRule[]
                         {
                             new CharacterRule("lrfb")
-                        })
+                        },
+                        true)
                 },
 
                 {
@@ -197,7 +202,8 @@ namespace Tello
                             new IntegerRule(new IntegerRule.Range<int>(-500, 500)),
                             new IntegerRule(new IntegerRule.Range<int>(-500, 500)),
                             new IntegerRule(new IntegerRule.Range<int>(10, 100))
-                        })
+                        },
+                        true)
                 },
                 {
                     Commands.Curve, new CommandRule(Commands.Curve, Responses.Ok, "curve",
@@ -210,7 +216,8 @@ namespace Tello
                             new IntegerRule(new IntegerRule.Range<int>(-500, 500)),
                             new IntegerRule(new IntegerRule.Range<int>(-500, 500)),
                             new IntegerRule(new IntegerRule.Range<int>(10, 60))
-                        })
+                        },
+                        true)
                 },
                 {
                     Commands.SetRemoteControl, new CommandRule(Commands.SetRemoteControl, Responses.Ok, "rc",
@@ -220,7 +227,8 @@ namespace Tello
                             new IntegerRule(new IntegerRule.Range<int>(-100, 100)),
                             new IntegerRule(new IntegerRule.Range<int>(-100, 100)),
                             new IntegerRule(new IntegerRule.Range<int>(-100, 100))
-                        })
+                        },
+                        false)
                 },
                 {
                     Commands.SetWiFiPassword, new CommandRule(Commands.SetWiFiPassword, Responses.Ok, "wifi",
@@ -228,7 +236,8 @@ namespace Tello
                         {
                             new StringRule(),
                             new StringRule()
-                        })
+                        },
+                        false)
                 },
                 {
                     Commands.SetStationMode, new CommandRule(Commands.SetStationMode, Responses.Ok, "ap",
@@ -236,7 +245,8 @@ namespace Tello
                         {
                             new StringRule(),
                             new StringRule()
-                        })
+                        },
+                        false)
                 },
 
                 //{Commands.SetMissionPadOn, new CommandRule(Commands.SetMissionPadOn, Responses.Ok,"", null) },

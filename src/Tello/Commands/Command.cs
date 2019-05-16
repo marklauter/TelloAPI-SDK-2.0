@@ -21,13 +21,11 @@ namespace Tello
         {
             Rule = CommandRules.Rules(command);
             Validate(command, args);
-            Value = command;
             Arguments = args;
             Immediate = Rule.Immediate;
         }
         #endregion
 
-        public readonly Commands Value;
         public readonly object[] Arguments;
         public readonly bool Immediate;
         public readonly CommandRule Rule;
@@ -40,7 +38,7 @@ namespace Tello
 
         public static implicit operator Commands(Command command)
         {
-            return command.Value;
+            return command.Rule.Command;
         }
 
         public static explicit operator Command(byte[] bytes)
@@ -114,7 +112,7 @@ namespace Tello
             var arcspeed = 15.0; // degrees/s (tested at 30 degress/second, but want to add some margin for error)
             double distance;
 
-            switch (command.Value)
+            switch (command.Rule.Command)
             {
                 case Commands.EnterSdkMode:
                 case Commands.EmergencyStop:
@@ -221,7 +219,9 @@ namespace Tello
 
         public override string ToString()
         {
-            return CommandRules.Rules(Value).ToString(Arguments);
+            return CommandRules
+                .Rules(Rule.Command)
+                .ToString(Arguments);
         }
     }
 }
