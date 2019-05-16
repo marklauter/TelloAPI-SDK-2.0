@@ -4,13 +4,13 @@ using Tello.Controller.Events;
 
 namespace Tello.Controller
 {
-    public sealed class Drone
+    public sealed class DroneMessenger
     {
         private readonly ITransceiver _transceiver;
         private readonly IReceiver _stateReceiver;
         private readonly IReceiver _videoReceiver;
 
-        public Drone(
+        public DroneMessenger(
             ITransceiver transceiver,
             IReceiver stateReceiver,
             IReceiver videoReceiver)

@@ -193,15 +193,19 @@ namespace Tello.Controller
         #endregion
 
         #region enter/exit sdk mode (connect/disconnect)
-        public async Task Connect()
+        public async Task<bool> Connect()
         {
             if (!_isConnected)
             {
                 var response = await _messenger.SendAsync(Commands.EnterSdkMode);
                 _isConnected = response != null && response.Success;
-                RunKeepAlive();
-                ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedArgs(_isConnected));
+                if (_isConnected)
+                {
+                    RunKeepAlive();
+                    ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedArgs(_isConnected));
+                }
             }
+            return _isConnected;
         }
 
         public void Disconnect()
