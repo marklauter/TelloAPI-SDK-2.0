@@ -1,4 +1,4 @@
-﻿namespace Tello.Controller
+﻿namespace Tello.State
 {
     public sealed class InterogativeState
     {
