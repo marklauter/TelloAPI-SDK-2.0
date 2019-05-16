@@ -10,9 +10,7 @@ namespace Tello.Simulator
     {
         public DroneSimulator()
         {
-            MessageHandler = new DroneMessageHandler();
-            (MessageHandler as DroneMessageHandler).CommandReceived += DroneSimulator_CommandReceived;
-
+            MessageHandler = new DroneMessageHandler(DroneSimulator_CommandReceived);
             StateTransmitter = new StateTransmitter();
             VideoTransmitter = new VideoTransmitter();
         }
