@@ -46,23 +46,36 @@ namespace Tello.State
 
         private readonly Vector _vector;
 
+        public TelloState()
+            : this(new Vector())
+        {
+            Timestamp = DateTime.UtcNow;
+            Data = String.Empty;
+        }
+
+        public TelloState(Vector position)
+        {
+            Timestamp = DateTime.UtcNow;
+            Data = String.Empty;
+            _vector = position;
+        }
+
         public TelloState(string state)
-            : this(state, DateTime.UtcNow)
+            : this(state, DateTime.UtcNow, new Vector())
         {
         }
 
-        public TelloState(string state, Vector vector)
-            : this(state, DateTime.UtcNow, vector)
+        public TelloState(string state, Vector position)
+            : this(state, DateTime.UtcNow, position)
         {
-        }
-
-        public TelloState(string state, DateTime timestamp, Vector vector)
-            : this(state, timestamp)
-        {
-            _vector = vector;
         }
 
         public TelloState(string state, DateTime timestamp)
+            : this(state, timestamp, new Vector())
+        {
+        }
+
+        public TelloState(string state, DateTime timestamp, Vector position)
         {
             // sample from Tello
             // mid:64;x:0;y:0;z:0;mpry:0,0,0;pitch:0;roll:0;yaw:0;vgx:0;vgy:0;vgz:-7;templ:60;temph:63;tof:20;h:10;bat:89;baro:-67.44;time:0;agx:14.00;agy:-12.00;agz:-1094.00;
@@ -74,8 +87,8 @@ namespace Tello.State
             }
 
             Timestamp = timestamp;
-
             Data = state;
+            _vector = position;
 
             var keyValues = state
                 .Split(_delimiters, StringSplitOptions.RemoveEmptyEntries)
@@ -131,8 +144,8 @@ namespace Tello.State
         public IAttitude Attitude => new Attitude(this);
         public IBattery Battery => new Battery(this);
         public IHobbsMeter HobbsMeter => new HobbsMeter(this);
-        public IPosition Position => 
-            _vector != null 
+        public IPosition Position =>
+            _vector != null
             ? new Position(this, _vector)
             : new Position(this);
 
