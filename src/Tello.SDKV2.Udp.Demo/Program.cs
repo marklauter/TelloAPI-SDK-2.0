@@ -154,7 +154,7 @@ namespace Tello.Udp.Demo
             //_tello.Controller.TurnClockwise(45);
 
             Log.WriteLine("> fly polygon");
-            _tello.Controller.FlyPolygon(4, 100, 50, ClockDirections.Clockwise, false);
+            _tello.Controller.FlyPolygon(4, 100, 50, ClockDirections.Clockwise);
 
             Log.WriteLine("> land");
             _tello.Controller.Land();
