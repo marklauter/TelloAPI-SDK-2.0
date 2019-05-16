@@ -62,7 +62,7 @@ namespace Tello.Simulator
                     {
                         (StateTransmitter as StateTransmitter).SetState(_state);
                     }
-                    await Task.Delay(12 * 1000);
+                    await Task.Delay(1000 / 5);
                 }
             });
         }
