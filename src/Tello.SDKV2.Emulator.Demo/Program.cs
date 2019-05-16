@@ -160,16 +160,10 @@ namespace Tello.Simulator.SDKV2.Demo
 
             Log.WriteLine("> land");
             _tello.Controller.Land();
-
-            // you have to do this in real life
-            //_tello.PowerOff();
         }
 
         private static async void Connect()
         {
-            // you have to do this in real life
-            //_tello.PowerOn();
-
             Log.WriteLine("> enter sdk mode");
             if (!await _tello.Controller.Connect())
             {
