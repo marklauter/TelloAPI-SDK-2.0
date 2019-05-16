@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Messenger.Simulator;
+using System;
 using System.Threading.Tasks;
 
-namespace Tello.Simulator.Transmitters
+namespace Tello.Simulator.Messaging
 {
-    public class Transmitter : ITransmitter
+    internal class Transmitter : IDroneTransmitter
     {
         private byte[] _buffer = Array.Empty<byte>();
 
@@ -20,10 +21,10 @@ namespace Tello.Simulator.Transmitters
         protected int _available = 0;
         public int Available => _available;
 
-        public Task<ReceiveResult> ReceiveAsync()
+        public Task<IReceiveResult> ReceiveAsync()
         {
             _available = 0;
-            var result = new ReceiveResult(Buffer);
+            var result = new ReceiveResult(Buffer) as IReceiveResult;
             Buffer = Array.Empty<byte>();
             return Task.FromResult(result);
         }

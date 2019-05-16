@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 
-namespace Tello.Simulator.Transmitters
+namespace Tello.Simulator.Messaging
 {
-    public sealed class VideoTransmitter : Transmitter
+    internal sealed class VideoTransmitter : Transmitter
     {
         public void AddVideoSegment(byte[] segment)
         {

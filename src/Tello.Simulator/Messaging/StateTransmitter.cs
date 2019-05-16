@@ -1,9 +1,9 @@
 ﻿using System.Text;
 using Tello.State;
 
-namespace Tello.Simulator.Transmitters
+namespace Tello.Simulator.Messaging
 {
-    public sealed class StateTransmitter : Transmitter
+    internal sealed class StateTransmitter : Transmitter
     {
         public void SetState(ITelloState telloState)
         {

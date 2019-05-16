@@ -1,6 +1,8 @@
-﻿namespace Tello.Simulator.Transmitters
+﻿using Messenger.Simulator;
+
+namespace Tello.Simulator.Messaging
 {
-    public struct ReceiveResult
+    internal class ReceiveResult : IReceiveResult
     {
         public ReceiveResult(byte[] buffer)
         {
