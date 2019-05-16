@@ -12,7 +12,7 @@ namespace Tello.Udp.Demo
 {
     internal class Program
     {
-        private static readonly Drone _tello;
+        private static readonly DroneMessenger _tello;
         private static readonly IRepository _repository;
         private static readonly ISession _session;
 
@@ -22,7 +22,7 @@ namespace Tello.Udp.Demo
             var stateReceiver = new UdpReceiver(8890);
             var videoReceiver = new UdpReceiver(11111);
 
-            _tello = new Drone(transceiver, stateReceiver, videoReceiver);
+            _tello = new DroneMessenger(transceiver, stateReceiver, videoReceiver);
 
             _tello.Controller.ConnectionStateChanged += Controller_ConnectionStateChanged;
             _tello.Controller.ExceptionThrown += Controller_ExceptionThrown;
@@ -169,7 +169,18 @@ namespace Tello.Udp.Demo
             //_tello.PowerOn();
 
             Log.WriteLine("> enter sdk mode");
-            await _tello.Controller.Connect();
+            if (!await _tello.Controller.Connect())
+            {
+                Log.WriteLine("connection failed - program will be terminated");
+                Console.ReadKey(false);
+            }
+            else
+            {
+                Console.WriteLine("Remember to turn Tello off to keep it from overheating.");
+                Console.WriteLine("press any key when ready to end program...");
+                Console.ReadKey(false);
+            }
+            _repository.Dispose();
         }
 
         private static void Main(string[] _)
@@ -179,12 +190,6 @@ namespace Tello.Udp.Demo
             Console.ReadKey(false);
 
             Connect();
-
-            Console.WriteLine("Remember to turn Tello off to keep it from overheating.");
-            Console.WriteLine("press any key when ready to end program...");
-            Console.ReadKey(false);
-
-            _repository.Dispose();
         }
     }
 }
