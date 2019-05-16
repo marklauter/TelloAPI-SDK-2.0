@@ -1,5 +1,5 @@
 using Messenger;
-using Messenger.Tello;
+using Tello.Messaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Repository;
 using Repository.Sqlite;

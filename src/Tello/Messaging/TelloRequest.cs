@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Messenger;
+using System;
 using System.Text;
-using Tello;
 
-namespace Messenger.Tello
+namespace Tello.Messaging
 {
     public sealed class TelloRequest : Request<string>
     {

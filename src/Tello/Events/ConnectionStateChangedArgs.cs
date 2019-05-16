@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tello.Controller.Events
+namespace Tello.Events
 {
     public sealed class ConnectionStateChangedArgs : EventArgs
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Tello.State;
 
-namespace Tello.Controller.Events
+namespace Tello.Events
 {
     public sealed class PositionChangedArgs : EventArgs
     {

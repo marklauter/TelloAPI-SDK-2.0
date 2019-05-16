@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Messenger.Tello\Messenger.Tello.csproj" />
     <ProjectReference Include="..\Messenger.Udp\Messenger.Udp.csproj" />
     <ProjectReference Include="..\Messenger\Messenger.csproj" />
     <ProjectReference Include="..\Repository.Sqlite\Repository.Sqlite.csproj" />

@@ -49,7 +49,7 @@ namespace Tello.Simulator.SDKV2.Demo
 
         #region event handlers
 
-        private static void Controller_ResponseReceived(object sender, Controller.Events.ResponseReceivedArgs e)
+        private static void Controller_ResponseReceived(object sender, Events.ResponseReceivedArgs e)
         {
             if (!_canMove
                 && (Command)e.Response.Request.Data == Commands.Takeoff
@@ -64,13 +64,13 @@ namespace Tello.Simulator.SDKV2.Demo
             _repository.Insert(new ResponseObservation(e.Response));
         }
 
-        private static void VideoObserver_VideoSampleReady(object sender, Controller.Events.VideoSampleReadyArgs e)
+        private static void VideoObserver_VideoSampleReady(object sender, Events.VideoSampleReadyArgs e)
         {
             throw new NotImplementedException();
         }
 
         private static int _stateCount = 0;
-        private static void StateObserver_StateChanged(object sender, Controller.Events.StateChangedArgs e)
+        private static void StateObserver_StateChanged(object sender, Events.StateChangedArgs e)
         {
             // state reporting interval is 5hz, so 25 should be once every 5 seconds
             if (_stateCount % 25 == 0)
@@ -90,14 +90,14 @@ namespace Tello.Simulator.SDKV2.Demo
             _repository.Insert(new PositionObservation(group, e.State));
         }
 
-        private static void Controller_ExceptionThrown(object sender, Controller.Events.ExceptionThrownArgs e)
+        private static void Controller_ExceptionThrown(object sender, Events.ExceptionThrownArgs e)
         {
             Log.WriteLine($"Exception {e.Exception.InnerException.GetType()} with message '{e.Exception.InnerException.Message}'", ConsoleColor.Red, false);
             Log.WriteLine("| Stack trace", ConsoleColor.Red, false);
             Log.WriteLine($"| {e.Exception.InnerException.StackTrace}", ConsoleColor.Red);
         }
 
-        private static void Controller_ConnectionStateChanged(object sender, Controller.Events.ConnectionStateChangedArgs e)
+        private static void Controller_ConnectionStateChanged(object sender, Events.ConnectionStateChangedArgs e)
         {
             Log.WriteLine($"Connection State: {e.Connected}");
             if (e.Connected)

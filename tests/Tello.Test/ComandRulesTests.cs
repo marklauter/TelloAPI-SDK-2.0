@@ -13,12 +13,16 @@ namespace Tello.Test
             var rule = CommandRules.Rules("forward");
             Assert.IsNotNull(rule);
             Assert.AreEqual(Commands.Forward, rule.Command);
+
+            rule = CommandRules.Rules("command");
+            Assert.IsNotNull(rule);
+            Assert.AreEqual(Commands.EnterSdkMode, rule.Command);
         }
 
         [TestMethod]
         public void CommandRules_Rules_String_Method_throws_on_bad_argument()
         {
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => CommandRules.Rules("boo"));
+            Assert.ThrowsException<KeyNotFoundException>(() => CommandRules.Rules("boo"));
         }
     }
 }

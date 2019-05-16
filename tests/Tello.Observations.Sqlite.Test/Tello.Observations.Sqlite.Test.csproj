@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Messenger.Tello\Messenger.Tello.csproj" />
     <ProjectReference Include="..\..\src\Repository.Sqlite\Repository.Sqlite.csproj" />
     <ProjectReference Include="..\..\src\Repository\Repository.csproj" />
     <ProjectReference Include="..\..\src\Tello.Entities.Sqlite\Tello.Entities.Sqlite.csproj" />

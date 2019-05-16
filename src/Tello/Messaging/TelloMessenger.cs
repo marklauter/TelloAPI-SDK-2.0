@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Messenger;
+using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using Tello;
 
-namespace Messenger.Tello
+namespace Tello.Messaging
 {
     public class TelloMessenger : Messenger<string>
     {

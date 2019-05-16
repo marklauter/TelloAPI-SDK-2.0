@@ -1,7 +1,5 @@
 ﻿using Messenger.Simulator;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Tello.Simulator.Messaging;
 
 namespace Tello.Simulator

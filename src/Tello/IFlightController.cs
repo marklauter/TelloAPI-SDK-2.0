@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Tello.Controller.Events;
+using Tello.Events;
 using Tello.State;
 
-namespace Tello.Controller
+namespace Tello
 {
     public interface IFlightController
     {

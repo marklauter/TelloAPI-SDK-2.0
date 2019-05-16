@@ -1,6 +1,6 @@
 ﻿using Messenger;
 using System;
-using Tello.Controller.Events;
+using Tello.Events;
 
 namespace Tello.Controller
 {

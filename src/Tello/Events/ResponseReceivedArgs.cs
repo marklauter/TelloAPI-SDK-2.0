@@ -1,7 +1,7 @@
-﻿using Messenger.Tello;
-using System;
+﻿using System;
+using Tello.Messaging;
 
-namespace Tello.Controller.Events
+namespace Tello.Events
 {
     public sealed class ResponseReceivedArgs : EventArgs
     {
