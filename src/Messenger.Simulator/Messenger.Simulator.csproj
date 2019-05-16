@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Messenger\Messenger.csproj" />
-    <ProjectReference Include="..\Tello.Simulator\Tello.Simulator.csproj" />
   </ItemGroup>
 
 </Project>

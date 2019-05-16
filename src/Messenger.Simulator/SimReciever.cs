@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Tello.Simulator.Transmitters;
 
 namespace Messenger.Simulator
 {

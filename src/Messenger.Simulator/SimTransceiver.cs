@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Tello.Simulator;
 
 namespace Messenger.Simulator
 {
     public sealed class SimTransceiver : Transceiver, ITransceiver
     {
-        private readonly Drone _droneSim;
+        private readonly IDroneSim _drone;
 
-        public SimTransceiver(Drone droneSim)
+        public SimTransceiver(IDroneSim drone)
         {
-            _droneSim = droneSim ?? throw new ArgumentNullException(nameof(droneSim));
+            _drone = drone ?? throw new ArgumentNullException(nameof(drone));
         }
 
         protected override async Task<IResponse> Send(IRequest request)
@@ -19,7 +18,7 @@ namespace Messenger.Simulator
             var stopwatch = Stopwatch.StartNew();
             return new Response(
                 request,
-                await _droneSim.Invoke(request.Data),
+                await _drone.Invoke(request.Data),
                 stopwatch.Elapsed);
         }
 
