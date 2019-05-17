@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Messenger;
+using Repository;
+using System;
 using Tello.App.MvvM;
 using Tello.Controller;
-using Tello.Messaging;
-using Tello.Repository;
+using Tello.Entities;
+using Tello.Entities.Sqlite;
 
 namespace Tello.App.ViewModels
 {
@@ -11,44 +13,39 @@ namespace Tello.App.ViewModels
         public TelloControllerViewModel ControllerViewModel { get; }
         public TelloStateViewModel StateViewModel { get; }
 
-        private readonly FlightController _flightController;
-        private readonly ITrackingSession _repository;
+        private readonly DroneMessenger _tello;
 
         public MainViewModel(
             IUIDispatcher dispatcher,
-            IUINotifier uiNotifier,
-            ITrackingSession repository,
-            IMessengerService messenger,
-            IMessageRelayService<IRawDroneState> stateServer,
-            IMessageRelayService<IVideoSample> videoServer,
-            IVideoSampleProvider videoSampleProvider) : base(dispatcher, uiNotifier)
+            IUINotifier notifier,
+            IRepository repository,
+            IReceiver stateReceiver,
+            IReceiver videoReceiver,
+            ITransceiver transceiver)
+                : base(dispatcher, notifier)
         {
-            #region argument validation
-            if (messenger == null)
-            {
-                throw new ArgumentNullException(nameof(messenger));
-            }
+            _tello = new DroneMessenger(transceiver, stateReceiver, videoReceiver);
 
-            if (stateServer == null)
-            {
-                throw new ArgumentNullException(nameof(stateServer));
-            }
+            repository.CreateCatalog<Session>();
+            repository.CreateCatalog<ObservationGroup>();
+            repository.CreateCatalog<StateObservation>();
+            repository.CreateCatalog<AirSpeedObservation>();
+            repository.CreateCatalog<AttitudeObservation>();
+            repository.CreateCatalog<BatteryObservation>();
+            repository.CreateCatalog<HobbsMeterObservation>();
+            repository.CreateCatalog<PositionObservation>();
+            repository.CreateCatalog<ResponseObservation>();
 
-            if (videoServer == null)
-            {
-                throw new ArgumentNullException(nameof(videoServer));
-            }
+            var session = repository.NewEntity<Session>();
 
-            if (videoSampleProvider == null)
-            {
-                throw new ArgumentNullException(nameof(videoSampleProvider));
-            }
-            #endregion
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            StateViewModel = new TelloStateViewModel(
+                dispatcher, 
+                notifier,
+                _tello.StateObserver,
+                repository, 
+                session);
 
-            _flightController = new FlightController(messenger, stateServer, videoServer, videoSampleProvider);
-            ControllerViewModel = new TelloControllerViewModel(dispatcher, uiNotifier, _flightController, repository);
-            StateViewModel = new TelloStateViewModel(dispatcher, uiNotifier, _flightController, repository);
+            //            ControllerViewModel = new TelloControllerViewModel(dispatcher, notifier, _flightController, repository);
         }
 
         protected override void OnOpen(OpenEventArgs args)

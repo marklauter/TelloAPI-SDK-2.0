@@ -12,7 +12,12 @@ namespace Tello.App.ViewModels
         private readonly IVideoSampleReadyNotifier _videoSampleReadyNotifier;
         private readonly IVideoSampleProvider _videoSampleProvider;
 
-        public TelloVideoViewModel(IUIDispatcher dispatcher, IUINotifier userNotifier, IVideoSampleReadyNotifier videoSampleReadyNotifier, IVideoSampleProvider videoSampleProvider) : base(dispatcher, userNotifier)
+        public TelloVideoViewModel(
+            IUIDispatcher dispatcher, 
+            IUINotifier userNotifier, 
+            IVideoSampleReadyNotifier videoSampleReadyNotifier, 
+            IVideoSampleProvider videoSampleProvider)
+            : base(dispatcher, userNotifier)
         {
             _videoSampleReadyNotifier = videoSampleReadyNotifier ?? throw new ArgumentNullException(nameof(videoSampleReadyNotifier));
             _videoSampleProvider = videoSampleProvider ?? throw new ArgumentNullException(nameof(videoSampleProvider));

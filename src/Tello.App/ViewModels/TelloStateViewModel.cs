@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Repository;
+using System;
 using System.Collections.ObjectModel;
 using Tello.App.MvvM;
 using Tello.Controller;
-using Tello.Messaging;
-using Tello.Repository;
+using Tello.Entities;
+using Tello.Entities.Sqlite;
+using Tello.State;
 
 namespace Tello.App.ViewModels
 {
@@ -11,48 +13,57 @@ namespace Tello.App.ViewModels
     //https://docs.microsoft.com/en-us/windows/communitytoolkit/controls/radialgauge
     public class TelloStateViewModel : ViewModel
     {
-        private readonly IStateChangedNotifier _telloStateChangedNotifier;
-        private readonly ITrackingSession _repository;
+        private readonly IStateObserver _stateObserver;
+        private readonly IRepository _repository;
+        private readonly ISession _session;
 
-        public TelloStateViewModel(IUIDispatcher dispatcher, IUINotifier userNotifier, IStateChangedNotifier telloStateChangedNotifier, ITrackingSession repository) : base(dispatcher, userNotifier)
+        public TelloStateViewModel(
+            IUIDispatcher dispatcher,
+            IUINotifier notifier,
+            IStateObserver stateObserver,
+            IRepository repository,
+            ISession session)
+            : base(dispatcher, notifier)
         {
-            _telloStateChangedNotifier = telloStateChangedNotifier ?? throw new ArgumentNullException(nameof(telloStateChangedNotifier));
-            _repository = repository;
+            _stateObserver = stateObserver ?? throw new ArgumentNullException(nameof(stateObserver));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _session = session ?? throw new ArgumentNullException(nameof(session));
         }
 
         protected override void OnOpen(OpenEventArgs args)
         {
-            _telloStateChangedNotifier.StateChanged += OnTelloStateChanged;
+            _stateObserver.StateChanged += StateChanged;
         }
 
         protected override void OnClosing(ClosingEventArgs args)
         {
-            _telloStateChangedNotifier.StateChanged -= OnTelloStateChanged;
+            _stateObserver.StateChanged -= StateChanged;
         }
 
-        private void OnTelloStateChanged(object sender, StateChangedArgs e)
+        private void StateChanged(object sender, Events.StateChangedArgs e)
         {
+            //todo: this should be pushed directly to a queue to minimize time in method. the queue can be picked up by a processor that does what this method is currently doing.
             Dispatcher.Invoke((state) =>
             {
                 StateHistory.Add(state as ITelloState);
-                if(StateHistory.Count > 500)
+                if (StateHistory.Count > 500)
                 {
                     StateHistory.RemoveAt(0);
                 }
-            }, 
+            },
             State);
 
             State = e.State;
 
             if (_repository != null)
             {
-                var groupId = Guid.NewGuid().ToString();
-                _repository.Write(new TelloStateObservation(e.State, groupId));
-                _repository.Write(new PositionObservation(e.State, groupId));
-                _repository.Write(new AttitudeObservation(e.State, groupId));
-                _repository.Write(new AirSpeedObservation(e.State, groupId));
-                _repository.Write(new BatteryObservation(e.State, groupId));
-                _repository.Write(new HobbsMeterObservation(e.State, groupId));
+                var group = _repository.NewEntity<ObservationGroup>(_session);
+                _repository.Insert(new StateObservation(group, e.State));
+                _repository.Insert(new AirSpeedObservation(group, e.State));
+                _repository.Insert(new AttitudeObservation(group, e.State));
+                _repository.Insert(new BatteryObservation(group, e.State));
+                _repository.Insert(new HobbsMeterObservation(group, e.State));
+                _repository.Insert(new PositionObservation(group, e.State));
             }
         }
 
@@ -69,18 +80,16 @@ namespace Tello.App.ViewModels
         {
             if (_repository != null)
             {
-                _repository.Delete<PositionObservation>();
-                _repository.Delete<AttitudeObservation>();
+                _repository.Delete<Session>();
+                _repository.Delete<ObservationGroup>();
+                _repository.Delete<StateObservation>();
                 _repository.Delete<AirSpeedObservation>();
+                _repository.Delete<AttitudeObservation>();
                 _repository.Delete<BatteryObservation>();
                 _repository.Delete<HobbsMeterObservation>();
-                _repository.Delete<TelloStateObservation>();
+                _repository.Delete<PositionObservation>();
+                _repository.Delete<ResponseObservation>();
             }
         }
-
-#pragma warning disable IDE1006 // Naming Styles
-        private IInputCommand _ClearDatabaseCommand;
-        public IInputCommand ClearDatabaseCommand => _ClearDatabaseCommand = _ClearDatabaseCommand ?? new InputCommand(ClearDatabase);
-#pragma warning restore IDE1006 // Naming Styles
     }
 }
