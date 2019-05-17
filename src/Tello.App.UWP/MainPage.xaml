@@ -25,10 +25,6 @@
             </Grid.ColumnDefinitions>
 
             <controls:WrapPanel Grid.Column="0" Orientation="Horizontal" Background="DimGray" Margin="5">
-                <StackPanel BorderBrush="White" BorderThickness="1" Margin="5" Padding="5">
-                    <Button Click="PowerUpButton_Click">power on</Button>
-                    <Button Click="PowerDownButton_Click">power off</Button>
-                </StackPanel>
 
                 <StackPanel BorderBrush="White" BorderThickness="1" Margin="5" Padding="5">
                     <Button Command="{Binding Path=ControllerViewModel.EnterSdkModeCommand}">connect</Button>

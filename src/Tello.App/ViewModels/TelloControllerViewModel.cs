@@ -64,13 +64,40 @@ namespace Tello.App.ViewModels
 
         private void PositionChanged(object sender, Events.PositionChangedArgs e)
         {
-            Dispatcher.Invoke((p) => Position = p as Vector,
-            e.Position);
+            Dispatcher.Invoke((position) => 
+                Position = position as Vector,
+                e.Position);
+
+            var message = $"{DateTime.Now.TimeOfDay} - new position {e.Position}";
+            Debug.WriteLine(message);
+            Dispatcher.Invoke((msg) =>
+            {
+                ControlLog.Insert(0, msg as string);
+                if (ControlLog.Count > 500)
+                {
+                    ControlLog.RemoveAt(ControlLog.Count - 1);
+                }
+            },
+            message);
         }
 
         private void ConnectionStateChanged(object sender, Events.ConnectionStateChangedArgs e)
         {
-            throw new NotImplementedException();
+            Dispatcher.Invoke((connected) =>
+                IsConnected = (bool)connected,
+                e.Connected);
+
+            var message = $"{DateTime.Now.TimeOfDay} - connected ? {e.Connected}";
+            Debug.WriteLine(message);
+            Dispatcher.Invoke((msg) =>
+            {
+                ControlLog.Insert(0, msg as string);
+                if (ControlLog.Count > 500)
+                {
+                    ControlLog.RemoveAt(ControlLog.Count - 1);
+                }
+            },
+            message);
         }
 
         private void ExceptionThrown(object sender, Events.ExceptionThrownArgs e)

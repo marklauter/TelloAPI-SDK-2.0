@@ -14,13 +14,24 @@ namespace Tello.Controller
 
         public override void OnError(Exception error)
         {
-            throw new NotImplementedException();
+            try
+            {
+                ExceptionThrown?.Invoke(this, error);
+            }
+            catch { }
         }
 
         public override void OnNext(IEnvelope message)
         {
-            State = new TelloState(Encoding.UTF8.GetString(message.Data), message.Timestamp, _position);
-            StateChanged?.Invoke(this, new StateChangedArgs(State));
+            try
+            {
+                State = new TelloState(Encoding.UTF8.GetString(message.Data), message.Timestamp, _position);
+                StateChanged?.Invoke(this, new StateChangedArgs(State));
+            }
+            catch(Exception ex)
+            {
+                OnError(ex);
+            }
         }
 
         public void UpdatePosition(object sender, PositionChangedArgs e)
@@ -33,5 +44,6 @@ namespace Tello.Controller
         public ITelloState State { get; private set; }
 
         public event EventHandler<StateChangedArgs> StateChanged;
+        public event EventHandler<Exception> ExceptionThrown;
     }
 }

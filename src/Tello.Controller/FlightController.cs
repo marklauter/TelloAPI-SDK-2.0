@@ -20,7 +20,11 @@ namespace Tello.Controller
         #region Observer<IResponse<string>> - transceiver reponse handling
         public override void OnError(Exception error)
         {
-            ExceptionThrown?.Invoke(this, new ExceptionThrownArgs(new TelloException("FlightController Error", error)));
+            try
+            {
+                ExceptionThrown?.Invoke(this, new ExceptionThrownArgs(new TelloException("FlightController Error", error)));
+            }
+            catch { }
         }
 
         private void HandleOk(IResponse<string> response, Command command)
@@ -99,56 +103,64 @@ namespace Tello.Controller
 
         public override void OnNext(IResponse<string> response)
         {
-            response = new TelloResponse(response);
-            if (response.Success)
+            try
             {
-                if (response.Message != Responses.Error.ToString().ToLowerInvariant())
+                response = new TelloResponse(response);
+                var command = (Command)response.Request.Data;
+
+                if (response.Success)
                 {
-                    var command = (Command)response.Request.Data;
-                    switch (command.Rule.Response)
+                    if (response.Message != Responses.Error.ToString().ToLowerInvariant())
                     {
-                        case Responses.Ok:
-                            if (response.Message == Responses.Ok.ToString().ToLowerInvariant())
-                            {
-                                HandleOk(response, command);
-                            }
-                            else
-                            {
-                                throw new NotImplementedException("need to handle errors here");
-                            }
-                            break;
-                        case Responses.Speed:
-                            InterogativeState.Speed = Int32.Parse(response.Message);
-                            break;
-                        case Responses.Battery:
-                            InterogativeState.Battery = Int32.Parse(response.Message);
-                            break;
-                        case Responses.Time:
-                            InterogativeState.Time = Int32.Parse(response.Message);
-                            break;
-                        case Responses.WIFISnr:
-                            InterogativeState.WIFISnr = response.Message;
-                            break;
-                        case Responses.SdkVersion:
-                            InterogativeState.SdkVersion = response.Message;
-                            break;
-                        case Responses.SerialNumber:
-                            InterogativeState.SerialNumber = response.Message;
-                            break;
-                        default:
-                            break;
+                        switch (command.Rule.Response)
+                        {
+                            case Responses.Ok:
+                                if (response.Message == Responses.Ok.ToString().ToLowerInvariant())
+                                {
+                                    HandleOk(response, command);
+                                }
+                                else
+                                {
+                                    throw new TelloException($"{command} expecting '{Responses.Ok.ToString().ToLowerInvariant()}' returned message '{response.Message}' at {response.Timestamp.ToString("o")} after {response.TimeTaken.TotalMilliseconds}ms");
+                                }
+                                break;
+                            case Responses.Speed:
+                                InterogativeState.Speed = Int32.Parse(response.Message);
+                                break;
+                            case Responses.Battery:
+                                InterogativeState.Battery = Int32.Parse(response.Message);
+                                break;
+                            case Responses.Time:
+                                InterogativeState.Time = Int32.Parse(response.Message);
+                                break;
+                            case Responses.WIFISnr:
+                                InterogativeState.WIFISnr = response.Message;
+                                break;
+                            case Responses.SdkVersion:
+                                InterogativeState.SdkVersion = response.Message;
+                                break;
+                            case Responses.SerialNumber:
+                                InterogativeState.SerialNumber = response.Message;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        throw new TelloException($"{command} returned message '{response.Message}' at {response.Timestamp.ToString("o")} after {response.TimeTaken.TotalMilliseconds}ms");
                     }
                 }
                 else
                 {
-                    throw new NotImplementedException("need to handle errors here");
+                    OnError(new TelloException($"{command} returned message '{response.Message}' at {response.Timestamp.ToString("o")} after {response.TimeTaken.TotalMilliseconds}ms", response.Exception));
                 }
+                ResponseReceived?.Invoke(this, new ResponseReceivedArgs(response as TelloResponse));
             }
-            else
+            catch (Exception ex)
             {
-                OnError(response.Exception);
+                OnError(new TelloException(ex.Message, ex));
             }
-            ResponseReceived?.Invoke(this, new ResponseReceivedArgs(response as TelloResponse));
         }
         #endregion
 

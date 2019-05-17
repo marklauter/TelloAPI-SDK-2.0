@@ -55,16 +55,13 @@ namespace Tello.App.ViewModels
             e.State);
 
 
-            if (_repository != null)
-            {
-                var group = _repository.NewEntity<ObservationGroup>(_session);
-                _repository.Insert(new StateObservation(group, e.State));
-                _repository.Insert(new AirSpeedObservation(group, e.State));
-                _repository.Insert(new AttitudeObservation(group, e.State));
-                _repository.Insert(new BatteryObservation(group, e.State));
-                _repository.Insert(new HobbsMeterObservation(group, e.State));
-                _repository.Insert(new PositionObservation(group, e.State));
-            }
+            var group = _repository.NewEntity<ObservationGroup>(_session);
+            _repository.Insert(new StateObservation(group, e.State));
+            _repository.Insert(new AirSpeedObservation(group, e.State));
+            _repository.Insert(new AttitudeObservation(group, e.State));
+            _repository.Insert(new BatteryObservation(group, e.State));
+            _repository.Insert(new HobbsMeterObservation(group, e.State));
+            _repository.Insert(new PositionObservation(group, e.State));
         }
 
         public ObservableCollection<ITelloState> StateHistory { get; } = new ObservableCollection<ITelloState>();
