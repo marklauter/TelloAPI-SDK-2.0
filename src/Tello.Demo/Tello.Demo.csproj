@@ -4,4 +4,9 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj" />
+    <ProjectReference Include="..\Tello.Entities.Sqlite\Tello.Entities.Sqlite.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -7,13 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Messenger.Udp\Messenger.Udp.csproj" />
-    <ProjectReference Include="..\Messenger\Messenger.csproj" />
-    <ProjectReference Include="..\Repository.Sqlite\Repository.Sqlite.csproj" />
-    <ProjectReference Include="..\Repository\Repository.csproj" />
-    <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj" />
-    <ProjectReference Include="..\Tello.Entities.Sqlite\Tello.Entities.Sqlite.csproj" />
-    <ProjectReference Include="..\Tello.Entities\Tello.Entities.csproj" />
-    <ProjectReference Include="..\Tello\Tello.csproj" />
+    <ProjectReference Include="..\Tello.Demo\Tello.Demo.csproj" />
   </ItemGroup>
 
 </Project>

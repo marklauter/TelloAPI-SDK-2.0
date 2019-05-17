@@ -49,7 +49,7 @@ namespace Tello.Simulator
                     {
                         //(VideoTransmitter as VideoTransmitter).AddVideoSegment(Array.Empty<byte>());
                         (VideoTransmitter as VideoTransmitter).AddVideoSegment(bytes);
-                        await Task.Delay(1000 / 5);
+                        await Task.Delay(1000 / 30);
                     }
                     else
                     {

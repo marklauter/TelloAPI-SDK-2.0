@@ -1,9 +1,9 @@
 ﻿using Messenger;
-using Tello.Messaging;
 using System;
 using System.Threading.Tasks;
-using Tello.State;
 using Tello.Events;
+using Tello.Messaging;
+using Tello.State;
 
 namespace Tello.Controller
 {
