@@ -18,9 +18,9 @@ namespace Tello.App.ViewModels
             IUIDispatcher dispatcher,
             IUINotifier notifier,
             IRepository repository,
+            ITransceiver transceiver,
             IReceiver stateReceiver,
-            IReceiver videoReceiver,
-            ITransceiver transceiver)
+            IReceiver videoReceiver)
                 : base(dispatcher, notifier)
         {
             _tello = new DroneMessenger(transceiver, stateReceiver, videoReceiver);

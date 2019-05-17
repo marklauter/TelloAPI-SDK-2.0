@@ -8,13 +8,14 @@ namespace Tello.Simulator.Demo
     internal class Program
     {
         private static readonly FlightTest _flightTest;
+        private static readonly DroneSimulator _simulator;
 
         static Program()
         {
-            var simulator = new DroneSimulator();
-            var transceiver = new SimTransceiver(simulator.MessageHandler);
-            var stateReceiver = new SimReceiver(simulator.StateTransmitter);
-            var videoReceiver = new SimReceiver(simulator.VideoTransmitter);
+            _simulator = new DroneSimulator();
+            var transceiver = new SimTransceiver(_simulator.MessageHandler);
+            var stateReceiver = new SimReceiver(_simulator.StateTransmitter);
+            var videoReceiver = new SimReceiver(_simulator.VideoTransmitter);
 
             var repository = new SqliteRepository((null, "tello.sim.sqlite"));
 

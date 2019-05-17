@@ -1,16 +1,18 @@
-﻿#define NO_EMULATOR
+﻿#define EMULATOR
 
 #if EMULATOR
-using Tello.Emulator.SDKV2;
+using Messenger.Simulator;
+using Tello.Simulator;
 #else
-using Tello.Udp;
-using Windows.UI.Popups;
+using Messenger.Udp;
+using System.Net;
 #endif
+
+using Repository.Sqlite;
 using System.Threading;
 using Tello.App.MvvM;
 using Tello.App.UWP.Services;
 using Tello.App.ViewModels;
-using Tello.Repository;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
@@ -19,34 +21,42 @@ namespace Tello.App.UWP
     public sealed partial class MainPage : Page
     {
         public MainViewModel ViewModel { get; }
+
+        private readonly IUIDispatcher _dispatcher;
+        private readonly IUINotifier _notifier;
 #if EMULATOR
-        private readonly TelloEmulator _telloEmulator;
+        private DroneSimulator _simulator;
 #endif
-        private readonly IUIDispatcher _uiDispatcher;
-        private readonly IUINotifier _uiNotifier;
-        private readonly ITrackingSession _repository;
+
+        private MainViewModel CreateMainViewModel(IUIDispatcher dispatcher, IUINotifier notifier)
+        {
+#if EMULATOR
+            _simulator = new DroneSimulator();
+            var transceiver = new SimTransceiver(_simulator.MessageHandler);
+            var stateReceiver = new SimReceiver(_simulator.StateTransmitter);
+            var videoReceiver = new SimReceiver(_simulator.VideoTransmitter);
+#else
+            var transceiver = new UdpTransceiver(IPAddress.Parse("192.168.10.1"), 8889);
+            var stateReceiver = new UdpReceiver(8890);
+            var videoReceiver = new UdpReceiver(11111);
+#endif
+            return new MainViewModel(
+                _dispatcher,
+                _notifier,
+                new SqliteRepository((null, "tello.sqlite")),
+                transceiver,
+                stateReceiver,
+                videoReceiver);
+        }
 
         public MainPage()
         {
             InitializeComponent();
 
-            _uiDispatcher = new UIDispatcher(SynchronizationContext.Current);
-            _uiNotifier = new UINotifier();
+            _dispatcher = new UIDispatcher(SynchronizationContext.Current);
+            _notifier = new UINotifier();
 
-            var sessionPrefix = "drone";
-#if EMULATOR
-            sessionPrefix = "emulator";
-#endif
-            _repository = new TrackingSession(sessionPrefix);
-
-#if EMULATOR
-            var tello = new TelloEmulator();
-            _telloEmulator = tello;
-#else
-            var tello = new UdpMessenger();
-#endif
-
-            ViewModel = new MainViewModel(_uiDispatcher, _uiNotifier, _repository, tello, tello.StateServer, tello.VideoServer, tello.VideoSampleProvider);
+            ViewModel = CreateMainViewModel(_dispatcher, _notifier);
             DataContext = ViewModel;
         }
 
@@ -62,28 +72,6 @@ namespace Tello.App.UWP
             ViewModel.Close();
 
             base.OnNavigatedFrom(e);
-        }
-
-        private void PowerUpButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
-        {
-#if EMULATOR
-            _telloEmulator.PowerOn();
-            ViewModel.ControllerViewModel.ControlLog.Insert(0, "Tello SDK Emulator Powered On");
-#else
-            var dialog = new MessageDialog("This method is for the SDK emulator.", "Tello Drone");
-            dialog.ShowAsync();
-#endif
-        }
-
-        private void PowerDownButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
-        {
-#if EMULATOR
-            _telloEmulator.PowerOff();
-            ViewModel.ControllerViewModel.ControlLog.Insert(0, "Tello SDK Emulator Powered Off");
-#else
-            var dialog = new MessageDialog("This method is for the SDK emulator.", "Tello Drone");
-            dialog.ShowAsync();
-#endif
         }
     }
 }

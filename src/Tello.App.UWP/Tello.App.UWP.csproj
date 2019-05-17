@@ -161,29 +161,49 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Messenger.Simulator\Messenger.Simulator.csproj">
+      <Project>{6C783138-2976-4603-A617-06E38BF008DE}</Project>
+      <Name>Messenger.Simulator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Messenger.Udp\Messenger.Udp.csproj">
+      <Project>{9D2C30D9-FEC6-4EBF-A078-A3ABC7CB9F87}</Project>
+      <Name>Messenger.Udp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Messenger\Messenger.csproj">
+      <Project>{8C52209C-057E-4EF6-9126-E140A6B1F934}</Project>
+      <Name>Messenger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Repository.Sqlite\Repository.Sqlite.csproj">
+      <Project>{8C31E189-98FF-4621-8651-D963E6356966}</Project>
+      <Name>Repository.Sqlite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Repository\Repository.csproj">
+      <Project>{7CCE1AD3-75EE-446E-B2C0-91EAF78A88F7}</Project>
+      <Name>Repository</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Tello.App\Tello.App.csproj">
       <Project>{5e9087a6-702a-47ca-853a-08daa9ece8b1}</Project>
       <Name>Tello.App</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tello.Controller\Tello.Controller.csproj">
-      <Project>{C19D61FF-4B43-4FE4-89CB-BBED1A9FDA4A}</Project>
+      <Project>{c19d61ff-4b43-4fe4-89cb-bbed1a9fda4a}</Project>
       <Name>Tello.Controller</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tello.Emulator.SDKV2\Tello.SDKV2.Emulator.csproj">
-      <Project>{D1455165-FCA1-4C89-8FCE-33553AC060DD}</Project>
-      <Name>Tello.SDKV2.Emulator</Name>
+    <ProjectReference Include="..\Tello.Entities.Sqlite\Tello.Entities.Sqlite.csproj">
+      <Project>{48b45d28-0ff0-48e8-ab86-553335765dff}</Project>
+      <Name>Tello.Entities.Sqlite</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tello.Messaging\Tello.Messaging.csproj">
-      <Project>{04963A60-6721-4057-B3AE-2D97D025D127}</Project>
-      <Name>Tello.Messaging</Name>
+    <ProjectReference Include="..\Tello.Entities\Tello.Entities.csproj">
+      <Project>{e601653f-c086-45c9-9ef9-3f6570b744a2}</Project>
+      <Name>Tello.Entities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tello.Scripting\Tello.Scripting.csproj">
-      <Project>{847fe59e-fc20-4b54-b512-3225ee11497d}</Project>
-      <Name>Tello.Scripting</Name>
+    <ProjectReference Include="..\Tello.Simulator\Tello.Simulator.csproj">
+      <Project>{08529A27-A168-4E98-92E0-3E989C12F377}</Project>
+      <Name>Tello.Simulator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tello.Udp\Tello.SDKV2.Udp.csproj">
-      <Project>{894d1a55-9212-4c04-aad7-a6621549594d}</Project>
-      <Name>Tello.SDKV2.Udp</Name>
+    <ProjectReference Include="..\Tello\Tello.csproj">
+      <Project>{32ca8bb5-62a9-440d-8d52-298f81283891}</Project>
+      <Name>Tello</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
