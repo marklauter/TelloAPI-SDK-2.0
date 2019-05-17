@@ -34,7 +34,7 @@ Since the Tello operates synchronously, the flight controller had to provide an 
 * operations and flight data logging in SQLite
 
 ### May 2019 Goals
-* COMPLETE - refactor based on value objects vid featuring Pim Elshoff: https://www.youtube.com/watch?v=aKBkpLj9-88
+* COMPLETE - refactor based on video about DDD and value objects featuring Pim Elshoff: https://www.youtube.com/watch?v=aKBkpLj9-88
 * DEFERRED - script improvements
 * IN PROGRESS - video (decoding H264) without crap UWP media control
 * IN PROGRESS - incorporate OpenCV
