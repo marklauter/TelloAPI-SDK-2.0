@@ -1,5 +1,6 @@
 ﻿using Messenger.Simulator;
 using System;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Tello.Simulator.Messaging;
@@ -38,16 +39,22 @@ namespace Tello.Simulator
 
         private async void VideoThread()
         {
-            await Task.Run(() =>
+            var bytes = Encoding.UTF8.GetBytes("this is fake video data");
+            await Task.Run(async () =>
             {
                 var spinWait = new SpinWait();
                 while (true)
                 {
                     if (_isVideoStreaming)
                     {
-                        (VideoTransmitter as VideoTransmitter).AddVideoSegment(Array.Empty<byte>());
+                        //(VideoTransmitter as VideoTransmitter).AddVideoSegment(Array.Empty<byte>());
+                        (VideoTransmitter as VideoTransmitter).AddVideoSegment(bytes);
+                        await Task.Delay(1000 / 5);
                     }
-                    spinWait.SpinOnce();
+                    else
+                    {
+                        spinWait.SpinOnce();
+                    }
                 }
             });
         }

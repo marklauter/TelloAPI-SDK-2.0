@@ -67,7 +67,7 @@ namespace Tello.Simulator.SDKV2.Demo
 
         private static void VideoObserver_VideoSampleReady(object sender, Events.VideoSampleReadyArgs e)
         {
-            throw new NotImplementedException();
+            Log.WriteLine($"video data received {e.Message.Data.Length}b @ {e.Message.Timestamp.ToString("o")}");
         }
 
         private static int _stateCount = 0;
@@ -114,6 +114,9 @@ namespace Tello.Simulator.SDKV2.Demo
         {
             Log.WriteLine("> get battery");
             _tello.Controller.GetBattery();
+
+            Log.WriteLine("> start video");
+            _tello.Controller.StartVideo();
 
             Log.WriteLine("> take off");
             _tello.Controller.TakeOff();
