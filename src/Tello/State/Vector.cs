@@ -81,7 +81,7 @@ namespace Tello.State
 
         public override string ToString()
         {
-            return $"P({X}, {Y}) \u0398{Heading}";
+            return $"P({X}, {Y}) \u0398({Heading})";
         }
     }
 }
