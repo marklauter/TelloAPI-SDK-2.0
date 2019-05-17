@@ -1,42 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Tello.App.MvvM;
 using Tello.Controller;
-using Tello.Messaging;
 
 namespace Tello.App.ViewModels
 {
     public class TelloVideoViewModel : ViewModel
     {
-        private readonly IVideoSampleReadyNotifier _videoSampleReadyNotifier;
-        private readonly IVideoSampleProvider _videoSampleProvider;
+        private readonly IVideoObserver _videoObserver;
 
         public TelloVideoViewModel(
-            IUIDispatcher dispatcher, 
-            IUINotifier userNotifier, 
-            IVideoSampleReadyNotifier videoSampleReadyNotifier, 
-            IVideoSampleProvider videoSampleProvider)
-            : base(dispatcher, userNotifier)
+            IUIDispatcher dispatcher,
+            IUINotifier notifier,
+            IVideoObserver videoObserver)
+            : base(dispatcher, notifier)
         {
-            _videoSampleReadyNotifier = videoSampleReadyNotifier ?? throw new ArgumentNullException(nameof(videoSampleReadyNotifier));
-            _videoSampleProvider = videoSampleProvider ?? throw new ArgumentNullException(nameof(videoSampleProvider));
+            _videoObserver = videoObserver ?? throw new ArgumentNullException(nameof(videoObserver));
         }
 
         protected override void OnOpen(OpenEventArgs args)
         {
-            _videoSampleReadyNotifier.VideoSampleReady += OnVideoSampleReady;
+            _videoObserver.VideoSampleReady += VideoSampleReady;
         }
 
         protected override void OnClosing(ClosingEventArgs args)
         {
-            _videoSampleReadyNotifier.VideoSampleReady -= OnVideoSampleReady;
+            _videoObserver.VideoSampleReady -= VideoSampleReady;
         }
 
-        private void OnVideoSampleReady(object sender, VideoSampleReadyArgs e)
+        private void VideoSampleReady(object sender, Events.VideoSampleReadyArgs e)
         {
-            
+            throw new NotImplementedException(nameof(VideoSampleReady));
         }
+
 
         //todo: implementation - UWP should override this class and implement a MediaStreamSource property which can be used by the MediaElement control
         //public MediaStreamSource

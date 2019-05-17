@@ -45,15 +45,15 @@ namespace Tello.App.ViewModels
             //todo: this should be pushed directly to a queue to minimize time in method. the queue can be picked up by a processor that does what this method is currently doing.
             Dispatcher.Invoke((state) =>
             {
+                State = state as ITelloState;
                 StateHistory.Add(state as ITelloState);
                 if (StateHistory.Count > 500)
                 {
                     StateHistory.RemoveAt(0);
                 }
             },
-            State);
+            e.State);
 
-            State = e.State;
 
             if (_repository != null)
             {

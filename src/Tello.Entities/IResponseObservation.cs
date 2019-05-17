@@ -17,7 +17,7 @@ namespace Tello.Entities
         /// <summary>
         /// IRequest.Data (after parsing)
         /// </summary>
-        Commands Command { get; set; }
+        Command Command { get; set; }
 
         /// <summary>
         /// IResponse.Data (after parsing)

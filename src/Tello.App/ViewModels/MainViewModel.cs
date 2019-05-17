@@ -1,9 +1,7 @@
 ﻿using Messenger;
 using Repository;
-using System;
 using Tello.App.MvvM;
 using Tello.Controller;
-using Tello.Entities;
 using Tello.Entities.Sqlite;
 
 namespace Tello.App.ViewModels
@@ -12,6 +10,7 @@ namespace Tello.App.ViewModels
     {
         public TelloControllerViewModel ControllerViewModel { get; }
         public TelloStateViewModel StateViewModel { get; }
+        public TelloVideoViewModel VideoViewModel { get; }
 
         private readonly DroneMessenger _tello;
 
@@ -39,13 +38,23 @@ namespace Tello.App.ViewModels
             var session = repository.NewEntity<Session>();
 
             StateViewModel = new TelloStateViewModel(
-                dispatcher, 
+                dispatcher,
                 notifier,
                 _tello.StateObserver,
-                repository, 
+                repository,
                 session);
 
-            //            ControllerViewModel = new TelloControllerViewModel(dispatcher, notifier, _flightController, repository);
+            VideoViewModel = new TelloVideoViewModel(
+                dispatcher,
+                notifier,
+                _tello.VideoObserver);
+
+            ControllerViewModel = new TelloControllerViewModel(
+                dispatcher, 
+                notifier, 
+                _tello.Controller, 
+                repository,
+                session);
         }
 
         protected override void OnOpen(OpenEventArgs args)

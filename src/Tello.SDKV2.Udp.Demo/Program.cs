@@ -56,10 +56,11 @@ namespace Tello.Udp.Demo
                 _canMove = true;
             }
 
-            Log.WriteLine($"{(Command)e.Response.Request.Data} returned '{e.Response.Message}' in {(int)e.Response.TimeTaken.TotalMilliseconds}ms", ConsoleColor.Cyan);
+            Log.WriteLine($"'{(Command)e.Response.Request.Data}' returned '{e.Response.Message}' in {(int)e.Response.TimeTaken.TotalMilliseconds}ms", ConsoleColor.Cyan);
             Log.WriteLine($"Estimated Position: { _tello.Controller.Position}", ConsoleColor.Blue);
 
-            _repository.Insert(new ResponseObservation(e.Response));
+            var group = _repository.NewEntity<ObservationGroup>(_session);
+            _repository.Insert(new ResponseObservation(group, e.Response));
         }
 
         private static void VideoObserver_VideoSampleReady(object sender, Events.VideoSampleReadyArgs e)

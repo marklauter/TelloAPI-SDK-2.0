@@ -69,16 +69,18 @@ namespace Tello.Entities.Sqlite
         #endregion
 
         #region Command
+
         [SQLite.Ignore]
-        public Commands Command { get; set; }
+        public Command Command { get; set; }
 
         [SQLite.Indexed]
         [SQLite.Column("Command")]
         public string CommandValue
         {
-            get => Command.ToString();
-            set => Command = (Commands)Enum.Parse(typeof(Commands), value);
+            get => (string)Command;
+            set => Command = (Command)value;
         }
+
         #endregion
 
         #region Response

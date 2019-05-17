@@ -20,6 +20,7 @@ namespace Tello.Controller
             _videoReceiver = videoReceiver ?? throw new ArgumentNullException(nameof(videoReceiver));
 
             Controller = new FlightController(_transceiver);
+
             Controller.ConnectionStateChanged +=
                 (object sender, ConnectionStateChangedArgs e) =>
                 {
@@ -42,6 +43,7 @@ namespace Tello.Controller
 
 
         #region Listeners
+
         private void StartLisenters()
         {
             _stateReceiver.Start();
@@ -53,6 +55,7 @@ namespace Tello.Controller
             _stateReceiver.Stop();
             _videoReceiver.Stop();
         }
+
         #endregion
 
         public IFlightController Controller { get; }

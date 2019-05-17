@@ -121,7 +121,7 @@ namespace Tello.Entities.Sqlite.Test
                 Assert.AreEqual(1, observation.Id);
                 Assert.AreEqual(1, observation.GroupId);
                 Assert.AreEqual(request.Timestamp, observation.TimeInitiated);
-                Assert.AreEqual(Commands.Takeoff, observation.Command);
+                Assert.AreEqual(Commands.Takeoff, observation.Command.Rule.Command);
                 Assert.AreEqual("ok", observation.Response);
             }
         }
