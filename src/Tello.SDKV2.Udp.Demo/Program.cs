@@ -63,9 +63,17 @@ namespace Tello.Udp.Demo
             _repository.Insert(new ResponseObservation(group, e.Response));
         }
 
+        private static int _videoCount = 0;
         private static void VideoObserver_VideoSampleReady(object sender, Events.VideoSampleReadyArgs e)
         {
-            throw new NotImplementedException();
+            if (_videoCount % 25 == 0)
+            {
+                Log.WriteLine($"video data received {e.Message.Data.Length}b @ {e.Message.Timestamp.ToString("o")}");
+            }
+
+            _videoCount = _videoCount < Int32.MaxValue
+                ? _videoCount + 1
+                : 0;
         }
 
         private static int _stateCount = 0;
@@ -113,6 +121,9 @@ namespace Tello.Udp.Demo
             Log.WriteLine("> get battery");
             _tello.Controller.GetBattery();
 
+            Log.WriteLine("> start video");
+            _tello.Controller.StartVideo();
+
             Log.WriteLine("> take off");
             _tello.Controller.TakeOff();
 
@@ -122,40 +133,11 @@ namespace Tello.Udp.Demo
                 spinWait.SpinOnce();
             }
 
-            Log.WriteLine("> go forward");
-            _tello.Controller.GoForward(50);
-
-            //Log.WriteLine("> turn counter clockwise");
-            //_tello.Controller.TurnCounterClockwise(90);
-
-            //Log.WriteLine("> go 50, 50, 50");
-            //_tello.Controller.Go(50, 50, -50, 50);
-
-            // sample validation exception
-            //try
-            //{
-            //    Log.WriteLine("> go forward failure example");
-            //    _tello.Controller.GoForward(10);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Log.WriteLine($"GoForward failed with exception {ex.GetType()} and message '{ex.Message}'", ConsoleColor.Red);
-            //}
-
             //Log.WriteLine("> go forward");
             //_tello.Controller.GoForward(50);
 
-            //Log.WriteLine("> go up");
-            //_tello.Controller.GoUp(50);
-
-            //Log.WriteLine("> turn counter clockwise");
-            //_tello.Controller.TurnCounterClockwise(90);
-
-            //Log.WriteLine("> turn clockwise");
-            //_tello.Controller.TurnClockwise(45);
-
-            Log.WriteLine("> fly polygon");
-            _tello.Controller.FlyPolygon(4, 100, 50, ClockDirections.Clockwise);
+            //Log.WriteLine("> fly polygon");
+            //_tello.Controller.FlyPolygon(4, 100, 50, ClockDirections.Clockwise);
 
             Log.WriteLine("> land");
             _tello.Controller.Land();
@@ -164,18 +146,15 @@ namespace Tello.Udp.Demo
         private static async void Connect()
         {
             Log.WriteLine("> enter sdk mode");
-            if (!await _tello.Controller.Connect())
-            {
-                Log.WriteLine("connection failed - program will be terminated");
-                Console.ReadKey(false);
-            }
-            else
+            if (await _tello.Controller.Connect())
             {
                 Console.WriteLine("Remember to turn Tello off to keep it from overheating.");
                 Console.WriteLine("press any key when ready to end program...");
-                Console.ReadKey(false);
             }
-            _repository.Dispose();
+            else
+            {
+                Log.WriteLine("connection failed - program will be terminated");
+            }
         }
 
         private static void Main(string[] _)
@@ -185,6 +164,9 @@ namespace Tello.Udp.Demo
             Console.ReadKey(false);
 
             Connect();
+            Console.ReadKey(false);
+
+            _repository.Dispose();
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace Tello.Simulator.SDKV2.Demo
+namespace Tello.Simulator.Demo
 {
     public static class Log
     {
