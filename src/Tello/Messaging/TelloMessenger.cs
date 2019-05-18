@@ -1,6 +1,7 @@
 ﻿using Messenger;
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,6 +36,7 @@ namespace Tello.Messaging
             }
             else
             {
+                Debug.WriteLine($"{nameof(SendAsync)}: '{command}' command queue is {_commands.Count} deep.");
                 Enqueue(command);
                 return await Task.FromResult<TelloResponse>(null);
             }
@@ -51,7 +53,17 @@ namespace Tello.Messaging
                     {
                         if (!_commands.IsEmpty && _commands.TryDequeue(out var command))
                         {
-                            ReponseReceived(new TelloResponse(await _transceiver.SendAsync(new TelloRequest(command))));
+                            Debug.WriteLine($"{nameof(ProcessCommandQueue)}: command queue is {_commands.Count} deep.");
+
+                            var request = new TelloRequest(command);
+                            Debug.WriteLine($"{nameof(ProcessCommandQueue)}: request.Message '{request.Message}'");
+                            Debug.WriteLine($"{nameof(ProcessCommandQueue)}: request.Timeout '{request.Timeout}'");
+
+                            var response = new TelloResponse(await _transceiver.SendAsync(request));
+                            Debug.WriteLine($"{nameof(ProcessCommandQueue)}: response.Success '{response.Success}'");
+                            Debug.WriteLine($"{nameof(ProcessCommandQueue)}: response.Message '{response.Message}'");
+
+                            ReponseReceived(response);
                         }
                         else
                         {
