@@ -106,6 +106,7 @@ namespace Tello
             return command.Rule.Response;
         }
 
+        //todo: move command timeouts to command rules
         public static explicit operator TimeSpan(Command command)
         {
             var avgspeed = 10.0; // cm/s (using a low speed to give margin of error)
@@ -122,7 +123,7 @@ namespace Tello
                 case Commands.GetWIFISnr:
                 case Commands.GetSdkVersion:
                 case Commands.GetSerialNumber:
-                    return TimeSpan.FromSeconds(5);
+                    return TimeSpan.FromSeconds(30);
 
                 //todo: if I knew the set speed in cm/s I could get a better timeout value
                 case Commands.Left:
@@ -130,18 +131,18 @@ namespace Tello
                 case Commands.Forward:
                 case Commands.Back:
                     distance = (int)command.Arguments[0]; //cm
-                    return TimeSpan.FromSeconds(distance / avgspeed);
+                    return TimeSpan.FromSeconds(distance / avgspeed * 10);
 
                 case Commands.Go:
                     var x = (int)command.Arguments[0];
                     var y = (int)command.Arguments[1];
                     distance = Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
-                    return TimeSpan.FromSeconds(distance / avgspeed);
+                    return TimeSpan.FromSeconds(distance / avgspeed * 10);
 
                 case Commands.ClockwiseTurn:
                 case Commands.CounterClockwiseTurn:
                     var degrees = (int)command.Arguments[0];
-                    return TimeSpan.FromSeconds(degrees / arcspeed);
+                    return TimeSpan.FromSeconds(degrees / arcspeed * 10);
 
                 case Commands.Takeoff:
                 case Commands.SetSpeed:
