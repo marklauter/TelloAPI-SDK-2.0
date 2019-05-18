@@ -121,7 +121,7 @@ namespace Tello.Controller
                                 }
                                 else
                                 {
-                                    throw new TelloException($"{command} expecting '{Responses.Ok.ToString().ToLowerInvariant()}' returned message '{response.Message}' at {response.Timestamp.ToString("o")} after {response.TimeTaken.TotalMilliseconds}ms");
+                                    throw new TelloException($"'{command}' expecting response '{Responses.Ok.ToString().ToLowerInvariant()}' returned message '{response.Message}' at {response.Timestamp.ToString("o")} after {response.TimeTaken.TotalMilliseconds}ms");
                                 }
                                 break;
                             case Responses.Speed:
