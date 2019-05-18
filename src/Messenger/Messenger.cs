@@ -9,7 +9,14 @@ namespace Messenger
         {
             foreach (var observer in _observers.Keys)
             {
-                observer.OnNext(response);
+                try
+                {
+                    observer.OnNext(response);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionThrown(ex);
+                }
             }
         }
 
@@ -17,7 +24,11 @@ namespace Messenger
         {
             foreach (var observer in _observers.Keys)
             {
-                observer.OnError(exception);
+                try
+                {
+                    observer.OnError(exception);
+                }
+                catch { }
             }
         }
 
