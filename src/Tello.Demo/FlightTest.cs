@@ -1,6 +1,7 @@
 ﻿using Messenger;
 using Repository;
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Tello.Controller;
@@ -63,6 +64,9 @@ namespace Tello.Demo
             }
             Console.ReadKey(false);
 
+            if (_videoFile != null)
+                _videoFile.Close();
+
             _repository.Dispose();
         }
 
@@ -86,8 +90,11 @@ namespace Tello.Demo
             Log.WriteLine("> go forward");
             _tello.Controller.GoForward(50);
 
-            Log.WriteLine("> fly polygon");
-            _tello.Controller.FlyPolygon(4, 100, 50, ClockDirections.Clockwise);
+            Log.WriteLine("> go backward");
+            _tello.Controller.GoBackward(50);
+
+            //Log.WriteLine("> fly polygon");
+            //_tello.Controller.FlyPolygon(4, 100, 50, ClockDirections.Clockwise);
 
             Log.WriteLine("> land");
             _tello.Controller.Land();
@@ -113,8 +120,15 @@ namespace Tello.Demo
 
         private int _videoCount = 0;
         private long _videoLength = 0;
+        private FileStream _videoFile = null;
+
         private void VideoObserver_VideoSampleReady(object sender, Events.VideoSampleReadyArgs e)
         {
+            _videoFile = _videoFile == null
+                ? File.OpenWrite($"tello.video.{_session.Id}.h264")
+                : _videoFile;
+            _videoFile.Write(e.Message.Data, 0, e.Message.Data.Length);
+
             _videoLength = _videoLength < Int64.MaxValue
                 ? _videoLength + e.Message.Data.Length
                 : 0;
@@ -155,7 +169,7 @@ namespace Tello.Demo
 
         private void Controller_ExceptionThrown(object sender, Events.ExceptionThrownArgs e)
         {
-            Log.WriteLine($"Exception {e.Exception.InnerException.GetType()} with message '{e.Exception.InnerException.Message}'", ConsoleColor.Red, false);
+            Log.WriteLine($"Exception {e.Exception.InnerException.GetType()} with message - {e.Exception.InnerException.Message}", ConsoleColor.Red, false);
             Log.WriteLine("| Stack trace", ConsoleColor.Red, false);
             Log.WriteLine($"| {e.Exception.InnerException.StackTrace}", ConsoleColor.Red);
         }
