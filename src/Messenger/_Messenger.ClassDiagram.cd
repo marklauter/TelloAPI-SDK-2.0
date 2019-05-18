@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access">
+  <Class Name="Messenger.Messenger&lt;T&gt;" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="5.75" Width="1.75" />
+    <NestedTypes>
+      <Class Name="Messenger.Messenger&lt;T&gt;.Unsubscriber" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Messenger.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAABECAAAAAAAAAAAAAAAAACAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Messenger.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Messenger.Observer&lt;T&gt;" BaseTypeListCollapsed="true">
+    <Position X="15.75" Y="5.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AEgAAAAAAACAAAIAAAAAAAAAAAACAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Observer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Messenger.Receiver" BaseTypeListCollapsed="true">
+    <Position X="13.5" Y="5.75" Width="2" />
+    <NestedTypes>
+      <Class Name="Messenger.Receiver.Unsubscriber" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Receiver.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAIABQCAAAEAAAAAAAAAAAAACAAAAIAAAAAQAAAA=</HashCode>
+      <FileName>Receiver.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Messenger.Transceiver" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAACAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transceiver.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Messenger.Envelope" BaseTypeListCollapsed="true">
+    <Position X="11.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAACAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messages\Envelope.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Messenger.Request">
+    <Position X="1.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAACAAAAAAAAABIAAAAAAAAAAAA=</HashCode>
+      <FileName>Messages\Request.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Messenger.Request&lt;T&gt;">
+    <Position X="1.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Messages\Request.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Messenger.Response">
+    <Position X="6.25" Y="7.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAAAAAAAAAAAAACAAAAAgAAgBAAAABAAIAAAAA=</HashCode>
+      <FileName>Messages\Response.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Messenger.Response&lt;T&gt;">
+    <Position X="6.25" Y="12" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Messages\Response.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Messenger.IMessenger&lt;T&gt;">
+    <Position X="9.5" Y="2" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IMessenger.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Messenger.IReceiver">
+    <Position X="12" Y="1.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>IReceiver.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Messenger.ITransceiver">
+    <Position X="14" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ITransceiver.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Messenger.IEnvelope">
+    <Position X="4.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAACAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messages\IEnvelope.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Messenger.IEnvelope&lt;T&gt;">
+    <Position X="4.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Messages\IEnvelope.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Messenger.IRequest">
+    <Position X="7" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>Messages\IRequest.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Messenger.IRequest&lt;T&gt;">
+    <Position X="6" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messages\IRequest.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Messenger.IResponse">
+    <Position X="2.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAgAAgAAAAABAAIAAAAA=</HashCode>
+      <FileName>Messages\IResponse.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Messenger.IResponse&lt;T&gt;">
+    <Position X="3.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Messages\IResponse.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
