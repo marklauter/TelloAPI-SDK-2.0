@@ -3,11 +3,6 @@ The project includes a flight controller, Tello emulator, UDP messenger, script 
 
 This project in action: https://www.youtube.com/watch?v=l6AOf1QZb9g
 
-# ATTENTION - 5 MAY 2019
-The some projects in the solution won't build because I'm conducting a major refactor on the main branch. Oops.
-
-Update 13 MAY 2019 - Almost finished with the refactor.
-
 ## Ryze Robotics Tello Reference
 
 Specs: https://www.ryzerobotics.com/tello/specs
@@ -39,10 +34,11 @@ Since the Tello operates synchronously, the flight controller had to provide an 
 * operations and flight data logging in SQLite
 
 ### May 2019 Goals
-* refactor based on value objects vid featuring Pim Elshoff: https://www.youtube.com/watch?v=aKBkpLj9-88
-* script improvements
-* video (decoding H264) without crap UWP media control
-* incorporate OpenCV
+* COMPLETE - refactor based on video about DDD and value objects featuring Pim Elshoff: https://www.youtube.com/watch?v=aKBkpLj9-88
+* DEFERRED - script improvements
+* IN PROGRESS - video (decoding H264) without crap UWP media control
+* IN PROGRESS - incorporate OpenCV
+* Create Wiki pages for each of the projects in the solution
 
 ### June 2019 Goals
 * Nuget
