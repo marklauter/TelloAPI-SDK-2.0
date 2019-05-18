@@ -5,6 +5,13 @@ using Tello.Types;
 
 namespace Tello
 {
+    // ------------ error messages I've seen -------------
+    // error
+    // error Motor Stop
+    // error Not Joystick
+
+
+
     public abstract class ArgumentRule
     {
         protected ArgumentRule(Type type, Func<object, bool> isTypeAllowed)
