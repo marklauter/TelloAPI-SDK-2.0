@@ -59,13 +59,14 @@ namespace Tello.App.ViewModels
 
         protected override void OnOpen(OpenEventArgs args)
         {
-            ControllerViewModel.Open(args);
             StateViewModel.Open(args);
+            VideoViewModel.Open(args);
+            ControllerViewModel.Open(args);
         }
 
         protected override void OnClosing(ClosingEventArgs args)
         {
-            args.CanClose = ControllerViewModel.Close() && StateViewModel.Close();
+            args.CanClose = ControllerViewModel.Close() && StateViewModel.Close() && VideoViewModel.Close();
         }
 
         internal void ClearDatabase()
