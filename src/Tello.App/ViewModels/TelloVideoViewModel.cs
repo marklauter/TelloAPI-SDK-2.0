@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using Tello.App.MvvM;
 using Tello.Controller;
 
@@ -38,7 +38,6 @@ namespace Tello.App.ViewModels
         private bool _streamStarted = false;
 
         public event EventHandler<bool> VideoStreamStarted;
-        public event EventHandler VideoSampleReady;
 
         public TelloVideoViewModel(
             IUIDispatcher dispatcher,
@@ -63,13 +62,13 @@ namespace Tello.App.ViewModels
         private void Observer_VideoSampleReady(object sender, Events.VideoSampleReadyArgs e)
         {
             _timeIndex = _watch.Elapsed;
-            _samples.Enqueue(new VideoSample(e.Message.Data, _timeIndex, _watch.Elapsed - _timeIndex));
-
+            var sample = new VideoSample(e.Message.Data, _timeIndex, _watch.Elapsed - _timeIndex);
             if (!_watch.IsRunning)
             {
                 _watch.Start();
             }
-            //VideoSampleReady?.Invoke(this, EventArgs.Empty);
+
+            _samples.Enqueue(sample);
 
             if (!_streamStarted)
             {
@@ -83,7 +82,13 @@ namespace Tello.App.ViewModels
 
         public VideoSample GetSample()
         {
-            return _samples.TryDequeue(out var result) ? result : null;
+            var wait = new SpinWait();
+            VideoSample result;
+            while (_samples.Count == 0 || !_samples.TryDequeue(out result))
+            {
+                wait.SpinOnce();
+            }
+            return result;
         }
 
 

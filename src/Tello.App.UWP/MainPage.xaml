@@ -32,13 +32,18 @@
                 </StackPanel>
 
                 <StackPanel BorderBrush="White" BorderThickness="1" Margin="5" Padding="5">
+                    <Button Command="{Binding Path=ControllerViewModel.StartVideoCommand}">video on</Button>
+                    <Button Command="{Binding Path=ControllerViewModel.StopVideoCommand}">video off</Button>
+                </StackPanel>
+
+                <StackPanel BorderBrush="White" BorderThickness="1" Margin="5" Padding="5">
                     <Button Command="{Binding Path=ControllerViewModel.TakeOffCommand}">takeoff</Button>
                     <Button Command="{Binding Path=ControllerViewModel.LandCommand}">land</Button>
                 </StackPanel>
 
                 <StackPanel BorderBrush="White" BorderThickness="1" Margin="5" Padding="5">
-                    <Button Command="{Binding Path=ControllerViewModel.SetSpeedCommand}" CommandParameter="100">set speed 100</Button>
-                    <Button Command="{Binding Path=ControllerViewModel.GoForwardCommand}" CommandParameter="200">forward 200</Button>
+                    <Button Command="{Binding Path=ControllerViewModel.SetSpeedCommand}" CommandParameter="50">set speed 50</Button>
+                    <Button Command="{Binding Path=ControllerViewModel.GoForwardCommand}" CommandParameter="200">forward 100</Button>
                 </StackPanel>
 
                 <StackPanel BorderBrush="White" BorderThickness="1" Margin="5" Padding="5">
@@ -70,196 +75,209 @@
             </ScrollViewer>
         </Grid>
 
-        <!-- flight state 6 pack -->
-        <Grid Grid.Row="1" x:Name="StateGrid" Background="DimGray" ColumnSpacing="6" RowSpacing="6">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!-- first row -->
-            <!-- air speed -->
-            <Grid Grid.Row="0" Grid.Column="0">
+            <!-- flight state 6 pack -->
+            <Grid Grid.Column="0" x:Name="StateGrid" Background="Black" ColumnSpacing="6" RowSpacing="6">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/>
-                <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
+
+                <!-- first row -->
+                <!-- air speed -->
+                <Grid Grid.Row="0" Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="2*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/-->
+                    <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
                     Minimum="0" MinAngle="20" Maximum="100" MaxAngle="340" StepSize="0"
                     Value="{Binding Path=StateViewModel.State.AirSpeed.SpeedX}" 
                     TickSpacing="10" TickLength="15" TickWidth="3" TickBrush="White"
                     ScalePadding="0" ScaleWidth="3" ScaleBrush="White" ScaleTickBrush="White" ScaleTickWidth="0"
                     TrailBrush="LimeGreen" NeedleBrush="White" NeedleWidth="2" />
-                <StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Top">
-                    <TextBlock Foreground="White" FontWeight="Bold" HorizontalAlignment="Center">SPEED (cm/s)</TextBlock>
-                    <TextBlock Foreground="White" FontWeight="Bold" HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.AirSpeed.SpeedX}"/>
-                    <!--<TextBlock Foreground="White" FontSize="10" HorizontalAlignment="Center">AC (cm/s/s)</TextBlock>
+                    <StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Top">
+                        <TextBlock Foreground="White" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center">SPEED (cm/s)</TextBlock>
+                        <TextBlock Foreground="White" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.AirSpeed.SpeedX}"/>
+                        <!--<TextBlock Foreground="White" FontSize="10" HorizontalAlignment="Center">AC (cm/s/s)</TextBlock>
                     <TextBlock Foreground="White" FontSize="10" HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.AirSpeed.AccelerationX}"/>-->
-                </StackPanel>
-            </Grid>
+                    </StackPanel>
+                </Grid>
 
-            <!-- attitude indicator -->
-            <StackPanel Grid.Row="0" Grid.Column="1">
-                <TextBlock>attitude indicator</TextBlock>
-                <StackPanel>
-                    <TextBlock>ROLL</TextBlock>
-                    <TextBlock Text="{Binding Path=StateViewModel.State.Attitude.Roll}"></TextBlock>
+                <!-- attitude indicator -->
+                <StackPanel Grid.Row="0" Grid.Column="1">
+                    <TextBlock>attitude indicator</TextBlock>
+                    <StackPanel>
+                        <TextBlock>ROLL</TextBlock>
+                        <TextBlock Text="{Binding Path=StateViewModel.State.Attitude.Roll}"></TextBlock>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock>PITCH</TextBlock>
+                        <TextBlock Text="{Binding Path=StateViewModel.State.Attitude.Pitch}"></TextBlock>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock>YAW</TextBlock>
+                        <TextBlock Text="{Binding Path=StateViewModel.State.Attitude.Yaw}"></TextBlock>
+                    </StackPanel>
                 </StackPanel>
-                <StackPanel>
-                    <TextBlock>PITCH</TextBlock>
-                    <TextBlock Text="{Binding Path=StateViewModel.State.Attitude.Pitch}"></TextBlock>
-                </StackPanel>
-                <StackPanel>
-                    <TextBlock>YAW</TextBlock>
-                    <TextBlock Text="{Binding Path=StateViewModel.State.Attitude.Yaw}"></TextBlock>
-                </StackPanel>
-            </StackPanel>
 
-            <!-- altitude indicator -->
-            <Grid Grid.Row="0" Grid.Column="3">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="2*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/>
-                <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
+                <!-- altitude indicator -->
+                <Grid Grid.Row="0" Grid.Column="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="2*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/-->
+                    <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
                     Minimum="0" MinAngle="0" Maximum="1000" MaxAngle="330" StepSize="0"
                     Value="{Binding Path=StateViewModel.State.Position.AltitudeAGLInCm, Mode=TwoWay}" 
                     TickSpacing="50" TickLength="15" TickWidth="3" TickBrush="White"
                     ScalePadding="0" ScaleWidth="3" ScaleBrush="White" ScaleTickBrush="White" ScaleTickWidth="0"
                     TrailBrush="LimeGreen" NeedleBrush="White" NeedleWidth="2" />
-                <StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Top">
-                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center">ALT (cm)</TextBlock>
-                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.Position.AltitudeAGLInCm}"></TextBlock>
-                    <!--<TextBlock>MSL (cm)</TextBlock>
+                    <StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Top">
+                        <TextBlock Foreground="White" FontSize="10" FontWeight="Bold"  HorizontalAlignment="Center">ALT (cm)</TextBlock>
+                        <TextBlock Foreground="White" FontSize="10" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.Position.AltitudeAGLInCm}"></TextBlock>
+                        <!--<TextBlock>MSL (cm)</TextBlock>
                     <TextBlock Text="{Binding Path=StateViewModel.State.Position.AltitudeMSLInCm}"></TextBlock>-->
-                </StackPanel>
-            </Grid>
+                    </StackPanel>
+                </Grid>
 
-            <!-- second row -->
-            <!-- lateral speed/accel (turn coordinator) -->
-            <Grid Grid.Row="1" Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="2*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/>
-                <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
+                <!-- second row -->
+                <!-- lateral speed/accel (turn coordinator) -->
+                <Grid Grid.Row="1" Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="2*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/-->
+                    <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
                     Minimum="-100" MinAngle="270" Maximum="100" MaxAngle="90" StepSize="0"
                     Value="{Binding Path=StateViewModel.State.AirSpeed.SpeedY, Mode=TwoWay}" 
                     TickSpacing="20" TickLength="15" TickWidth="3" TickBrush="White"
                     ScalePadding="0" ScaleWidth="3" ScaleBrush="White" ScaleTickBrush="White" ScaleTickWidth="0"
                     TrailBrush="White" NeedleBrush="White" NeedleWidth="2" />
-                <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
-                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center">LAT SPD (cm/s)</TextBlock>
-                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.AirSpeed.SpeedY}"></TextBlock>
-                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center">TC (cm/s/s)</TextBlock>
-                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.AirSpeed.AccelerationZ}"></TextBlock>
-                </StackPanel>
-            </Grid>
+                    <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
+                        <TextBlock Foreground="White" FontSize="10" FontWeight="Bold"  HorizontalAlignment="Center">LAT SPD (cm/s)</TextBlock>
+                        <TextBlock Foreground="White" FontSize="10" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.AirSpeed.SpeedY}"></TextBlock>
+                        <TextBlock Foreground="White" FontSize="10" FontWeight="Bold"  HorizontalAlignment="Center">TC (cm/s/s)</TextBlock>
+                        <TextBlock Foreground="White" FontSize="10" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.AirSpeed.AccelerationZ}"></TextBlock>
+                    </StackPanel>
+                </Grid>
 
-            <!-- heading indicator -->
-            <Grid Grid.Row="1" Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="2*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/>
-                <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
+                <!-- heading indicator -->
+                <Grid Grid.Row="1" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="2*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/-->
+                    <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
                     Minimum="0" MinAngle="0" Maximum="360" MaxAngle="360" StepSize="0"
                     Value="{Binding Path=StateViewModel.State.Position.Heading, Mode=TwoWay}" 
                     TickSpacing="45" TickLength="15" TickWidth="3" TickBrush="White"
                     ScalePadding="0" ScaleWidth="3" ScaleBrush="White" ScaleTickBrush="White" ScaleTickWidth="0"
                     TrailBrush="White" NeedleBrush="White" NeedleWidth="2" />
-                <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
-                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center">HDG (deg)</TextBlock>
-                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.Position.Heading}"></TextBlock>
-                </StackPanel>
-            </Grid>
+                    <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
+                        <TextBlock Foreground="White" FontSize="10" FontWeight="Bold"  HorizontalAlignment="Center">HDG (deg)</TextBlock>
+                        <TextBlock Foreground="White" FontSize="10" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.Position.Heading}"></TextBlock>
+                    </StackPanel>
+                </Grid>
 
-            <!-- vertical speed indicator BUG - VSI is showing data in reverse -->
-            <Grid Grid.Row="1" Grid.Column="3">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="2*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/>
-                <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
+                <!-- vertical speed indicator BUG - VSI is showing data in reverse -->
+                <Grid Grid.Row="1" Grid.Column="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="2*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!--Image Grid.RowSpan="3" Grid.Column="1" Source="Assets\gauge.png"/-->
+                    <controls:RadialGauge Grid.RowSpan="3" Grid.Column="1" Margin="15"
                     Minimum="-100" MinAngle="180" Maximum="100" MaxAngle="360" StepSize="0"
                     Value="{Binding Path=StateViewModel.State.AirSpeed.SpeedZ}" 
                     TickSpacing="20" TickLength="15" TickWidth="3" TickBrush="White"
                     ScalePadding="0" ScaleWidth="3" ScaleBrush="White" ScaleTickBrush="White" ScaleTickWidth="0"
                     TrailBrush="White" NeedleBrush="White" NeedleWidth="2" />
-                <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
-                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center">VSI (cm/s)</TextBlock>
-                    <TextBlock Foreground="White" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.AirSpeed.SpeedZ}"></TextBlock>
-                    <TextBlock>ACEL (cm/s/s)</TextBlock>
-                    <TextBlock Text="{Binding Path=StateViewModel.State.AirSpeed.AccelerationZ}"></TextBlock>
+                    <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
+                        <TextBlock Foreground="White" FontSize="10" FontWeight="Bold"  HorizontalAlignment="Center">VSI (cm/s)</TextBlock>
+                        <TextBlock Foreground="White" FontSize="10" FontWeight="Bold"  HorizontalAlignment="Center" Text="{Binding Path=StateViewModel.State.AirSpeed.SpeedZ}"></TextBlock>
+                        <TextBlock>ACEL (cm/s/s)</TextBlock>
+                        <TextBlock Text="{Binding Path=StateViewModel.State.AirSpeed.AccelerationZ}"></TextBlock>
+                    </StackPanel>
+                </Grid>
+
+                <!--third row-->
+                <StackPanel Grid.Row="2" Grid.Column="0">
+                    <TextBlock>hobbs meter</TextBlock>
+                    <StackPanel>
+                        <TextBlock>MOTOR TIME (s)</TextBlock>
+                        <TextBlock Text="{Binding Path=StateViewModel.State.HobbsMeter.MotorTimeInSeconds}"></TextBlock>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock>ESTIMATED TIME REMAINING (m)</TextBlock>
+                        <TextBlock Text="{Binding Path=StateViewModel.State.HobbsMeter.FlightTimeRemainingInMinutes}"></TextBlock>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="1">
+                    <TextBlock>fuel (battery)</TextBlock>
+                    <StackPanel>
+                        <TextBlock>% REMAINING</TextBlock>
+                        <TextBlock Text="{Binding Path=StateViewModel.State.Battery.PercentRemaining}"></TextBlock>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="3">
+                    <TextBlock>temperature</TextBlock>
+                    <StackPanel>
+                        <TextBlock>LOW (deg C)</TextBlock>
+                        <TextBlock Text="{Binding Path=StateViewModel.State.Battery.TemperatureLowC}"></TextBlock>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock>HIGH (deg C)</TextBlock>
+                        <TextBlock Text="{Binding Path=StateViewModel.State.Battery.TemperatureHighC}"></TextBlock>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
 
-            <!--third row-->
-            <StackPanel Grid.Row="2" Grid.Column="0">
-                <TextBlock>hobbs meter</TextBlock>
-                <StackPanel>
-                    <TextBlock>MOTOR TIME (s)</TextBlock>
-                    <TextBlock Text="{Binding Path=StateViewModel.State.HobbsMeter.MotorTimeInSeconds}"></TextBlock>
-                </StackPanel>
-                <StackPanel>
-                    <TextBlock>ESTIMATED TIME REMAINING (m)</TextBlock>
-                    <TextBlock Text="{Binding Path=StateViewModel.State.HobbsMeter.FlightTimeRemainingInMinutes}"></TextBlock>
-                </StackPanel>
-            </StackPanel>
-            <StackPanel Grid.Row="2" Grid.Column="1">
-                <TextBlock>fuel (battery)</TextBlock>
-                <StackPanel>
-                    <TextBlock>% REMAINING</TextBlock>
-                    <TextBlock Text="{Binding Path=StateViewModel.State.Battery.PercentRemaining}"></TextBlock>
-                </StackPanel>
-            </StackPanel>
-            <StackPanel Grid.Row="2" Grid.Column="3">
-                <TextBlock>temperature</TextBlock>
-                <StackPanel>
-                    <TextBlock>LOW (deg C)</TextBlock>
-                    <TextBlock Text="{Binding Path=StateViewModel.State.Battery.TemperatureLowC}"></TextBlock>
-                </StackPanel>
-                <StackPanel>
-                    <TextBlock>HIGH (deg C)</TextBlock>
-                    <TextBlock Text="{Binding Path=StateViewModel.State.Battery.TemperatureHighC}"></TextBlock>
-                </StackPanel>
-            </StackPanel>
+            <Grid Grid.Column="1" x:Name="VideoGrid" Background="DimGray" ColumnSpacing="6" RowSpacing="6">
+                <MediaElement x:Name="VideoElement" AreTransportControlsEnabled="False" AutoPlay="False" />
+            </Grid>
+
         </Grid>
+        
     </Grid>
 </Page>
