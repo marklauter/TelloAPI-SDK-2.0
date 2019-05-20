@@ -63,7 +63,23 @@ namespace Tello.App.UWP
 
             ViewModel = CreateMainViewModel(_dispatcher, _notifier);
             DataContext = ViewModel;
-            ViewModel.VideoViewModel.VideoStreamStarted += VideoViewModel_VideoStreamStarted;
+            ViewModel.ControllerViewModel.PropertyChanged += ControllerViewModel_PropertyChanged;
+        }
+
+        private void ControllerViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            var property = typeof(TelloControllerViewModel).GetProperty(e.PropertyName);
+            var value = property.GetValue(sender);
+            Debug.WriteLine($"{nameof(ControllerViewModel_PropertyChanged)} - property '{e.PropertyName}', value '{value}'");
+
+            if (e.PropertyName == nameof(TelloControllerViewModel.IsVideoStreaming) && (bool)value)
+            {
+                VideoElement.Play();
+            }
+            else
+            {
+                VideoElement.Stop();
+            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -83,17 +99,6 @@ namespace Tello.App.UWP
         }
 
         #region video display
-
-        private bool _isPlaying = false;
-        private void VideoViewModel_VideoStreamStarted(object sender, bool e)
-        {
-            Debug.WriteLine($"{nameof(VideoViewModel_VideoStreamStarted)}");
-            if (!_isPlaying)
-            {
-                _isPlaying = true;
-                VideoElement.Play();
-            }
-        }
 
         private bool _videoInitilized = false;
         private void InitializeVideo()
@@ -133,7 +138,7 @@ namespace Tello.App.UWP
             {
                 //Debug.WriteLine($"{nameof(MediaStreamSource_SampleRequested)} - got sample time index {sample.TimeIndex}, length {sample.Buffer.Length}b, duration {sample.Duration}");
                 args.Request.Sample = MediaStreamSample.CreateFromBuffer(sample.Buffer.AsBuffer(), sample.TimeIndex);
-                args.Request.Sample.Duration = sample.Duration; 
+                args.Request.Sample.Duration = sample.Duration;
             }
 #endif
         }

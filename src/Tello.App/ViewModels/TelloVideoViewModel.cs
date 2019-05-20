@@ -35,9 +35,6 @@ namespace Tello.App.ViewModels
     {
         private readonly IVideoObserver _videoObserver;
         private readonly Stopwatch _watch = new Stopwatch();
-        private bool _streamStarted = false;
-
-        public event EventHandler<bool> VideoStreamStarted;
 
         public TelloVideoViewModel(
             IUIDispatcher dispatcher,
@@ -69,13 +66,6 @@ namespace Tello.App.ViewModels
             }
 
             _samples.Enqueue(sample);
-
-            if (!_streamStarted)
-            {
-                _streamStarted = true;
-                Debug.WriteLine($"{nameof(Observer_VideoSampleReady)} - stream started");
-                Dispatcher.Invoke(() => VideoStreamStarted?.Invoke(this, true));
-            }
         }
 
         private readonly ConcurrentQueue<VideoSample> _samples = new ConcurrentQueue<VideoSample>();

@@ -11,6 +11,7 @@ namespace Tello
         event EventHandler<ExceptionThrownArgs> ExceptionThrown;
         event EventHandler<ConnectionStateChangedArgs> ConnectionStateChanged;
         event EventHandler<PositionChangedArgs> PositionChanged;
+        event EventHandler<VideoStreamingStateChangedArgs> VideoStreamingStateChanged;
 
         InterogativeState InterogativeState { get; }
 

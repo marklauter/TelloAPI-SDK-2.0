@@ -40,9 +40,11 @@ namespace Tello.Controller
                     break;
                 case Commands.StartVideo:
                     _isVideoStreaming = true;
+                    VideoStreamingStateChanged?.Invoke(this, new VideoStreamingStateChangedArgs(_isVideoStreaming));
                     break;
                 case Commands.StopVideo:
                     _isVideoStreaming = false;
+                    VideoStreamingStateChanged?.Invoke(this, new VideoStreamingStateChangedArgs(_isVideoStreaming));
                     break;
 
                 case Commands.Left:
@@ -170,6 +172,7 @@ namespace Tello.Controller
         public event EventHandler<ExceptionThrownArgs> ExceptionThrown;
         public event EventHandler<ConnectionStateChangedArgs> ConnectionStateChanged;
         public event EventHandler<PositionChangedArgs> PositionChanged;
+        public event EventHandler<VideoStreamingStateChangedArgs> VideoStreamingStateChanged;
 
         public InterogativeState InterogativeState { get; } = new InterogativeState();
         public Vector Position { get; private set; } = new Vector();

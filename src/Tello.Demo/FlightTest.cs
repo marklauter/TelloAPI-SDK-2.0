@@ -176,8 +176,8 @@ namespace Tello.Demo
 
         private void Controller_ConnectionStateChanged(object sender, Events.ConnectionStateChangedArgs e)
         {
-            Log.WriteLine($"Connection State: {e.Connected}");
-            if (e.Connected)
+            Log.WriteLine($"Connection State: {e.IsConnected}");
+            if (e.IsConnected)
             {
                 Continue();
             }

@@ -34,6 +34,33 @@ namespace Tello.App.ViewModels
             _controller.ExceptionThrown += ExceptionThrown;
             _controller.PositionChanged += PositionChanged;
             _controller.ResponseReceived += ResponseReceived;
+            _controller.VideoStreamingStateChanged += Controller_VideoStreamingStateChanged;
+        }
+
+        private bool _isVideoStreaming = false;
+        public bool IsVideoStreaming
+        {
+            get => _isVideoStreaming;
+            set => SetProperty(ref _isVideoStreaming, value);
+        }
+
+        private void Controller_VideoStreamingStateChanged(object sender, Events.VideoStreamingStateChangedArgs e)
+        {
+            Dispatcher.Invoke((isStreaming) =>
+                IsVideoStreaming = (bool)isStreaming,
+                e.IsStreaming);
+
+            var message = $"{DateTime.Now.TimeOfDay} - streaming ? {e.IsStreaming}";
+            Debug.WriteLine(message);
+            Dispatcher.Invoke((msg) =>
+            {
+                ControlLog.Insert(0, msg as string);
+                if (ControlLog.Count > 500)
+                {
+                    ControlLog.RemoveAt(ControlLog.Count - 1);
+                }
+            },
+            message);
         }
 
         protected override void OnClosing(ClosingEventArgs args)
@@ -85,9 +112,9 @@ namespace Tello.App.ViewModels
         {
             Dispatcher.Invoke((connected) =>
                 IsConnected = (bool)connected,
-                e.Connected);
+                e.IsConnected);
 
-            var message = $"{DateTime.Now.TimeOfDay} - connected ? {e.Connected}";
+            var message = $"{DateTime.Now.TimeOfDay} - connected ? {e.IsConnected}";
             Debug.WriteLine(message);
             Dispatcher.Invoke((msg) =>
             {

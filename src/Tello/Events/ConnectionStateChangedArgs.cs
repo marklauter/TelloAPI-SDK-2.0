@@ -4,11 +4,11 @@ namespace Tello.Events
 {
     public sealed class ConnectionStateChangedArgs : EventArgs
     {
-        public ConnectionStateChangedArgs(bool connected)
+        public ConnectionStateChangedArgs(bool isConnected)
         {
-            Connected = connected;
+            IsConnected = isConnected;
         }
 
-        public bool Connected { get; }
+        public bool IsConnected { get; }
     }
 }

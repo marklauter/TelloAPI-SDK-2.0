@@ -24,7 +24,7 @@ namespace Tello.Controller
             Controller.ConnectionStateChanged +=
                 (object sender, ConnectionStateChangedArgs e) =>
                 {
-                    if (e.Connected)
+                    if (e.IsConnected)
                     {
                         StartLisenters();
                     }
