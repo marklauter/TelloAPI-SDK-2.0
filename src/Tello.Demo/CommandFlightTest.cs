@@ -74,11 +74,8 @@ namespace Tello.Demo
 
         private void Continue()
         {
-            Log.WriteLine("> get battery");
-            _tello.Controller.GetBattery();
-
-            Log.WriteLine("> start video");
-            _tello.Controller.StartVideo();
+            //Log.WriteLine("> start video");
+            //_tello.Controller.StartVideo();
 
             Log.WriteLine("> take off");
             _tello.Controller.TakeOff();
@@ -150,8 +147,8 @@ namespace Tello.Demo
         private int _stateCount = 0;
         private void StateObserver_StateChanged(object sender, Events.StateChangedArgs e)
         {
-            // state reporting interval is 5hz, so 25 should be once every 5 seconds
-            if (_stateCount % 25 == 0)
+            // state reporting interval is 5hz, so 25 should be once every 5 seconds, 50 once every 10 seconds
+            if (_stateCount % 50 == 0)
             {
                 Log.WriteLine($"state: {e.State}", ConsoleColor.Yellow);
             }

@@ -75,11 +75,11 @@ namespace Tello.Demo
 
         private void Continue()
         {
-            Log.WriteLine("> take off");
-            _tello.Controller.TakeOff();
-
             //Log.WriteLine("> start video");
             //_tello.Controller.StartVideo();
+
+            Log.WriteLine("> take off");
+            _tello.Controller.TakeOff();
 
             var spinWait = new SpinWait();
             while (!_canMove)
