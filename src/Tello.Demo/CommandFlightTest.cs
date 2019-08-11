@@ -123,9 +123,7 @@ namespace Tello.Demo
 
         private void VideoObserver_VideoSampleReady(object sender, Events.VideoSampleReadyArgs e)
         {
-            _videoFile = _videoFile == null
-                ? File.OpenWrite($"tello.video.{_session.Id}.h264")
-                : _videoFile;
+            _videoFile = _videoFile ?? File.OpenWrite($"tello.video.{_session.Id}.h264");
             _videoFile.Write(e.Message.Data, 0, e.Message.Data.Length);
 
             _videoLength = _videoLength < Int64.MaxValue

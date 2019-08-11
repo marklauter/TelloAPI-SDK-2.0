@@ -126,6 +126,14 @@ namespace Tello.Demo
                         _tello.Controller.Set4ChannelRC(0, 0, -50, 0);
                         Console.Write("D");
                         break;
+                    case ConsoleKey.LeftArrow: // turn left
+                        _tello.Controller.Set4ChannelRC(0, 0, 0, -50);
+                        Console.Write("YL");
+                        break;
+                    case ConsoleKey.RightArrow: // right
+                        _tello.Controller.Set4ChannelRC(0, 0, 0, 50);
+                        Console.Write("YR");
+                        break;
                     case ConsoleKey.E: // exit
                         Console.WriteLine();
                         Console.WriteLine("EXIT");

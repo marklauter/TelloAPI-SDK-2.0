@@ -57,4 +57,5 @@ namespace Tello.Simulator.Demo
                 await _flightTest.Invoke();
             }
         }
+    }
 }
