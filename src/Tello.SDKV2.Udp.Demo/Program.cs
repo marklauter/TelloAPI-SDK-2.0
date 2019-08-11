@@ -8,26 +8,49 @@ namespace Tello.Udp.Demo
 {
     internal class Program
     {
-        private static readonly FlightTest _flightTest;
+        private static IFlightTest _flightTest;
 
-        static Program()
+        private enum TestType
         {
-            var transceiver = new UdpTransceiver(IPAddress.Parse("192.168.10.1"), 8889);
-            var stateReceiver = new UdpReceiver(8890);
-            var videoReceiver = new UdpReceiver(11111);
-
-            var repository = new SqliteRepository((null, "tello.udp.sqlite"));
-
-            _flightTest = new FlightTest(
-                repository,
-                transceiver,
-                stateReceiver,
-                videoReceiver);
+            JoyStick,
+            WayPoint
         }
 
-        private static async Task Main(string[] _)
+        private static async Task Main(string[] args)
         {
-            await _flightTest.Invoke();
+            using (var transceiver = new UdpTransceiver(IPAddress.Parse("192.168.10.1"), 8889))
+            using (var stateReceiver = new UdpReceiver(8890))
+            using (var videoReceiver = new UdpReceiver(11111))
+            using (var repository = new SqliteRepository((null, "tello.udp.sqlite")))
+            {
+                var testType = args.Length == 1 && args[0] == "joy"
+                    ? TestType.JoyStick
+                    : TestType.WayPoint;
+
+                switch (testType)
+                {
+                    case TestType.JoyStick:
+                        _flightTest = new JoyStickFlightTest(
+                            repository,
+                            transceiver,
+                            stateReceiver,
+                            videoReceiver);
+                        break;
+
+                    case TestType.WayPoint:
+                        _flightTest = new JoyStickFlightTest(
+                            repository,
+                            transceiver,
+                            stateReceiver,
+                            videoReceiver);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                await _flightTest.Invoke();
+            }
         }
     }
 }

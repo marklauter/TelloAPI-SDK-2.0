@@ -4,15 +4,16 @@ namespace Messenger
 {
     public abstract class Request : IRequest
     {
-        protected Request(TimeSpan? timeout = null)
+        protected Request(TimeSpan? timeout = null, bool noWait = false)
         {
             Timeout = timeout ?? TimeSpan.MaxValue;
             Id = Guid.NewGuid();
             Timestamp = DateTime.UtcNow;
+            NoWait = noWait;
         }
 
-        public Request(byte[] data, TimeSpan? timeout = null) 
-            : this(timeout)
+        public Request(byte[] data, TimeSpan? timeout = null, bool noWait = false) 
+            : this(timeout, noWait)
         {
             if (data == null)
             {
@@ -34,11 +35,13 @@ namespace Messenger
         public TimeSpan Timeout { get; }
 
         public DateTime Timestamp { get; }
+
+        public bool NoWait { get; }
     }
 
     public abstract class Request<T> : Request, IRequest<T>
     {
-        public Request(T message, TimeSpan? timeout = null) : base(timeout)
+        public Request(T message, TimeSpan? timeout = null, bool noWait = false) : base(timeout, noWait)
         {
             Message = message;
             Data = Serialize(message);

@@ -144,6 +144,7 @@ namespace Tello.Controller
                             case Responses.SerialNumber:
                                 InterogativeState.SerialNumber = response.Message;
                                 break;
+                            case Responses.None:
                             default:
                                 break;
                         }
@@ -207,7 +208,7 @@ namespace Tello.Controller
         #endregion
 
         #region enter/exit sdk mode (connect/disconnect)
-        public async Task<bool> Connect()
+        public async Task<bool> Connect(bool keepAlive = true)
         {
             if (!_isConnected)
             {
@@ -215,7 +216,11 @@ namespace Tello.Controller
                 _isConnected = response != null && response.Success;
                 if (_isConnected)
                 {
-                    RunKeepAlive();
+                    if (keepAlive)
+                    {
+                        RunKeepAlive();
+                    }
+
                     ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedArgs(_isConnected));
                 }
             }
@@ -293,6 +298,14 @@ namespace Tello.Controller
             if (CanManeuver)
             {
                 await _messenger.SendAsync(Commands.Stop);
+            }
+        }
+
+        public async void Set4ChannelRC(int leftRight, int forwardBackward, int upDown, int yaw)
+        {
+            if (CanManeuver)
+            {
+                await _messenger.SendAsync(Commands.SetRemoteControl, leftRight, forwardBackward, upDown, yaw);
             }
         }
 
@@ -455,14 +468,6 @@ namespace Tello.Controller
         #endregion
 
         #region drone configuration
-        public async void Set4ChannelRC(int leftRight, int forwardBackward, int upDown, int yaw)
-        {
-            if (_isConnected)
-            {
-                await _messenger.SendAsync(Commands.SetRemoteControl, leftRight, forwardBackward, upDown, yaw);
-            }
-        }
-
         public async void SetSpeed(int speed)
         {
             if (_isConnected)

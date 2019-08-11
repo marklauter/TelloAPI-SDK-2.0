@@ -16,10 +16,10 @@ namespace Messenger.Simulator
         protected override async Task<IResponse> Send(IRequest request)
         {
             var stopwatch = Stopwatch.StartNew();
-            return new Response(
-                request,
-                await _drone.Invoke(request.Data),
-                stopwatch.Elapsed);
+
+            return request.NoWait
+                ? new Response(request, TimeSpan.Zero, true)
+                : new Response(request, await _drone.Invoke(request.Data), stopwatch.Elapsed);
         }
 
         public override void Dispose() { }

@@ -9,6 +9,7 @@
         Time,
         WIFISnr,
         SdkVersion,
-        SerialNumber
+        SerialNumber,
+        None,
     }
 }

@@ -24,7 +24,7 @@ namespace Tello
         /// <summary>
         /// establish a command link with Tello - validates network connection, connects to UDP, sends "command" to Tello
         /// </summary>
-        Task<bool> Connect();
+        Task<bool> Connect(bool keepAlive = true);
 
         void Disconnect();
 

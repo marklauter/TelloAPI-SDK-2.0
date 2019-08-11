@@ -9,7 +9,8 @@ namespace Tello.Messaging
         public TelloRequest(Command command) 
             : base(
                   (string)command, 
-                  (TimeSpan)command)
+                  (TimeSpan)command,
+                  command.Rule.Response == Responses.None)
         {
         }
 

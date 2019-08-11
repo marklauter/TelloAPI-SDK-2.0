@@ -10,14 +10,14 @@ using Tello.Entities.Sqlite;
 
 namespace Tello.Demo
 {
-    public sealed class FlightTest
+    public sealed class JoyStickFlightTest : IFlightTest
     {
         private readonly DroneMessenger _tello;
         private readonly IRepository _repository;
         private readonly Session _session;
         private bool _canMove = false;
 
-        public FlightTest(
+        public JoyStickFlightTest(
             IRepository repository,
             ITransceiver transceiver,
             IReceiver stateReceiver,
@@ -50,10 +50,10 @@ namespace Tello.Demo
         {
             Console.WriteLine("Make sure Tello is powered up and you're connected to the network before continuing.");
             Console.WriteLine("press any key when ready to start flight test...");
-            Console.ReadKey(false);
+            Console.ReadKey(true);
 
             Log.WriteLine("> enter sdk mode");
-            if (await _tello.Controller.Connect())
+            if (await _tello.Controller.Connect(false))
             {
                 Console.WriteLine("Remember to turn Tello off to keep it from overheating.");
                 Console.WriteLine("press any key when ready to end program...");
@@ -65,7 +65,9 @@ namespace Tello.Demo
             Console.ReadKey(false);
 
             if (_videoFile != null)
+            {
                 _videoFile.Close();
+            }
 
             _repository.Dispose();
         }
@@ -75,11 +77,11 @@ namespace Tello.Demo
             Log.WriteLine("> get battery");
             _tello.Controller.GetBattery();
 
-            Log.WriteLine("> start video");
-            _tello.Controller.StartVideo();
-
             Log.WriteLine("> take off");
             _tello.Controller.TakeOff();
+
+            //Log.WriteLine("> start video");
+            //_tello.Controller.StartVideo();
 
             var spinWait = new SpinWait();
             while (!_canMove)
@@ -87,14 +89,55 @@ namespace Tello.Demo
                 spinWait.SpinOnce();
             }
 
-            Log.WriteLine("> go forward");
-            _tello.Controller.GoForward(50);
+            Console.WriteLine("'w' to go forward");
+            Console.WriteLine("'s' to go backward");
+            Console.WriteLine("'a' to go left");
+            Console.WriteLine("'d' to go right");
+            Console.WriteLine("up arrow to go up");
+            Console.WriteLine("down arrow to go down");
+            Console.WriteLine("right arrow to turn right");
+            Console.WriteLine("left arrow to turn left");
+            Console.WriteLine("'e' to exit");
 
-            Log.WriteLine("> go backward");
-            _tello.Controller.GoBackward(50);
-
-            //Log.WriteLine("> fly polygon");
-            //_tello.Controller.FlyPolygon(4, 100, 50, ClockDirections.Clockwise);
+            var e = Console.ReadKey(true);
+            while (e.Key != ConsoleKey.E)
+            {
+                switch (e.Key)
+                {
+                    case ConsoleKey.W: // forward
+                        _tello.Controller.Set4ChannelRC(0, 50, 0, 0);
+                        Console.Write("F");
+                        break;
+                    case ConsoleKey.S: // backward
+                        _tello.Controller.Set4ChannelRC(0, -50, 0, 0);
+                        Console.Write("B");
+                        break;
+                    case ConsoleKey.D: // right
+                        _tello.Controller.Set4ChannelRC(50, 0, 0, 0);
+                        Console.Write("R");
+                        break;
+                    case ConsoleKey.A: // left
+                        _tello.Controller.Set4ChannelRC(-50, 0, 0, 0);
+                        Console.Write("L");
+                        break;
+                    case ConsoleKey.UpArrow: // up
+                        _tello.Controller.Set4ChannelRC(0, 0, 50, 0);
+                        Console.Write("U");
+                        break;
+                    case ConsoleKey.DownArrow: // down
+                        _tello.Controller.Set4ChannelRC(0, 0, -50, 0);
+                        Console.Write("D");
+                        break;
+                    case ConsoleKey.E: // exit
+                        Console.WriteLine();
+                        Console.WriteLine("EXIT");
+                        break;
+                    default:
+                        _tello.Controller.Set4ChannelRC(0, 0, 0, 0);
+                        break;
+                }
+                e = Console.ReadKey(true);
+            }
 
             Log.WriteLine("> land");
             _tello.Controller.Land();
@@ -118,46 +161,21 @@ namespace Tello.Demo
             _repository.Insert(new ResponseObservation(group, e.Response));
         }
 
-        private int _videoCount = 0;
         private long _videoLength = 0;
         private FileStream _videoFile = null;
 
         private void VideoObserver_VideoSampleReady(object sender, Events.VideoSampleReadyArgs e)
         {
-            _videoFile = _videoFile == null
-                ? File.OpenWrite($"tello.video.{_session.Id}.h264")
-                : _videoFile;
+            _videoFile = _videoFile ?? File.OpenWrite($"tello.video.{_session.Id}.h264");
             _videoFile.Write(e.Message.Data, 0, e.Message.Data.Length);
 
             _videoLength = _videoLength < Int64.MaxValue
                 ? _videoLength + e.Message.Data.Length
                 : 0;
-
-            // video reporting interval is 30hz, so 150 should be once every 5 seconds
-            if (_videoCount % 150 == 0)
-            {
-                Log.WriteLine($"video segment size {e.Message.Data.Length}b @ {e.Message.Timestamp.ToString("o")}", ConsoleColor.Magenta, false);
-                Log.WriteLine($"ttl video size {_videoLength}b, segment count {_videoCount + 1}", ConsoleColor.Magenta);
-            }
-
-
-            _videoCount = _videoCount < Int32.MaxValue
-                ? _videoCount + 1
-                : 0;
         }
 
-        private int _stateCount = 0;
         private void StateObserver_StateChanged(object sender, Events.StateChangedArgs e)
         {
-            // state reporting interval is 5hz, so 25 should be once every 5 seconds
-            if (_stateCount % 25 == 0)
-            {
-                Log.WriteLine($"state: {e.State}", ConsoleColor.Yellow);
-            }
-            _stateCount = _stateCount < Int32.MaxValue
-                ? _stateCount + 1
-                : 0;
-
             var group = _repository.NewEntity<ObservationGroup>(_session);
             _repository.Insert(new StateObservation(group, e.State));
             _repository.Insert(new AirSpeedObservation(group, e.State));
@@ -183,6 +201,5 @@ namespace Tello.Demo
             }
         }
         #endregion
-
     }
 }

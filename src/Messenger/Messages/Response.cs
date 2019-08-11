@@ -22,7 +22,7 @@ namespace Messenger
             Success = response.Success;
         }
 
-        private Response(IRequest request, TimeSpan timeTaken, bool success)
+        public Response(IRequest request, TimeSpan timeTaken, bool success)
         {
             Request = request ?? throw new ArgumentNullException(nameof(request));
             TimeTaken = timeTaken;

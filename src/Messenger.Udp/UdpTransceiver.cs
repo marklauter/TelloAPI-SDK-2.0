@@ -22,6 +22,11 @@ namespace Messenger.Udp
         {
             await _client.SendAsync(request.Data, request.Data.Length, _endPoint);
 
+            if (request.NoWait)
+            {
+                return new Response(request, TimeSpan.Zero, true);
+            }
+
             var stopwatch = Stopwatch.StartNew();
             await Task.Run(() =>
             {

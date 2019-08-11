@@ -37,6 +37,14 @@ namespace Tello.App.ViewModels
             _controller.VideoStreamingStateChanged += Controller_VideoStreamingStateChanged;
         }
 
+        protected override void OnClosing(ClosingEventArgs args)
+        {
+            _controller.ConnectionStateChanged -= ConnectionStateChanged;
+            _controller.ExceptionThrown -= ExceptionThrown;
+            _controller.PositionChanged -= PositionChanged;
+            _controller.ResponseReceived -= ResponseReceived;
+        }
+
         private bool _isVideoStreaming = false;
         public bool IsVideoStreaming
         {
@@ -61,14 +69,6 @@ namespace Tello.App.ViewModels
                 }
             },
             message);
-        }
-
-        protected override void OnClosing(ClosingEventArgs args)
-        {
-            _controller.ConnectionStateChanged -= ConnectionStateChanged;
-            _controller.ExceptionThrown -= ExceptionThrown;
-            _controller.PositionChanged -= PositionChanged;
-            _controller.ResponseReceived -= ResponseReceived;
         }
 
         private void ResponseReceived(object sender, Events.ResponseReceivedArgs e)

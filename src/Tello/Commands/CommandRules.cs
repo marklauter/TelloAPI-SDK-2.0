@@ -10,8 +10,6 @@ namespace Tello
     // error Motor Stop
     // error Not Joystick
 
-
-
     public abstract class ArgumentRule
     {
         protected ArgumentRule(Type type, Func<object, bool> isTypeAllowed)
@@ -227,7 +225,7 @@ namespace Tello
                         true)
                 },
                 {
-                    Commands.SetRemoteControl, new CommandRule(Commands.SetRemoteControl, Responses.Ok, "rc",
+                    Commands.SetRemoteControl, new CommandRule(Commands.SetRemoteControl, Responses.None, "rc",
                         new ArgumentRule[]
                         {
                             new IntegerRule(new IntegerRule.Range<int>(-100, 100)),
@@ -235,7 +233,8 @@ namespace Tello
                             new IntegerRule(new IntegerRule.Range<int>(-100, 100)),
                             new IntegerRule(new IntegerRule.Range<int>(-100, 100))
                         },
-                        false)
+                        true,
+                        true)
                 },
                 {
                     Commands.SetWiFiPassword, new CommandRule(Commands.SetWiFiPassword, Responses.Ok, "wifi",
