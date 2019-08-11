@@ -53,7 +53,7 @@ namespace Tello.Demo
             Console.ReadKey(true);
 
             Log.WriteLine("> enter sdk mode");
-            if (await _tello.Controller.Connect(true))
+            if (await _tello.Controller.Connect())
             {
                 Console.WriteLine("Remember to turn Tello off to keep it from overheating.");
                 Console.WriteLine("press any key when ready to end program...");

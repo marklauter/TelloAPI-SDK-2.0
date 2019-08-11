@@ -208,7 +208,7 @@ namespace Tello.Controller
         #endregion
 
         #region enter/exit sdk mode (connect/disconnect)
-        public async Task<bool> Connect(bool keepAlive = true)
+        public async Task<bool> Connect()
         {
             if (!_isConnected)
             {
@@ -216,11 +216,7 @@ namespace Tello.Controller
                 _isConnected = response != null && response.Success;
                 if (_isConnected)
                 {
-                    if (keepAlive)
-                    {
-                        RunKeepAlive();
-                    }
-
+                    RunKeepAlive();
                     ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedArgs(_isConnected));
                 }
             }
