@@ -116,6 +116,8 @@ namespace Tello.Simulator
                     return "Sim V1";
                 case Responses.SerialNumber:
                     return "SIM-1234";
+                case Responses.None:
+                    return String.Empty;
                 default:
                     throw new NotSupportedException();
             }
