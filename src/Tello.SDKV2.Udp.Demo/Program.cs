@@ -38,7 +38,7 @@ namespace Tello.Udp.Demo
                         break;
 
                     case TestType.WayPoint:
-                        _flightTest = new JoyStickFlightTest(
+                        _flightTest = new CommandFlightTest(
                             repository,
                             transceiver,
                             stateReceiver,

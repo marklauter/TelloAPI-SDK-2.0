@@ -62,7 +62,7 @@ namespace Tello.Demo
             {
                 Log.WriteLine("connection failed - program will be terminated");
             }
-            Console.ReadKey(false);
+            Console.ReadKey(true);
 
             if (_videoFile != null)
             {

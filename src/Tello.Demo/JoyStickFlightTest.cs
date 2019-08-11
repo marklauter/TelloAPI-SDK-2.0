@@ -53,7 +53,7 @@ namespace Tello.Demo
             Console.ReadKey(true);
 
             Log.WriteLine("> enter sdk mode");
-            if (await _tello.Controller.Connect(false))
+            if (await _tello.Controller.Connect(true))
             {
                 Console.WriteLine("Remember to turn Tello off to keep it from overheating.");
                 Console.WriteLine("press any key when ready to end program...");
@@ -62,7 +62,8 @@ namespace Tello.Demo
             {
                 Log.WriteLine("connection failed - program will be terminated");
             }
-            Console.ReadKey(false);
+
+            Console.ReadKey(true);
 
             if (_videoFile != null)
             {
@@ -74,9 +75,6 @@ namespace Tello.Demo
 
         private void Continue()
         {
-            Log.WriteLine("> get battery");
-            _tello.Controller.GetBattery();
-
             Log.WriteLine("> take off");
             _tello.Controller.TakeOff();
 
@@ -136,6 +134,7 @@ namespace Tello.Demo
                         _tello.Controller.Set4ChannelRC(0, 0, 0, 0);
                         break;
                 }
+                spinWait.SpinOnce();
                 e = Console.ReadKey(true);
             }
 
@@ -155,7 +154,6 @@ namespace Tello.Demo
             }
 
             Log.WriteLine($"{(Command)e.Response.Request.Data} returned '{e.Response.Message}' in {(int)e.Response.TimeTaken.TotalMilliseconds}ms", ConsoleColor.Cyan);
-            Log.WriteLine($"Estimated Position: { _tello.Controller.Position}", ConsoleColor.Blue);
 
             var group = _repository.NewEntity<ObservationGroup>(_session);
             _repository.Insert(new ResponseObservation(group, e.Response));

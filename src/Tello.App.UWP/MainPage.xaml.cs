@@ -115,7 +115,7 @@ namespace Tello.App.UWP
                 {
                     // never turn live on because it tries to skip frame which breaks the h264 decoding
                     //IsLive = true,
-                    BufferTime = TimeSpan.FromSeconds(0.0)
+                    BufferTime = TimeSpan.FromSeconds(0.0),                    
                 };
 
                 mediaStreamSource.SampleRequested += MediaStreamSource_SampleRequested;
