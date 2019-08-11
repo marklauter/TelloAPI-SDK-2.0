@@ -9,6 +9,7 @@ namespace Tello
     // error
     // error Motor Stop
     // error Not Joystick
+    // error Auto land
 
     public abstract class ArgumentRule
     {
