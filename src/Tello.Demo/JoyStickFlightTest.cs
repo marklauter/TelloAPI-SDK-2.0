@@ -87,69 +87,35 @@ namespace Tello.Demo
                 spinWait.SpinOnce();
             }
 
-            Console.WriteLine("'w' to go forward");
-            Console.WriteLine("'s' to go backward");
-            Console.WriteLine("'a' to go left");
-            Console.WriteLine("'d' to go right");
-            Console.WriteLine("up arrow to go up");
-            Console.WriteLine("down arrow to go down");
-            Console.WriteLine("right arrow to turn right");
-            Console.WriteLine("left arrow to turn left");
-            Console.WriteLine("'e' to exit");
+            Console.WriteLine("READY FOR FLIGHT!");
+            Console.WriteLine();
+            Console.Beep(700, 500);
 
-            var e = Console.ReadKey(true);
-            while (e.Key != ConsoleKey.E)
+            Console.WriteLine("W - forward");
+            Console.WriteLine("S - backward");
+            Console.WriteLine("A - left");
+            Console.WriteLine("D - right");
+            Console.WriteLine("Up Arrow - up");
+            Console.WriteLine("Down Arrow - down");
+            Console.WriteLine("Right Arrow - turn right");
+            Console.WriteLine("Left Arrow - turn left");
+            Console.WriteLine("ESC to exit");
+
+            var joystick = new JoyStick();
+            var scanstate = JoyStick.ScanStates.Unchanged;
+            do
             {
-                switch (e.Key)
+                if (scanstate == JoyStick.ScanStates.Changed)
                 {
-                    case ConsoleKey.W: // forward
-                        _tello.Controller.Set4ChannelRC(0, 50, 0, 0);
-                        Console.Write("F");
-                        break;
-                    case ConsoleKey.S: // backward
-                        _tello.Controller.Set4ChannelRC(0, -50, 0, 0);
-                        Console.Write("B");
-                        break;
-                    case ConsoleKey.D: // right
-                        _tello.Controller.Set4ChannelRC(50, 0, 0, 0);
-                        Console.Write("R");
-                        break;
-                    case ConsoleKey.A: // left
-                        _tello.Controller.Set4ChannelRC(-50, 0, 0, 0);
-                        Console.Write("L");
-                        break;
-                    case ConsoleKey.UpArrow: // up
-                        _tello.Controller.Set4ChannelRC(0, 0, 50, 0);
-                        Console.Write("U");
-                        break;
-                    case ConsoleKey.DownArrow: // down
-                        _tello.Controller.Set4ChannelRC(0, 0, -50, 0);
-                        Console.Write("D");
-                        break;
-                    case ConsoleKey.LeftArrow: // turn left
-                        _tello.Controller.Set4ChannelRC(0, 0, 0, -50);
-                        Console.Write("YL");
-                        break;
-                    case ConsoleKey.RightArrow: // right
-                        _tello.Controller.Set4ChannelRC(0, 0, 0, 50);
-                        Console.Write("YR");
-                        break;
-                    case ConsoleKey.E: // exit
-                        Console.WriteLine();
-                        Console.WriteLine("EXIT");
-                        break;
-                    default:
-                        _tello.Controller.Set4ChannelRC(0, 0, 0, 0);
-                        break;
+                    _tello.Controller.Set4ChannelRC(joystick.XInput, joystick.ZInput, joystick.YInput, joystick.RInput);
                 }
-                spinWait.SpinOnce();
-                e = Console.ReadKey(true);
-            }
+
+                scanstate = joystick.Scan();
+            } while (scanstate != JoyStick.ScanStates.Exit);
 
             Log.WriteLine("> land");
             _tello.Controller.Land();
         }
-
 
         #region event handlers
         private void Controller_ResponseReceived(object sender, Events.ResponseReceivedArgs e)
@@ -161,7 +127,7 @@ namespace Tello.Demo
                 _canMove = true;
             }
 
-            Log.WriteLine($"{(Command)e.Response.Request.Data} returned '{e.Response.Message}' in {(int)e.Response.TimeTaken.TotalMilliseconds}ms", ConsoleColor.Cyan);
+            //Log.WriteLine($"{(Command)e.Response.Request.Data} returned '{e.Response.Message}' in {(int)e.Response.TimeTaken.TotalMilliseconds}ms", ConsoleColor.Cyan);
 
             var group = _repository.NewEntity<ObservationGroup>(_session);
             _repository.Insert(new ResponseObservation(group, e.Response));

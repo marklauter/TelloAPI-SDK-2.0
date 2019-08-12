@@ -1,5 +1,6 @@
 ﻿using Messenger;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Tello.Events;
 using Tello.Messaging;
@@ -301,6 +302,8 @@ namespace Tello.Controller
         {
             if (CanManeuver)
             {
+                var cmd = new Command(Commands.SetRemoteControl, new object[] { leftRight, forwardBackward, upDown, yaw });
+                Debug.WriteLine(cmd.ToString());
                 await _messenger.SendAsync(Commands.SetRemoteControl, leftRight, forwardBackward, upDown, yaw);
             }
         }
