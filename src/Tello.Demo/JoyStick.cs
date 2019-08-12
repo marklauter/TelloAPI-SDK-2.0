@@ -12,7 +12,7 @@ namespace Tello.Demo
             Exit,
         }
 
-        private readonly int _maxMS = 250;
+        private readonly int _maxInputTimeoutInMS = 100;
         private readonly Stopwatch _xTimer = new Stopwatch();
         private readonly Stopwatch _yTimer = new Stopwatch();
         private readonly Stopwatch _zTimer = new Stopwatch();
@@ -91,7 +91,7 @@ namespace Tello.Demo
         private ScanStates Center(ref int input, Stopwatch timer)
         {
             var ms = timer.IsRunning ? timer.ElapsedMilliseconds : 0;
-            if (ms > _maxMS)
+            if (ms > _maxInputTimeoutInMS)
             {
                 timer.Reset();
                 input = 0;
