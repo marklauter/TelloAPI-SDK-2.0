@@ -1,3 +1,5 @@
+Update 09 NOV 2019: I got side tracked by life events. Closed my consulting company after 18 years and started a new job. I'm settled in and should be able to start work again next weekend.
+
 # Tello API for SDK 2.0 in C#
 The project includes a flight controller, Tello emulator, UDP messenger, script builder, and two console samples.
 
