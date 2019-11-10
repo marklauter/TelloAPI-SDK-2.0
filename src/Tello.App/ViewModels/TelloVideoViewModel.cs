@@ -12,32 +12,6 @@ using Tello.Controller;
 
 namespace Tello.App.ViewModels
 {
-    public sealed class VideoSample
-    {
-        public byte[] Buffer { get; }
-
-        public TimeSpan TimeIndex { get; }
-
-        public TimeSpan Duration { get; }
-
-        public int Length => this.Buffer.Length;
-
-        public VideoSample()
-            : this(
-                 Array.Empty<byte>(),
-                 TimeSpan.FromSeconds(0),
-                 TimeSpan.FromSeconds(0))
-        {
-        }
-
-        public VideoSample(byte[] buffer, TimeSpan timeIndex, TimeSpan duration)
-        {
-            this.Buffer = buffer;
-            this.TimeIndex = timeIndex;
-            this.Duration = duration;
-        }
-    }
-
     public class TelloVideoViewModel : ViewModel
     {
         private readonly IVideoObserver videoObserver;
@@ -89,7 +63,6 @@ namespace Tello.App.ViewModels
 
             return result;
         }
-
 
         // todo: implementation - UWP should override this class and implement a MediaStreamSource property which can be used by the MediaElement control
         // public MediaStreamSource

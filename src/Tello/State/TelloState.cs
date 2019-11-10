@@ -36,17 +36,17 @@ namespace Tello.State
                 .GetProperties()
                 .Where(pi => pi.GetCustomAttribute<StatePropertyAttribute>() != null);
 
-            TelloState.properties = new Dictionary<string, PropertyInfo>();
+            TelloState.Properties = new Dictionary<string, PropertyInfo>();
             foreach (var property in properties)
             {
                 var stateName = property.GetCustomAttribute<StatePropertyAttribute>().Name;
-                TelloState.properties.Add(stateName, property);
+                TelloState.Properties.Add(stateName, property);
             }
         }
 
-        private static readonly Dictionary<string, PropertyInfo> properties;
-        private static readonly char[] delimiters = { ':', ';' };
-        private static readonly HashSet<string> doubles = new HashSet<string>(new string[] { "baro", "agx", "agy", "agz" });
+        private static readonly Dictionary<string, PropertyInfo> Properties;
+        private static readonly char[] Delimiters = { ':', ';' };
+        private static readonly HashSet<string> Doubles = new HashSet<string>(new string[] { "baro", "agx", "agy", "agz" });
         #endregion
 
         private readonly Vector vector;
@@ -85,7 +85,6 @@ namespace Tello.State
             // sample from Tello
             // mid:64;x:0;y:0;z:0;mpry:0,0,0;pitch:0;roll:0;yaw:0;vgx:0;vgy:0;vgz:-7;templ:60;temph:63;tof:20;h:10;bat:89;baro:-67.44;time:0;agx:14.00;agy:-12.00;agz:-1094.00;
             // mid: 0;x:0;y:0;z:0;mpry:0,0,0;pitch:0;roll:0;yaw:0;vgx:0;vgy:0;vgz:0; templ:55;temph:57;tof:10;h: 0;bat:74;baro:-42.72;time:0;agx:-8.00;agy: -1.00;agz:-1002.00;
-
             if (String.IsNullOrEmpty(state))
             {
                 throw new ArgumentNullException(nameof(state));
@@ -96,12 +95,12 @@ namespace Tello.State
             this.vector = position;
 
             var keyValues = state
-                .Split(delimiters, StringSplitOptions.RemoveEmptyEntries)
+                .Split(Delimiters, StringSplitOptions.RemoveEmptyEntries)
                 .Where(s => !s.Contains("\r"))
                 .Select(s => s.Trim())
                 .ToArray();
 
-            var values = new object[properties.Count];
+            var values = new object[Properties.Count];
 
             for (var i = 0; i < keyValues.Length; i += 2)
             {
@@ -110,8 +109,8 @@ namespace Tello.State
 
                 if (key != "mpry")
                 {
-                    var property = properties[key];
-                    if (doubles.Contains(key))
+                    var property = Properties[key];
+                    if (Doubles.Contains(key))
                     {
                         if (Double.TryParse(keyValues[i + 1], out var parsedValue))
                         {
@@ -131,7 +130,7 @@ namespace Tello.State
                     var mpryValues = keyValues[i + 1].Split(',');
                     for (var j = 0; j < mpryValues.Length; ++j)
                     {
-                        var property = properties[$"{key}.{j}"];
+                        var property = Properties[$"{key}.{j}"];
                         if (Int32.TryParse(mpryValues[j], out var parsedValue))
                         {
                             property.SetValue(this, parsedValue);

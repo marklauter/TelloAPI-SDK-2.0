@@ -50,16 +50,15 @@ namespace Tello.App.ViewModels
             // todo: this should be pushed directly to a queue to minimize time in method. the queue can be picked up by a processor that does what this method is currently doing.
             this.Dispatcher.Invoke(
                 (state) =>
-            {
-                this.State = state as ITelloState;
-                this.StateHistory.Add(state as ITelloState);
-                if (this.StateHistory.Count > 500)
                 {
-                    this.StateHistory.RemoveAt(0);
-                }
-            },
-            e.State);
-
+                    this.State = state as ITelloState;
+                    this.StateHistory.Add(state as ITelloState);
+                    if (this.StateHistory.Count > 500)
+                    {
+                        this.StateHistory.RemoveAt(0);
+                    }
+                },
+                e.State);
 
             var group = this.repository.NewEntity<ObservationGroup>(this.session);
             this.repository.Insert(new StateObservation(group, e.State));

@@ -19,7 +19,6 @@ namespace Tello.Simulator
         // todo: 2. update state
         // todo: 3. notify state transmitter
         // todo: 4. compose and return the appropriate command response
-
         private bool isVideoStreaming = false;
         private bool isFlying = false;
         private Vector position = new Vector();

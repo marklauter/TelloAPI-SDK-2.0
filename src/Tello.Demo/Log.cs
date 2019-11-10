@@ -11,7 +11,7 @@ namespace Tello.Demo
 {
     public static class Log
     {
-        private static readonly object gate = new object();
+        private static readonly object Gate = new object();
 
         public static void WriteLine(
             string msg,
@@ -24,7 +24,7 @@ namespace Tello.Demo
             var fileName = System.IO.Path.GetFileName(callerPath);
             var output = $"{DateTime.Now.ToString("HH:mm:ss zzzz")}: {fileName}::{callerMemberName} [{callerLineNumber}] - {msg}";
 
-            lock (gate)
+            lock (Gate)
             {
                 Console.ForegroundColor = consoleColor;
                 Console.WriteLine(output);

@@ -141,16 +141,18 @@ namespace Tello.Demo
         private ScanStates Move(ref int input, int direction, Stopwatch timer)
         {
             var last = input;
-            if (Math.Abs(direction) == direction) // positive
+            if (Math.Abs(direction) == direction)
             {
+                // positive
                 input = input < 0
                     ? 0
                     : input < 100
                         ? input + 10
                         : input;
             }
-            else // negative
+            else
             {
+                // negative
                 input = input > 0
                     ? 0
                     : input > -100

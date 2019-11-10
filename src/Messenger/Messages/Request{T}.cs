@@ -7,7 +7,6 @@ using System;
 
 namespace Messenger
 {
-
     public abstract class Request<T> : Request, IRequest<T>
     {
         public Request(T message, TimeSpan? timeout = null, bool noWait = false)

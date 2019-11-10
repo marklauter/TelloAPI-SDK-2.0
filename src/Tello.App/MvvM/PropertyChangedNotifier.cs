@@ -13,8 +13,6 @@ namespace Tello.App.MvvM
     // todo: here are two ideas on INotifyPropertyChanged proxies
     // http://jonas.follesoe.no/oldblog/2009-12-23-automatic-inotifypropertychanged-using-dynamic-proxy/
     // https://ayende.com/blog/4106/nhibernate-inotifypropertychanged
-
-
     public class PropertyChangedNotifier : INotifyPropertyChanged
     {
         protected IUIDispatcher Dispatcher { get; }
@@ -32,7 +30,7 @@ namespace Tello.App.MvvM
             if (!EqualityComparer<T>.Default.Equals(storage, value))
             {
                 storage = value;
-                this.Dispatcher.Invoke(args => { this.PropertyChanged?.Invoke(this, args as PropertyChangedEventArgs); }, new PropertyChangedEventArgs(callerMemberName));
+                this.Dispatcher.Invoke(args => this.PropertyChanged?.Invoke(this, args as PropertyChangedEventArgs), new PropertyChangedEventArgs(callerMemberName));
             }
         }
     }

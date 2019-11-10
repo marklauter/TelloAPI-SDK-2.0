@@ -81,7 +81,6 @@ namespace Tello.Demo
         {
             // Log.WriteLine("> start video");
             // _tello.Controller.StartVideo();
-
             Log.WriteLine("> take off");
             this.tello.Controller.TakeOff();
 
@@ -104,7 +103,6 @@ namespace Tello.Demo
             this.tello.Controller.Land();
         }
 
-
         #region event handlers
         private void Controller_ResponseReceived(object sender, Events.ResponseReceivedArgs e)
         {
@@ -116,7 +114,7 @@ namespace Tello.Demo
             }
 
             Log.WriteLine($"{(Command)e.Response.Request.Data} returned '{e.Response.Message}' in {(int)e.Response.TimeTaken.TotalMilliseconds}ms", ConsoleColor.Cyan);
-            Log.WriteLine($"Estimated Position: { this.tello.Controller.Position}", ConsoleColor.Blue);
+            Log.WriteLine($"Estimated Position: {this.tello.Controller.Position}", ConsoleColor.Blue);
 
             var group = this.repository.NewEntity<ObservationGroup>(this.session);
             this.repository.Insert(new ResponseObservation(group, e.Response));

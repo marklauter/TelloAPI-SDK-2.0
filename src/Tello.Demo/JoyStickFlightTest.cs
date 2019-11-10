@@ -81,7 +81,6 @@ namespace Tello.Demo
         {
             // Log.WriteLine("> start video");
             // _tello.Controller.StartVideo();
-
             Log.WriteLine("> take off");
             this.tello.Controller.TakeOff();
 
@@ -115,7 +114,8 @@ namespace Tello.Demo
                 }
 
                 scanstate = joystick.Scan();
-            } while (scanstate != JoyStick.ScanStates.Exit);
+            }
+            while (scanstate != JoyStick.ScanStates.Exit);
 
             Log.WriteLine("> land");
             this.tello.Controller.Land();
@@ -132,7 +132,6 @@ namespace Tello.Demo
             }
 
             // Log.WriteLine($"{(Command)e.Response.Request.Data} returned '{e.Response.Message}' in {(int)e.Response.TimeTaken.TotalMilliseconds}ms", ConsoleColor.Cyan);
-
             var group = this.repository.NewEntity<ObservationGroup>(this.session);
             this.repository.Insert(new ResponseObservation(group, e.Response));
         }

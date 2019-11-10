@@ -1,4 +1,4 @@
-// <copyright file="Tello.Observations.Sqlite.Tests.cs" company="Mark Lauter">
+﻿// <copyright file="TelloObservationsSqliteTests.Observations.Sqlite.Tests.cs" company="Mark Lauter">
 // Copyright (c) Mark Lauter. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -349,6 +349,5 @@ namespace Tello.Entities.Sqlite.Test
                 Assert.AreEqual(14, observation.MotorTimeInSeconds);
             }
         }
-
     }
 }

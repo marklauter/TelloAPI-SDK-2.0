@@ -76,7 +76,7 @@ namespace Tello.App.ViewModels
                     this.ControlLog.RemoveAt(this.ControlLog.Count - 1);
                 }
             },
-            message);
+                message);
         }
 
         private void ResponseReceived(object sender, Events.ResponseReceivedArgs e)
@@ -92,7 +92,7 @@ namespace Tello.App.ViewModels
                     this.ControlLog.RemoveAt(this.ControlLog.Count - 1);
                 }
             },
-            message);
+                message);
 
             var group = this.repository.NewEntity<ObservationGroup>(this.session);
             this.repository.Insert(new ResponseObservation(group, e.Response));
@@ -261,7 +261,7 @@ namespace Tello.App.ViewModels
         public IInputCommand<Tuple<int, int, int, int, int, int, int>> CommandNameCommand => this.curveCommand = this.curveCommand ?? new InputCommand<Tuple<int, int, int, int, int, int, int>>((tuple) => this.controller.Curve(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
 
         // sides, length, speed, clock, do land
-        public Tuple<int, int, int, ClockDirections> flyPolygonCommandParams { get; } = new Tuple<int, int, int, ClockDirections>(3, 100, 50, ClockDirections.Clockwise);
+        public Tuple<int, int, int, ClockDirections> FlyPolygonCommandParams { get; } = new Tuple<int, int, int, ClockDirections>(3, 100, 50, ClockDirections.Clockwise);
 
         private IInputCommand<Tuple<int, int, int, ClockDirections>> flyPolygonCommand;
 

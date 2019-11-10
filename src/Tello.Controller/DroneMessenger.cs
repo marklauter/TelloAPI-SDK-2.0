@@ -46,7 +46,6 @@ namespace Tello.Controller
             this.VideoObserver = new VideoObserver(this.videoReceiver);
         }
 
-
         #region Listeners
 
         private void StartLisenters()

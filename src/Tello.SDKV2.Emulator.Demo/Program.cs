@@ -12,8 +12,9 @@ namespace Tello.Simulator.Demo
 {
     internal class Program
     {
-        private static readonly DroneSimulator simulator;
-        private static IFlightTest flightTest;
+        private static readonly DroneSimulator Simulator;
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1306:Field names should begin with lower-case letter", Justification = "Conflicts with Microsoft naming guidelines.")]
+        private static IFlightTest FlightTest;
 
         private enum TestType
         {
@@ -23,14 +24,15 @@ namespace Tello.Simulator.Demo
 
         static Program()
         {
-            simulator = new DroneSimulator();
+            Simulator = new DroneSimulator();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Main.")]
         private static async Task Main(string[] args)
         {
-            using (var transceiver = new SimTransceiver(simulator.MessageHandler))
-            using (var stateReceiver = new SimReceiver(simulator.StateTransmitter))
-            using (var videoReceiver = new SimReceiver(simulator.VideoTransmitter))
+            using (var transceiver = new SimTransceiver(Simulator.MessageHandler))
+            using (var stateReceiver = new SimReceiver(Simulator.StateTransmitter))
+            using (var videoReceiver = new SimReceiver(Simulator.VideoTransmitter))
             using (var repository = new SqliteRepository((null, "tello.sim.sqlite")))
             {
                 var testType = args.Length == 1 && args[0] == "joy"
@@ -40,7 +42,7 @@ namespace Tello.Simulator.Demo
                 switch (testType)
                 {
                     case TestType.JoyStick:
-                        flightTest = new JoyStickFlightTest(
+                        FlightTest = new JoyStickFlightTest(
                             repository,
                             transceiver,
                             stateReceiver,
@@ -48,7 +50,7 @@ namespace Tello.Simulator.Demo
                         break;
 
                     case TestType.WayPoint:
-                        flightTest = new CommandFlightTest(
+                        FlightTest = new CommandFlightTest(
                             repository,
                             transceiver,
                             stateReceiver,
@@ -59,7 +61,7 @@ namespace Tello.Simulator.Demo
                         break;
                 }
 
-                await flightTest.Invoke();
+                await FlightTest.Invoke();
             }
         }
     }

@@ -50,7 +50,6 @@ namespace Tello.Controller
         //    _videoSegments = new Queue<IEnvelope>();
         //    return result;
         // }
-
         public event EventHandler<VideoSampleReadyArgs> VideoSampleReady;
 
         public event EventHandler<Exception> ExceptionThrown;

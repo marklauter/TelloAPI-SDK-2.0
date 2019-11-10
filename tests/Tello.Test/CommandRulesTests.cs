@@ -1,9 +1,8 @@
-// <copyright file="ComandRulesTests.cs" company="Mark Lauter">
+﻿// <copyright file="CommandRulesTests.cs" company="Mark Lauter">
 // Copyright (c) Mark Lauter. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

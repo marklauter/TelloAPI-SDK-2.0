@@ -196,6 +196,7 @@ namespace Tello.Controller
 
         public ITelloState State { get; private set; } = new TelloState();
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.NamingRules", "SA1313:Parameter names should begin with lower-case letter", Justification = "_ is discard.")]
         public void UpdateState(object _, StateChangedArgs e)
         {
             this.State = e.State;
@@ -204,7 +205,7 @@ namespace Tello.Controller
         /// <summary>
         /// Tello auto lands after 15 seconds without commands as a safety mesasure, so we're going to send a keep alive message every 5 seconds.
         /// </summary>
-        private async void RunKeepAlive()
+        private async void RunKeepAliveAsync()
         {
             await Task.Run(async () =>
             {
@@ -235,7 +236,7 @@ namespace Tello.Controller
                 this.isConnected = response != null && response.Success;
                 if (this.isConnected)
                 {
-                    this.RunKeepAlive();
+                    this.RunKeepAliveAsync();
                     this.ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedArgs(this.isConnected));
                 }
             }
@@ -349,6 +350,7 @@ namespace Tello.Controller
         /// <param name="sides">3 to 15.</param>
         /// <param name="length">length of each side. 20 to 500 in cm.</param>
         /// <param name="speed">cm/s 10 to 100.</param>
+        /// /// <param name="clockDirection">Clock direction.</param>
         public void FlyPolygon(int sides, int length, int speed, ClockDirections clockDirection)
         {
             if (!this.CanManeuver)

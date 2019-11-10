@@ -7,7 +7,6 @@ using System;
 
 namespace Messenger
 {
-
     public abstract class Response<T> : Response, IResponse<T>
     {
         public Response(IResponse response)

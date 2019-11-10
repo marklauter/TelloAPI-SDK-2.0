@@ -35,9 +35,7 @@ namespace Repository.Sqlite
             this.sqlite = this.sqlite ??
                 new SQLiteConnection(
                     connectionString,
-                    SQLiteOpenFlags.Create
-                        | SQLiteOpenFlags.ReadWrite
-                        | SQLiteOpenFlags.FullMutex,
+                    SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex,
                     true)
                 { BusyTimeout = TimeSpan.FromSeconds(10) };
         }
