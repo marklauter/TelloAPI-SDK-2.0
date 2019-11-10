@@ -1,14 +1,20 @@
-﻿using System;
+﻿// <copyright file="CardinalDirection.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 
 namespace Tello
 {
     public class CardinalDirection
     {
-        public CardinalDirection() : this(CardinalDirections.Front) { }
+        public CardinalDirection()
+            : this(CardinalDirections.Front) { }
 
         public CardinalDirection(CardinalDirections direction)
         {
-            Value = direction;
+            this.Value = direction;
         }
 
         public CardinalDirections Value { get; }
@@ -61,7 +67,7 @@ namespace Tello
 
         public override string ToString()
         {
-            switch (Value)
+            switch (this.Value)
             {
                 case CardinalDirections.Left:
                     return "l";
@@ -70,6 +76,7 @@ namespace Tello
                 case CardinalDirections.Front:
                     return "f";
             }
+
             return "b";
         }
     }

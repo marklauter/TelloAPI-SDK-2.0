@@ -1,11 +1,17 @@
-﻿using System;
+﻿// <copyright file="BatteryObservation.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using Tello.State;
 
 namespace Tello.Entities.Sqlite
 {
     public sealed class BatteryObservation : Observation, IBattery
     {
-        public BatteryObservation() : base() { }
+        public BatteryObservation()
+            : base() { }
 
         public BatteryObservation(
             IObservationGroup group,
@@ -38,9 +44,9 @@ namespace Tello.Entities.Sqlite
                 throw new ArgumentNullException(nameof(battery));
             }
 
-            TemperatureLowC = battery.TemperatureLowC;
-            TemperatureHighC = battery.TemperatureHighC;
-            PercentRemaining = battery.PercentRemaining;
+            this.TemperatureLowC = battery.TemperatureLowC;
+            this.TemperatureHighC = battery.TemperatureHighC;
+            this.PercentRemaining = battery.PercentRemaining;
         }
 
         public int TemperatureLowC { get; set; }

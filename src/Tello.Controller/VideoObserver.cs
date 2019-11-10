@@ -1,5 +1,10 @@
-﻿using Messenger;
+﻿// <copyright file="VideoObserver.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
+using Messenger;
 //using System.Collections.Generic;
 using Tello.Events;
 
@@ -7,7 +12,8 @@ namespace Tello.Controller
 {
     public sealed class VideoObserver : Observer<IEnvelope>, IVideoObserver
     {
-        public VideoObserver(IReceiver receiver) : base(receiver)
+        public VideoObserver(IReceiver receiver)
+            : base(receiver)
         {
         }
 
@@ -15,9 +21,11 @@ namespace Tello.Controller
         {
             try
             {
-                ExceptionThrown?.Invoke(this, error);
+                this.ExceptionThrown?.Invoke(this, error);
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         public override void OnNext(IEnvelope message)
@@ -25,11 +33,11 @@ namespace Tello.Controller
             try
             {
                 //_videoSegments.Enqueue(message);
-                VideoSampleReady?.Invoke(this, new VideoSampleReadyArgs(message));
+                this.VideoSampleReady?.Invoke(this, new VideoSampleReadyArgs(message));
             }
             catch (Exception ex)
             {
-                OnError(ex);
+                this.OnError(ex);
             }
         }
 
@@ -43,6 +51,7 @@ namespace Tello.Controller
         //}
 
         public event EventHandler<VideoSampleReadyArgs> VideoSampleReady;
+
         public event EventHandler<Exception> ExceptionThrown;
     }
 }

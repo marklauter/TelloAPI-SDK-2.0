@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="Command.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Text;
 
 namespace Tello
@@ -19,10 +24,10 @@ namespace Tello
 
         public Command(Commands command, params object[] args)
         {
-            Rule = CommandRules.Rules(command);
-            Validate(command, args);
-            Arguments = args;
-            Immediate = Rule.Immediate;
+            this.Rule = CommandRules.Rules(command);
+            this.Validate(command, args);
+            this.Arguments = args;
+            this.Immediate = this.Rule.Immediate;
         }
         #endregion
 
@@ -97,6 +102,7 @@ namespace Tello
                 {
                     args[i] = Convert.ChangeType(tokens[i + 1], rule.Arguments[i].Type);
                 }
+
                 return new Command(rule.Command, args);
             }
         }
@@ -165,18 +171,18 @@ namespace Tello
 
         private void Validate(Commands command, params object[] args)
         {
-            if (args == null && Rule.Arguments.Length > 0)
+            if (args == null && this.Rule.Arguments.Length > 0)
             {
                 throw new ArgumentNullException($"{command}: {nameof(args)}");
             }
 
-            if (args != null && args.Length != Rule.Arguments.Length)
+            if (args != null && args.Length != this.Rule.Arguments.Length)
             {
                 throw new ArgumentException(
-                    $"{command}: argument count mismatch. expected: {Rule.Arguments.Length} actual: {(args == null ? 0 : args.Length)}");
+                    $"{command}: argument count mismatch. expected: {this.Rule.Arguments.Length} actual: {(args == null ? 0 : args.Length)}");
             }
 
-            if (Rule.Arguments.Length > 0)
+            if (this.Rule.Arguments.Length > 0)
             {
                 for (var i = 0; i < args.Length; ++i)
                 {
@@ -186,7 +192,7 @@ namespace Tello
                         throw new ArgumentNullException($"{command}: {nameof(args)}[{i}]");
                     }
 
-                    var argumentRule = Rule.Arguments[i];
+                    var argumentRule = this.Rule.Arguments[i];
                     if (!argumentRule.IsTypeAllowed(arg))
                     {
                         throw new ArgumentException($"{command}: {nameof(args)}[{i}] type mismatch. expected: '{argumentRule.Type.Name}' actual: '{arg.GetType().Name}'");
@@ -213,6 +219,7 @@ namespace Tello
                                 throw new ArgumentOutOfRangeException($"{command}: {nameof(args)} x, y and z can't match /[-20-20]/ simultaneously.");
                             }
                         }
+
                         break;
                 }
             }
@@ -221,8 +228,8 @@ namespace Tello
         public override string ToString()
         {
             return CommandRules
-                .Rules(Rule.Command)
-                .ToString(Arguments);
+                .Rules(this.Rule.Command)
+                .ToString(this.Arguments);
         }
     }
 }

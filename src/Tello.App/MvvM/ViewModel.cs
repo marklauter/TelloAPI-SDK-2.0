@@ -1,17 +1,23 @@
-﻿using System;
+﻿// <copyright file="ViewModel.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 
 namespace Tello.App.MvvM
 {
     public class OpenEventArgs : EventArgs
     {
-        public OpenEventArgs() : this(null)
+        public OpenEventArgs()
+            : this(null)
         {
         }
 
         public OpenEventArgs(Dictionary<string, object> args)
         {
-            Args = args != null
+            this.Args = args != null
                 ? new Dictionary<string, object>(args)
                 : new Dictionary<string, object>();
         }
@@ -28,34 +34,38 @@ namespace Tello.App.MvvM
     {
         protected readonly IUINotifier UserNotifier;
 
-        public ViewModel(IUIDispatcher dispatcher, IUINotifier userNotifier) : base(dispatcher)
+        public ViewModel(IUIDispatcher dispatcher, IUINotifier userNotifier)
+            : base(dispatcher)
         {
-            DisplayName = $"#{GetType().Name}#";
-            UserNotifier = userNotifier ?? throw new ArgumentNullException(nameof(userNotifier));
+            this.DisplayName = $"#{this.GetType().Name}#";
+            this.UserNotifier = userNotifier ?? throw new ArgumentNullException(nameof(userNotifier));
         }
 
         public string DisplayName { get; set; }
 
         public void Open(OpenEventArgs args = null)
         {
-            OnOpen(args);
+            this.OnOpen(args);
         }
 
         public bool Close()
         {
-            if (CanClose)
+            if (this.CanClose)
             {
                 var args = new ClosingEventArgs { CanClose = true };
-                OnClosing(args);
-                CanClose = args.CanClose;
+                this.OnClosing(args);
+                this.CanClose = args.CanClose;
             }
-            return CanClose;
+
+            return this.CanClose;
         }
 
-        private bool _canClose = true;
-        public bool CanClose { get => _canClose; set => SetProperty(ref _canClose, value); }
+        private bool canClose = true;
+
+        public bool CanClose { get => this.canClose; set => this.SetProperty(ref this.canClose, value); }
 
         protected virtual void OnOpen(OpenEventArgs args) { }
+
         protected virtual void OnClosing(ClosingEventArgs args) { }
     }
 }

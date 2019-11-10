@@ -1,15 +1,20 @@
-﻿using SQLite;
+﻿// <copyright file="SqliteRepository.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using SQLite;
 
 namespace Repository.Sqlite
 {
     public class SqliteRepository : IRepository, IDisposable
     {
-        private readonly SQLiteConnection _sqlite;
+        private readonly SQLiteConnection sqlite;
 
         #region ctor
         public SqliteRepository()
@@ -26,7 +31,7 @@ namespace Repository.Sqlite
                 ? databaseName
                 : Path.Combine(settings.databasePath, databaseName);
 
-            _sqlite = _sqlite ??
+            this.sqlite = this.sqlite ??
                 new SQLiteConnection(
                     connectionString,
                     SQLiteOpenFlags.Create
@@ -40,7 +45,7 @@ namespace Repository.Sqlite
         public bool CreateCatalog<T>()
             where T : IEntity, new()
         {
-            return _sqlite.CreateTable<T>() == CreateTableResult.Created;
+            return this.sqlite.CreateTable<T>() == CreateTableResult.Created;
         }
 
         public T NewEntity<T>(params object[] args)
@@ -48,7 +53,7 @@ namespace Repository.Sqlite
         {
             var result = (T)Activator.CreateInstance(typeof(T), args);
             // inserts fresh, updates ID with auto inc value
-            if (Insert(result) == 1)
+            if (this.Insert(result) == 1)
             {
                 return result;
             }
@@ -61,13 +66,13 @@ namespace Repository.Sqlite
         public int Delete<T>()
             where T : IEntity, new()
         {
-            return _sqlite.DeleteAll<T>();
+            return this.sqlite.DeleteAll<T>();
         }
 
         public int Delete<T>(int id)
             where T : IEntity, new()
         {
-            return _sqlite.Delete<T>(id);
+            return this.sqlite.Delete<T>(id);
         }
 
         public int Delete<T>(T entity)
@@ -78,7 +83,7 @@ namespace Repository.Sqlite
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            return Delete<T>(entity.Id);
+            return this.Delete<T>(entity.Id);
         }
 
         public int Delete<T>(Expression<Func<T, bool>> predicate)
@@ -89,21 +94,21 @@ namespace Repository.Sqlite
                 throw new ArgumentNullException(nameof(predicate));
             }
 
-            var entities = Read(predicate);
+            var entities = this.Read(predicate);
 
-            return entities.Sum(e => Delete(e));
+            return entities.Sum(e => this.Delete(e));
         }
 
         public T Read<T>(int id)
             where T : IEntity, new()
         {
-            return _sqlite.Find<T>(id);
+            return this.sqlite.Find<T>(id);
         }
 
         public T[] Read<T>()
             where T : IEntity, new()
         {
-            return _sqlite
+            return this.sqlite
                 .Table<T>()
                 .ToArray();
         }
@@ -116,7 +121,7 @@ namespace Repository.Sqlite
                 throw new ArgumentNullException(nameof(predicate));
             }
 
-            return _sqlite
+            return this.sqlite
                 .Table<T>()
                 .Where(predicate).
                 ToArray();
@@ -130,7 +135,7 @@ namespace Repository.Sqlite
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            return _sqlite.Insert(entity);
+            return this.sqlite.Insert(entity);
         }
 
         public int Insert<T>(IEnumerable<T> entities)
@@ -141,7 +146,7 @@ namespace Repository.Sqlite
                 throw new ArgumentNullException(nameof(entities));
             }
 
-            return entities.Sum(e => Insert(e));
+            return entities.Sum(e => this.Insert(e));
         }
 
         public int Update<T>(T entity)
@@ -152,7 +157,7 @@ namespace Repository.Sqlite
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            return _sqlite.Update(entity);
+            return this.sqlite.Update(entity);
         }
 
         public int Update<T>(IEnumerable<T> entities)
@@ -163,27 +168,27 @@ namespace Repository.Sqlite
                 throw new ArgumentNullException(nameof(entities));
             }
 
-            return entities.Sum(e => Update(e));
+            return entities.Sum(e => this.Update(e));
         }
 
         public void Shrink()
         {
-            _sqlite.Execute("vacuum");
+            this.sqlite.Execute("vacuum");
         }
 
         #region IDisposable Support
-        private bool _disposedValue = false; // To detect redundant calls
+        private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!_disposedValue)
+            if (!this.disposedValue)
             {
                 if (disposing)
                 {
-                    _sqlite.Dispose();
+                    this.sqlite.Dispose();
                 }
 
-                _disposedValue = true;
+                this.disposedValue = true;
             }
         }
 
@@ -191,7 +196,7 @@ namespace Repository.Sqlite
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
+            this.Dispose(true);
             // uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
         }

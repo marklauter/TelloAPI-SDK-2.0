@@ -1,8 +1,13 @@
-﻿using Messenger.Simulator;
+﻿// <copyright file="DroneSimulator.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Messenger.Simulator;
 using Tello.Simulator.Messaging;
 using Tello.State;
 
@@ -15,26 +20,28 @@ namespace Tello.Simulator
         //todo: 3. notify state transmitter
         //todo: 4. compose and return the appropriate command response
 
-        private bool _isVideoStreaming = false;
-        private bool _isFlying = false;
-        private Vector _position = new Vector();
-        private ITelloState _state = new TelloState();
-        private int _speed = 0;
-        private int _height = 0;
-        private bool _inCommandMode = false;
+        private bool isVideoStreaming = false;
+        private bool isFlying = false;
+        private Vector position = new Vector();
+        private ITelloState state = new TelloState();
+        private int speed = 0;
+        private int height = 0;
+        private bool inCommandMode = false;
 
         public DroneSimulator()
         {
-            MessageHandler = new DroneMessageHandler(DroneSimulator_CommandReceived);
-            StateTransmitter = new StateTransmitter();
-            VideoTransmitter = new VideoTransmitter();
+            this.MessageHandler = new DroneMessageHandler(this.DroneSimulator_CommandReceived);
+            this.StateTransmitter = new StateTransmitter();
+            this.VideoTransmitter = new VideoTransmitter();
 
-            VideoThread();
-            StateThread();
+            this.VideoThread();
+            this.StateThread();
         }
 
         public IDroneMessageHandler MessageHandler { get; }
+
         public IDroneTransmitter StateTransmitter { get; }
+
         public IDroneTransmitter VideoTransmitter { get; }
 
         private async void VideoThread()
@@ -45,10 +52,10 @@ namespace Tello.Simulator
                 var spinWait = new SpinWait();
                 while (true)
                 {
-                    if (_isVideoStreaming)
+                    if (this.isVideoStreaming)
                     {
                         //(VideoTransmitter as VideoTransmitter).AddVideoSegment(Array.Empty<byte>());
-                        (VideoTransmitter as VideoTransmitter).AddVideoSegment(bytes);
+                        (this.VideoTransmitter as VideoTransmitter).AddVideoSegment(bytes);
                         await Task.Delay(1000 / 30);
                     }
                     else
@@ -65,10 +72,11 @@ namespace Tello.Simulator
             {
                 while (true)
                 {
-                    if (_inCommandMode)
+                    if (this.inCommandMode)
                     {
-                        (StateTransmitter as StateTransmitter).SetState(_state);
+                        (this.StateTransmitter as StateTransmitter).SetState(this.state);
                     }
+
                     await Task.Delay(1000 / 5);
                 }
             });
@@ -78,7 +86,7 @@ namespace Tello.Simulator
         {
             try
             {
-                return Invoke(command);
+                return this.Invoke(command);
             }
             catch (Exception ex)
             {
@@ -88,12 +96,12 @@ namespace Tello.Simulator
 
         private string Invoke(Command command)
         {
-            if (command != Commands.EnterSdkMode && !_inCommandMode)
+            if (command != Commands.EnterSdkMode && !this.inCommandMode)
             {
                 throw new TelloException("Call EnterSdkMode first.");
             }
 
-            if (!_isFlying && command.Rule.MustBeInFlight)
+            if (!this.isFlying && command.Rule.MustBeInFlight)
             {
                 throw new TelloException("Call Takeoff first.");
             }
@@ -101,11 +109,11 @@ namespace Tello.Simulator
             switch (command.Rule.Response)
             {
                 case Responses.Ok:
-                    HandleOk(command);
-                    _state = new TelloState(_position);
+                    this.HandleOk(command);
+                    this.state = new TelloState(this.position);
                     return "ok";
                 case Responses.Speed:
-                    return _speed.ToString();
+                    return this.speed.ToString();
                 case Responses.Battery:
                     return "99";
                 case Responses.Time:
@@ -128,65 +136,66 @@ namespace Tello.Simulator
             switch ((Commands)command)
             {
                 case Commands.EnterSdkMode:
-                    _inCommandMode = true;
+                    this.inCommandMode = true;
                     break;
 
                 case Commands.Takeoff:
-                    _height = 20;
-                    _isFlying = true;
+                    this.height = 20;
+                    this.isFlying = true;
                     break;
 
                 case Commands.EmergencyStop:
                 case Commands.Land:
-                    _height = 0;
-                    _isFlying = false;
+                    this.height = 0;
+                    this.isFlying = false;
                     break;
 
                 case Commands.StartVideo:
-                    _isVideoStreaming = true;
+                    this.isVideoStreaming = true;
                     break;
                 case Commands.StopVideo:
-                    _isVideoStreaming = false;
+                    this.isVideoStreaming = false;
                     break;
 
                 case Commands.Left:
-                    _position = _position.Move(CardinalDirections.Left, (int)command.Arguments[0]);
+                    this.position = this.position.Move(CardinalDirections.Left, (int)command.Arguments[0]);
                     break;
                 case Commands.Right:
-                    _position = _position.Move(CardinalDirections.Right, (int)command.Arguments[0]);
+                    this.position = this.position.Move(CardinalDirections.Right, (int)command.Arguments[0]);
                     break;
                 case Commands.Forward:
-                    _position = _position.Move(CardinalDirections.Front, (int)command.Arguments[0]);
+                    this.position = this.position.Move(CardinalDirections.Front, (int)command.Arguments[0]);
                     break;
                 case Commands.Back:
-                    _position = _position.Move(CardinalDirections.Back, (int)command.Arguments[0]);
+                    this.position = this.position.Move(CardinalDirections.Back, (int)command.Arguments[0]);
                     break;
                 case Commands.ClockwiseTurn:
-                    _position = _position.Turn(ClockDirections.Clockwise, (int)command.Arguments[0]);
+                    this.position = this.position.Turn(ClockDirections.Clockwise, (int)command.Arguments[0]);
                     break;
                 case Commands.CounterClockwiseTurn:
-                    _position = _position.Turn(ClockDirections.CounterClockwise, (int)command.Arguments[0]);
+                    this.position = this.position.Turn(ClockDirections.CounterClockwise, (int)command.Arguments[0]);
                     break;
                 case Commands.Go:
-                    _position = _position.Go((int)command.Arguments[0], (int)command.Arguments[1]);
+                    this.position = this.position.Go((int)command.Arguments[0], (int)command.Arguments[1]);
                     break;
 
                 case Commands.SetSpeed:
-                    _speed = (int)command.Arguments[0];
+                    this.speed = (int)command.Arguments[0];
                     break;
 
                 case Commands.Stop:
                     break;
 
                 case Commands.Up:
-                    _height += (int)command.Arguments[0];
+                    this.height += (int)command.Arguments[0];
                     break;
                 case Commands.Down:
-                    _height -= (int)command.Arguments[0];
-                    if (_height < 0)
+                    this.height -= (int)command.Arguments[0];
+                    if (this.height < 0)
                     {
-                        _height = 0;
+                        this.height = 0;
                     }
+
                     break;
 
                 case Commands.Curve:

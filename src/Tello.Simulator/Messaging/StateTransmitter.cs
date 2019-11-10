@@ -1,4 +1,9 @@
-﻿using System.Text;
+﻿// <copyright file="StateTransmitter.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System.Text;
 using Tello.State;
 
 namespace Tello.Simulator.Messaging
@@ -9,8 +14,8 @@ namespace Tello.Simulator.Messaging
         {
             if (telloState != null)
             {
-                _available = 0;
-                Buffer = Encoding.UTF8.GetBytes(telloState.ToString());
+                this.available = 0;
+                this.Buffer = Encoding.UTF8.GetBytes(telloState.ToString());
             }
         }
     }

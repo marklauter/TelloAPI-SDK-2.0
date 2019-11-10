@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="IFlightController.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Threading.Tasks;
 using Tello.Events;
 using Tello.State;
@@ -8,9 +13,13 @@ namespace Tello
     public interface IFlightController
     {
         event EventHandler<ResponseReceivedArgs> ResponseReceived;
+
         event EventHandler<ExceptionThrownArgs> ExceptionThrown;
+
         event EventHandler<ConnectionStateChangedArgs> ConnectionStateChanged;
+
         event EventHandler<PositionChangedArgs> PositionChanged;
+
         event EventHandler<VideoStreamingStateChangedArgs> VideoStreamingStateChanged;
 
         InterogativeState InterogativeState { get; }
@@ -59,67 +68,67 @@ namespace Tello
         void StopVideo();
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="cm">20 to 500</param>
         void GoUp(int cm);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="cm">20 to 500</param>
         void GoDown(int cm);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="cm">20 to 500</param>
         void GoLeft(int cm);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="cm">20 to 500</param>
         void GoRight(int cm);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="cm">20 to 500</param>
         void GoForward(int cm);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="cm">20 to 500</param>
         void GoBackward(int cm);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="degrees">1 to 360</param>
         void TurnClockwise(int degress);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="degrees">1 to 360</param>
         void TurnRight(int degress);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="degrees">1 to 360</param>
         void TurnCounterClockwise(int degress);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="degrees">1 to 360</param>
         void TurnLeft(int degress);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="FlipDirections">FlipDirections.Left, FlipDirections.Right, FlipDirections.Front, FlipDirections.Back</param>
         void Flip(CardinalDirections direction);
@@ -146,7 +155,7 @@ namespace Tello
         void Curve(int x1, int y1, int z1, int x2, int y2, int z2, int speed);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="sides">3 to 15</param>
         /// <param name="length">length of each side. 20 to 500 in cm</param>
@@ -156,13 +165,13 @@ namespace Tello
         void SetHeight(int cm);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="speed">cm/s, 10 to 100</param>
         void SetSpeed(int speed);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="leftRight">-100 to 100</param>
         /// <param name="forwardBackward">-100 to 100</param>

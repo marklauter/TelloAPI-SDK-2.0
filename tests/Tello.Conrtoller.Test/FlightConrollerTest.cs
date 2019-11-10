@@ -1,11 +1,7 @@
-//using Microsoft.VisualStudio.TestTools.UnitTesting;
-//using System;
-//using System.Diagnostics;
-//using System.Threading;
-//using Tello.Emulator.SDKV2;
-//using Tello.Messaging;
-//using static Tello.Controller.FlightController;
-
+// <copyright file="FlightConrollerTest.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
 //namespace Tello.Controller.Test
 //{
 //    [TestClass]

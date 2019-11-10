@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="Envelope.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 
 namespace Messenger
 {
@@ -16,10 +21,10 @@ namespace Messenger
                 throw new ArgumentOutOfRangeException(nameof(data));
             }
 
-            Data = data;
+            this.Data = data;
 
-            Timestamp = DateTime.UtcNow;
-            Id = Guid.NewGuid();
+            this.Timestamp = DateTime.UtcNow;
+            this.Id = Guid.NewGuid();
         }
 
         public Guid Id { get; }

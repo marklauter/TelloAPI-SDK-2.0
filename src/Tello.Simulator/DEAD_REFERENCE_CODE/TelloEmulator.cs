@@ -1,9 +1,7 @@
-﻿//using System;
-//using System.Diagnostics;
-//using System.Text;
-//using System.Threading.Tasks;
-//using Tello.Messaging;
-
+﻿// <copyright file="TelloEmulator.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
 //namespace Tello.Emulator.SDKV2
 //{
 //    //https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf
@@ -84,7 +82,7 @@
 //            var message = Encoding.UTF8.GetString(request.Data);
 
 //            var response = _commandInterpreter.Interpret(message);
-            
+
 //            return Task.FromResult(Response.FromData(request, Encoding.UTF8.GetBytes(response), clock.Elapsed));
 //        }
 //        #endregion

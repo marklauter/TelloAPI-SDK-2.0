@@ -1,10 +1,7 @@
-﻿//using Microsoft.VisualStudio.TestTools.UnitTesting;
-//using System;
-//using System.Text;
-//using System.Threading.Tasks;
-//using Tello.Emulator.SDKV2;
-//using Tello.Messaging;
-
+﻿// <copyright file="TelloEmulatorTest.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
 //namespace Tello.Controller.Test
 //{
 //    [TestClass]

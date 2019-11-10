@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="StateObservations.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using Tello.State;
 
 namespace Tello.Entities.Sqlite
@@ -27,7 +32,7 @@ namespace Tello.Entities.Sqlite
                   groupId,
                   (telloState ?? throw new ArgumentNullException(nameof(telloState))).Timestamp)
         {
-            Data = String.IsNullOrEmpty(telloState.Data)
+            this.Data = String.IsNullOrEmpty(telloState.Data)
                 ? String.Empty
                 : telloState.Data;
         }

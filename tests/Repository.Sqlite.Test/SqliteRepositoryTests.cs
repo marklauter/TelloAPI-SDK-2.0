@@ -1,6 +1,11 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+// <copyright file="SqliteRepositoryTests.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System.IO;
 using System.Runtime.CompilerServices;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Repository.Sqlite.Test
 {
@@ -37,13 +42,15 @@ namespace Repository.Sqlite.Test
         [TestMethod]
         public void SqliteRepository_CTOR_formats_connectionstring_creates_connection_and_creates_dbfile()
         {
-            using (var repo = CreateRepository()) { }
+            using (var repo = this.CreateRepository())
+            {
+            }
         }
 
         [TestMethod]
         public void SqliteRepository_CreateCatalog_adds_new_table()
         {
-            using (var repo = CreateRepository())
+            using (var repo = this.CreateRepository())
             {
                 Assert.IsTrue(repo.CreateCatalog<TestEntity>());
             }
@@ -52,7 +59,7 @@ namespace Repository.Sqlite.Test
         [TestMethod]
         public void SqliteRepository_NewEntity_creates_new_entity_inserts_into_table_and_updates_primarykey_id()
         {
-            using (var repo = CreateRepository())
+            using (var repo = this.CreateRepository())
             {
                 Assert.IsTrue(repo.CreateCatalog<TestEntity>());
 
@@ -72,7 +79,7 @@ namespace Repository.Sqlite.Test
         [TestMethod]
         public void SqliteRepository_NewEntity_delete_removes_all_data()
         {
-            using (var repo = CreateRepository())
+            using (var repo = this.CreateRepository())
             {
                 Assert.IsTrue(repo.CreateCatalog<TestEntity>());
 
@@ -96,7 +103,7 @@ namespace Repository.Sqlite.Test
         [TestMethod]
         public void SqliteRepository_NewEntity_delete_removes_record_matching_pk()
         {
-            using (var repo = CreateRepository())
+            using (var repo = this.CreateRepository())
             {
                 Assert.IsTrue(repo.CreateCatalog<TestEntity>());
 
@@ -120,7 +127,7 @@ namespace Repository.Sqlite.Test
         [TestMethod]
         public void SqliteRepository_NewEntity_delete_removes_record_matching_expression()
         {
-            using (var repo = CreateRepository())
+            using (var repo = this.CreateRepository())
             {
                 Assert.IsTrue(repo.CreateCatalog<TestEntity>());
 
@@ -145,9 +152,9 @@ namespace Repository.Sqlite.Test
         public void SqliteRepository_NewEntity_shrink_recovers_disk_space()
         {
             var fileSize = 0L;
-            using (var repo = CreateRepository())
+            using (var repo = this.CreateRepository())
             {
-                fileSize = GetFileSize();
+                fileSize = this.GetFileSize();
 
                 Assert.IsTrue(repo.CreateCatalog<TestEntity>());
 
@@ -156,34 +163,37 @@ namespace Repository.Sqlite.Test
                     Assert.AreEqual(i + 1, repo.NewEntity<TestEntity>().Id);
                 }
             }
-            var newSize = GetFileSize();
+
+            var newSize = this.GetFileSize();
             Assert.AreNotEqual(fileSize, newSize);
             fileSize = newSize;
 
             // delete does not recover space
-            using (var repo = CreateRepository(false))
+            using (var repo = this.CreateRepository(false))
             {
                 Assert.AreEqual(400, repo.Delete<TestEntity>());
             }
-            newSize = GetFileSize();
+
+            newSize = this.GetFileSize();
             Assert.AreEqual(fileSize, newSize);
             fileSize = newSize;
 
             // shrink recovers space, but connection must be disposed to see result
-            using (var repo = CreateRepository(false))
+            using (var repo = this.CreateRepository(false))
             {
                 repo.Shrink();
-                newSize = GetFileSize();
+                newSize = this.GetFileSize();
                 Assert.AreEqual(fileSize, newSize);
             }
-            newSize = GetFileSize();
+
+            newSize = this.GetFileSize();
             Assert.IsTrue(fileSize > newSize);
         }
 
         [TestMethod]
         public void SqliteRepository_Read_retrieves_correct_entity()
         {
-            using (var repo = CreateRepository())
+            using (var repo = this.CreateRepository())
             {
                 Assert.IsTrue(repo.CreateCatalog<TestEntity>());
 
@@ -209,7 +219,7 @@ namespace Repository.Sqlite.Test
         [TestMethod]
         public void SqliteRepository_Update_changes_entity()
         {
-            using (var repo = CreateRepository())
+            using (var repo = this.CreateRepository())
             {
                 Assert.IsTrue(repo.CreateCatalog<TestEntity>());
 

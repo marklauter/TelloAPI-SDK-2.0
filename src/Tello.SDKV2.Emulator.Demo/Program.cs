@@ -1,14 +1,19 @@
-﻿using Messenger.Simulator;
-using Repository.Sqlite;
+﻿// <copyright file="Program.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System.Threading.Tasks;
+using Messenger.Simulator;
+using Repository.Sqlite;
 using Tello.Demo;
 
 namespace Tello.Simulator.Demo
 {
     internal class Program
     {
-        private static readonly DroneSimulator _simulator;
-        private static IFlightTest _flightTest;
+        private static readonly DroneSimulator simulator;
+        private static IFlightTest flightTest;
 
         private enum TestType
         {
@@ -18,14 +23,14 @@ namespace Tello.Simulator.Demo
 
         static Program()
         {
-            _simulator = new DroneSimulator();
+            simulator = new DroneSimulator();
         }
 
         private static async Task Main(string[] args)
         {
-            using (var transceiver = new SimTransceiver(_simulator.MessageHandler))
-            using (var stateReceiver = new SimReceiver(_simulator.StateTransmitter))
-            using (var videoReceiver = new SimReceiver(_simulator.VideoTransmitter))
+            using (var transceiver = new SimTransceiver(simulator.MessageHandler))
+            using (var stateReceiver = new SimReceiver(simulator.StateTransmitter))
+            using (var videoReceiver = new SimReceiver(simulator.VideoTransmitter))
             using (var repository = new SqliteRepository((null, "tello.sim.sqlite")))
             {
                 var testType = args.Length == 1 && args[0] == "joy"
@@ -35,7 +40,7 @@ namespace Tello.Simulator.Demo
                 switch (testType)
                 {
                     case TestType.JoyStick:
-                        _flightTest = new JoyStickFlightTest(
+                        flightTest = new JoyStickFlightTest(
                             repository,
                             transceiver,
                             stateReceiver,
@@ -43,7 +48,7 @@ namespace Tello.Simulator.Demo
                         break;
 
                     case TestType.WayPoint:
-                        _flightTest = new CommandFlightTest(
+                        flightTest = new CommandFlightTest(
                             repository,
                             transceiver,
                             stateReceiver,
@@ -54,7 +59,7 @@ namespace Tello.Simulator.Demo
                         break;
                 }
 
-                await _flightTest.Invoke();
+                await flightTest.Invoke();
             }
         }
     }

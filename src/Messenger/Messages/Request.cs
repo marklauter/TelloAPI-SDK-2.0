@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="Request.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 
 namespace Messenger
 {
@@ -6,13 +11,13 @@ namespace Messenger
     {
         protected Request(TimeSpan? timeout = null, bool noWait = false)
         {
-            Timeout = timeout ?? TimeSpan.MaxValue;
-            Id = Guid.NewGuid();
-            Timestamp = DateTime.UtcNow;
-            NoWait = noWait;
+            this.Timeout = timeout ?? TimeSpan.MaxValue;
+            this.Id = Guid.NewGuid();
+            this.Timestamp = DateTime.UtcNow;
+            this.NoWait = noWait;
         }
 
-        public Request(byte[] data, TimeSpan? timeout = null, bool noWait = false) 
+        public Request(byte[] data, TimeSpan? timeout = null, bool noWait = false)
             : this(timeout, noWait)
         {
             if (data == null)
@@ -25,7 +30,7 @@ namespace Messenger
                 throw new ArgumentOutOfRangeException(nameof(data));
             }
 
-            Data = data;
+            this.Data = data;
         }
 
         public byte[] Data { get; protected set; }
@@ -41,10 +46,11 @@ namespace Messenger
 
     public abstract class Request<T> : Request, IRequest<T>
     {
-        public Request(T message, TimeSpan? timeout = null, bool noWait = false) : base(timeout, noWait)
+        public Request(T message, TimeSpan? timeout = null, bool noWait = false)
+            : base(timeout, noWait)
         {
-            Message = message;
-            Data = Serialize(message);
+            this.Message = message;
+            this.Data = this.Serialize(message);
         }
 
         protected abstract byte[] Serialize(T message);

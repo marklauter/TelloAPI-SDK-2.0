@@ -1,12 +1,17 @@
-using Messenger;
-using Tello.Messaging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Repository;
-using Repository.Sqlite;
+// <copyright file="Tello.Observations.Sqlite.Tests.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Messenger;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Repository;
+using Repository.Sqlite;
+using Tello.Messaging;
 using Tello.State;
 
 namespace Tello.Entities.Sqlite.Test
@@ -33,7 +38,7 @@ namespace Tello.Entities.Sqlite.Test
         [TestMethod]
         public void Session_NewEntity_Insert_Update_Read()
         {
-            using(var repo= CreateRepository())
+            using(var repo= this.CreateRepository())
             {
                 Assert.IsTrue(repo.CreateCatalog<Session>());
 
@@ -58,7 +63,7 @@ namespace Tello.Entities.Sqlite.Test
         [TestMethod]
         public void ObservationGroup_NewEntity_Insert_Update_Read()
         {
-            using (var repo = CreateRepository())
+            using (var repo = this.CreateRepository())
             {
                 Assert.IsTrue(repo.CreateCatalog<Session>());
                 Assert.IsTrue(repo.CreateCatalog<ObservationGroup>());
@@ -85,7 +90,7 @@ namespace Tello.Entities.Sqlite.Test
         [TestMethod]
         public void TelloCommandObservation_Insert_Read()
         {
-            using (var repo = CreateRepository())
+            using (var repo = this.CreateRepository())
             {
                 Assert.IsTrue(repo.CreateCatalog<Session>());
                 Assert.IsTrue(repo.CreateCatalog<ObservationGroup>());
@@ -129,7 +134,7 @@ namespace Tello.Entities.Sqlite.Test
         [TestMethod]
         public void PositionObservation_Insert_Read()
         {
-            using (var repo = CreateRepository())
+            using (var repo = this.CreateRepository())
             {
                 Assert.IsTrue(repo.CreateCatalog<Session>());
                 Assert.IsTrue(repo.CreateCatalog<ObservationGroup>());
@@ -174,7 +179,7 @@ namespace Tello.Entities.Sqlite.Test
         [TestMethod]
         public void AirSpeed_Insert_Read()
         {
-            using (var repo = CreateRepository())
+            using (var repo = this.CreateRepository())
             {
                 Assert.IsTrue(repo.CreateCatalog<Session>());
                 Assert.IsTrue(repo.CreateCatalog<ObservationGroup>());
@@ -220,7 +225,7 @@ namespace Tello.Entities.Sqlite.Test
         [TestMethod]
         public void Attitude_Insert_Read()
         {
-            using (var repo = CreateRepository())
+            using (var repo = this.CreateRepository())
             {
                 Assert.IsTrue(repo.CreateCatalog<Session>());
                 Assert.IsTrue(repo.CreateCatalog<ObservationGroup>());
@@ -263,7 +268,7 @@ namespace Tello.Entities.Sqlite.Test
         [TestMethod]
         public void Battery_Insert_Read()
         {
-            using (var repo = CreateRepository())
+            using (var repo = this.CreateRepository())
             {
                 Assert.IsTrue(repo.CreateCatalog<Session>());
                 Assert.IsTrue(repo.CreateCatalog<ObservationGroup>());
@@ -306,7 +311,7 @@ namespace Tello.Entities.Sqlite.Test
         [TestMethod]
         public void HobbsMeter_Insert_Read()
         {
-            using (var repo = CreateRepository())
+            using (var repo = this.CreateRepository())
             {
                 Assert.IsTrue(repo.CreateCatalog<Session>());
                 Assert.IsTrue(repo.CreateCatalog<ObservationGroup>());

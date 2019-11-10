@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="UdpReceiver.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,11 +12,11 @@ namespace Messenger.Udp
 {
     public sealed class UdpReceiver : Receiver
     {
-        private readonly int _port;
+        private readonly int port;
 
         public UdpReceiver(int port)
         {
-            _port = port;
+            this.port = port;
         }
 
         protected override async Task Listen(CancellationToken cancellationToken)
@@ -23,7 +28,7 @@ namespace Messenger.Udp
 
             var wait = new SpinWait();
 
-            using (var client = new UdpClient(_port))
+            using (var client = new UdpClient(this.port))
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
@@ -31,7 +36,7 @@ namespace Messenger.Udp
                     {
                         if (client.Available > 0)
                         {
-                            MessageReceived(new Envelope((await client.ReceiveAsync()).Buffer));
+                            this.MessageReceived(new Envelope((await client.ReceiveAsync()).Buffer));
                         }
                         else
                         {
@@ -40,7 +45,7 @@ namespace Messenger.Udp
                     }
                     catch (Exception ex)
                     {
-                        ExceptionThrown(ex);
+                        this.ExceptionThrown(ex);
                     }
                 }
             }

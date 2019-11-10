@@ -1,4 +1,9 @@
-﻿using System.Linq;
+﻿// <copyright file="VideoTransmitter.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System.Linq;
 
 namespace Tello.Simulator.Messaging
 {
@@ -8,8 +13,8 @@ namespace Tello.Simulator.Messaging
         {
             if (segment != null)
             {
-                _available = 0;
-                Buffer = Buffer.Union(segment).ToArray();
+                this.available = 0;
+                this.Buffer = this.Buffer.Union(segment).ToArray();
             }
         }
     }

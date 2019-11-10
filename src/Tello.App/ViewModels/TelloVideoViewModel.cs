@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="TelloVideoViewModel.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Threading;
@@ -10,10 +15,12 @@ namespace Tello.App.ViewModels
     public sealed class VideoSample
     {
         public byte[] Buffer { get; }
+
         public TimeSpan TimeIndex { get; }
+
         public TimeSpan Duration { get; }
 
-        public int Length => Buffer.Length;
+        public int Length => this.Buffer.Length;
 
         public VideoSample()
             : this(
@@ -25,16 +32,16 @@ namespace Tello.App.ViewModels
 
         public VideoSample(byte[] buffer, TimeSpan timeIndex, TimeSpan duration)
         {
-            Buffer = buffer;
-            TimeIndex = timeIndex;
-            Duration = duration;
+            this.Buffer = buffer;
+            this.TimeIndex = timeIndex;
+            this.Duration = duration;
         }
     }
 
     public class TelloVideoViewModel : ViewModel
     {
-        private readonly IVideoObserver _videoObserver;
-        private readonly Stopwatch _watch = new Stopwatch();
+        private readonly IVideoObserver videoObserver;
+        private readonly Stopwatch watch = new Stopwatch();
 
         public TelloVideoViewModel(
             IUIDispatcher dispatcher,
@@ -42,42 +49,44 @@ namespace Tello.App.ViewModels
             IVideoObserver videoObserver)
             : base(dispatcher, notifier)
         {
-            _videoObserver = videoObserver ?? throw new ArgumentNullException(nameof(videoObserver));
+            this.videoObserver = videoObserver ?? throw new ArgumentNullException(nameof(videoObserver));
         }
 
         protected override void OnOpen(OpenEventArgs args)
         {
-            _videoObserver.VideoSampleReady += Observer_VideoSampleReady;
+            this.videoObserver.VideoSampleReady += this.Observer_VideoSampleReady;
         }
 
         protected override void OnClosing(ClosingEventArgs args)
         {
-            _videoObserver.VideoSampleReady -= Observer_VideoSampleReady;
+            this.videoObserver.VideoSampleReady -= this.Observer_VideoSampleReady;
         }
 
-        private TimeSpan _timeIndex = TimeSpan.FromSeconds(0);
+        private TimeSpan timeIndex = TimeSpan.FromSeconds(0);
+
         private void Observer_VideoSampleReady(object sender, Events.VideoSampleReadyArgs e)
         {
-            _timeIndex = _watch.Elapsed;
-            var sample = new VideoSample(e.Message.Data, _timeIndex, _watch.Elapsed - _timeIndex);
-            if (!_watch.IsRunning)
+            this.timeIndex = this.watch.Elapsed;
+            var sample = new VideoSample(e.Message.Data, this.timeIndex, this.watch.Elapsed - this.timeIndex);
+            if (!this.watch.IsRunning)
             {
-                _watch.Start();
+                this.watch.Start();
             }
 
-            _samples.Enqueue(sample);
+            this.samples.Enqueue(sample);
         }
 
-        private readonly ConcurrentQueue<VideoSample> _samples = new ConcurrentQueue<VideoSample>();
+        private readonly ConcurrentQueue<VideoSample> samples = new ConcurrentQueue<VideoSample>();
 
         public VideoSample GetSample()
         {
             var wait = new SpinWait();
             VideoSample result;
-            while (_samples.Count == 0 || !_samples.TryDequeue(out result))
+            while (this.samples.Count == 0 || !this.samples.TryDequeue(out result))
             {
                 wait.SpinOnce();
             }
+
             return result;
         }
 

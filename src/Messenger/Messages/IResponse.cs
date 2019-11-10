@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="IResponse.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 
 namespace Messenger
 {
@@ -31,5 +36,7 @@ namespace Messenger
         Exception Exception { get; }
     }
 
-    public interface IResponse<T> : IResponse, IEnvelope<T> { }
+    public interface IResponse<T> : IResponse, IEnvelope<T>
+    {
+    }
 }

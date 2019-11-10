@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="InputCommands.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -15,51 +20,51 @@ namespace Tello.App.MvvM
 
     public abstract class Command : IInputCommand
     {
-        private bool _enabled = true;
-        private readonly Func<object, bool> _canExecute;
+        private bool enabled = true;
+        private readonly Func<object, bool> canExecute;
 
         public Command() { }
 
         public Command(Func<object, bool> canExecute)
         {
-            _canExecute = canExecute;
+            this.canExecute = canExecute;
         }
 
         public event EventHandler CanExecuteChanged;
 
         public bool Enabled
         {
-            get => _enabled;
+            get => this.enabled;
             set
             {
-                if (_enabled != value)
+                if (this.enabled != value)
                 {
-                    _enabled = value;
-                    CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+                    this.enabled = value;
+                    this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
 
         public bool CanExecute(object parameter = null)
         {
-            return _canExecute != null
-                ? _canExecute.Invoke(parameter)
-                : Enabled;
+            return this.canExecute != null
+                ? this.canExecute.Invoke(parameter)
+                : this.Enabled;
         }
 
         public void Execute(object paramter)
         {
-            if (CanExecute(paramter))
+            if (this.CanExecute(paramter))
             {
-                var enabled = Enabled;
-                Enabled = false;
+                var enabled = this.Enabled;
+                this.Enabled = false;
                 try
                 {
-                    ExecuteInternal(paramter);
+                    this.ExecuteInternal(paramter);
                 }
                 finally
                 {
-                    Enabled = enabled;
+                    this.Enabled = enabled;
                 }
             }
         }
@@ -69,69 +74,77 @@ namespace Tello.App.MvvM
 
     public class InputCommand : Command
     {
-        public InputCommand(Action action) : this(action, null) { }
+        public InputCommand(Action action)
+            : this(action, null) { }
 
-        public InputCommand(Action action, Func<object, bool> canExecute) : base(canExecute)
+        public InputCommand(Action action, Func<object, bool> canExecute)
+            : base(canExecute)
         {
-            _action = action ?? throw new ArgumentNullException(nameof(action));
+            this.action = action ?? throw new ArgumentNullException(nameof(action));
         }
 
-        private readonly Action _action;
+        private readonly Action action;
 
         public override void ExecuteInternal(object parameter = null)
         {
-            _action();
+            this.action();
         }
     }
 
     public class InputCommand<T> : Command, IInputCommand<T>
     {
-        public InputCommand(Action<T> action) : this(action, null) { }
+        public InputCommand(Action<T> action)
+            : this(action, null) { }
 
-        public InputCommand(Action<T> action, Func<object, bool> canExecute) : base(canExecute)
+        public InputCommand(Action<T> action, Func<object, bool> canExecute)
+            : base(canExecute)
         {
-            _action = action ?? throw new ArgumentNullException(nameof(action));
+            this.action = action ?? throw new ArgumentNullException(nameof(action));
         }
 
-        private readonly Action<T> _action;
+        private readonly Action<T> action;
 
         public override void ExecuteInternal(object parameter)
         {
-            _action((T)Convert.ChangeType(parameter, typeof(T)));
+            this.action((T)Convert.ChangeType(parameter, typeof(T)));
         }
     }
 
     public class AsyncInputCommand : Command
     {
-        public AsyncInputCommand(Func<Task> func) : this(func, null) { }
+        public AsyncInputCommand(Func<Task> func)
+            : this(func, null) { }
 
-        public AsyncInputCommand(Func<Task> func, Func<object, bool> canExecute) : base(canExecute)
+        public AsyncInputCommand(Func<Task> func, Func<object, bool> canExecute)
+            : base(canExecute)
         {
-            _func = func ?? throw new ArgumentNullException(nameof(func));
+            this.func = func ?? throw new ArgumentNullException(nameof(func));
         }
 
-        private readonly Func<Task> _func;
+        private readonly Func<Task> func;
 
         public override async void ExecuteInternal(object parameter = null)
         {
-            await _func();
+            await this.func();
         }
     }
 
     public class AsycInputCommand<T> : Command, IInputCommand<T>
     {
-        public AsycInputCommand(Func<T, Task> func) : this(func, null) { }
+        public AsycInputCommand(Func<T, Task> func)
+            : this(func, null) { }
 
-        public AsycInputCommand(Func<T, Task> func, Func<object, bool> canExecute) : base(canExecute)
+        public AsycInputCommand(Func<T, Task> func, Func<object, bool> canExecute)
+            : base(canExecute)
         {
-            _func = func ?? throw new ArgumentNullException(nameof(func));
+            this.func = func ?? throw new ArgumentNullException(nameof(func));
         }
 
-        private readonly Func<T, Task> _func;
+        private readonly Func<T, Task> func;
 
         public override async void ExecuteInternal(object parameter)
         {
-            await _func((T)parameter);
+            await this.func((T)parameter);
         }
     }
 }

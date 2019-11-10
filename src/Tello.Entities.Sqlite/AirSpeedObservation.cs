@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="AirSpeedObservation.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using Tello.State;
 
 namespace Tello.Entities.Sqlite
@@ -42,12 +47,12 @@ namespace Tello.Entities.Sqlite
                 throw new ArgumentNullException(nameof(airspeed));
             }
 
-            SpeedX = airspeed.SpeedX;
-            SpeedY = airspeed.SpeedY;
-            SpeedZ = airspeed.SpeedZ;
-            AccelerationX = airspeed.AccelerationX;
-            AccelerationY = airspeed.AccelerationY;
-            AccelerationZ = airspeed.AccelerationZ;
+            this.SpeedX = airspeed.SpeedX;
+            this.SpeedY = airspeed.SpeedY;
+            this.SpeedZ = airspeed.SpeedZ;
+            this.AccelerationX = airspeed.AccelerationX;
+            this.AccelerationY = airspeed.AccelerationY;
+            this.AccelerationZ = airspeed.AccelerationZ;
         }
 
         public int SpeedX { get; set; }

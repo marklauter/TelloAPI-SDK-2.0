@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="CommandRules.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tello.Types;
@@ -15,8 +20,8 @@ namespace Tello
     {
         protected ArgumentRule(Type type, Func<object, bool> isTypeAllowed)
         {
-            Type = type ?? throw new ArgumentNullException(nameof(type));
-            IsTypeAllowed = isTypeAllowed ?? throw new ArgumentNullException(nameof(isTypeAllowed));
+            this.Type = type ?? throw new ArgumentNullException(nameof(type));
+            this.IsTypeAllowed = isTypeAllowed ?? throw new ArgumentNullException(nameof(isTypeAllowed));
         }
 
         public readonly Type Type;
@@ -40,8 +45,8 @@ namespace Tello
         {
             internal Range(T min, T max)
             {
-                Min = min;
-                Max = max;
+                this.Min = min;
+                this.Max = max;
             }
 
             public readonly T Min;
@@ -49,38 +54,38 @@ namespace Tello
 
             public bool Contains(T value)
             {
-                return value.CompareTo(Min) >= 0 && value.CompareTo(Max) <= 0;
+                return value.CompareTo(this.Min) >= 0 && value.CompareTo(this.Max) <= 0;
             }
         }
 
-        private readonly Range<int> _range;
+        private readonly Range<int> range;
 
         internal IntegerRule(Range<int> range)
             : base(Primitive.IsNumeric)
         {
-            _range = range;
+            this.range = range;
         }
 
         public override bool IsValueAllowed(object value)
         {
-            return value is int && _range.Contains((int)value);
+            return value is int && this.range.Contains((int)value);
         }
     }
 
     public sealed class CharacterRule : ArgumentRule<char>
     {
-        private readonly string _allowedValues;
+        private readonly string allowedValues;
 
         internal CharacterRule(string allowedValues)
             : base(Primitive.IsString)
         {
-            _allowedValues = allowedValues;
+            this.allowedValues = allowedValues;
         }
 
         public override bool IsValueAllowed(object value)
         {
             return (value is char)
-                && _allowedValues.Contains(value.ToString());
+                && this.allowedValues.Contains(value.ToString());
         }
     }
 
@@ -108,12 +113,12 @@ namespace Tello
             bool mustBeInflight,
             bool immediate = false)
         {
-            Command = command;
-            Response = response;
-            Token = token;
-            Arguments = arguments;
-            MustBeInFlight = mustBeInflight;
-            Immediate = immediate;
+            this.Command = command;
+            this.Response = response;
+            this.Token = token;
+            this.Arguments = arguments;
+            this.MustBeInFlight = mustBeInflight;
+            this.Immediate = immediate;
         }
 
         public readonly Commands Command;
@@ -125,7 +130,7 @@ namespace Tello
 
         public string ToString(params object[] args)
         {
-            var result = Token;
+            var result = this.Token;
 
             if (args != null)
             {
@@ -155,7 +160,7 @@ namespace Tello
                 new IntegerRule(new IntegerRule.Range<int>(1, 360))
             };
 
-            _rulesByCommand = new Dictionary<Commands, CommandRule>()
+            rulesByCommand = new Dictionary<Commands, CommandRule>()
             {
                 { Commands.EnterSdkMode, new CommandRule(Commands.EnterSdkMode, Responses.Ok, "command", emptyArgs, false, true) },
                 { Commands.Takeoff, new CommandRule(Commands.Takeoff, Responses.Ok,"takeoff", emptyArgs, false) },
@@ -261,22 +266,22 @@ namespace Tello
                 //{Commands.SetMissionPadDirection, new CommandRule(Commands.SetMissionPadDirection, Responses.Ok,"", null) },
             };
 
-            _rulesByString = _rulesByCommand
+            rulesByString = rulesByCommand
                 .Values
                 .ToDictionary((rule) => rule.Token);
         }
 
-        private static readonly Dictionary<Commands, CommandRule> _rulesByCommand;
-        private static readonly Dictionary<string, CommandRule> _rulesByString;
+        private static readonly Dictionary<Commands, CommandRule> rulesByCommand;
+        private static readonly Dictionary<string, CommandRule> rulesByString;
 
         public static CommandRule Rules(Commands command)
         {
-            return _rulesByCommand[command];
+            return rulesByCommand[command];
         }
 
         public static CommandRule Rules(string command)
         {
-            return _rulesByString[command];
+            return rulesByString[command];
         }
     }
 }

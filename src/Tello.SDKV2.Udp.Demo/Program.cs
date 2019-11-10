@@ -1,14 +1,19 @@
-﻿using Messenger.Udp;
-using Repository.Sqlite;
+﻿// <copyright file="Program.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System.Net;
 using System.Threading.Tasks;
+using Messenger.Udp;
+using Repository.Sqlite;
 using Tello.Demo;
 
 namespace Tello.Udp.Demo
 {
     internal class Program
     {
-        private static IFlightTest _flightTest;
+        private static IFlightTest flightTest;
 
         private enum TestType
         {
@@ -30,7 +35,7 @@ namespace Tello.Udp.Demo
                 switch (testType)
                 {
                     case TestType.JoyStick:
-                        _flightTest = new JoyStickFlightTest(
+                        flightTest = new JoyStickFlightTest(
                             repository,
                             transceiver,
                             stateReceiver,
@@ -38,7 +43,7 @@ namespace Tello.Udp.Demo
                         break;
 
                     case TestType.WayPoint:
-                        _flightTest = new CommandFlightTest(
+                        flightTest = new CommandFlightTest(
                             repository,
                             transceiver,
                             stateReceiver,
@@ -49,7 +54,7 @@ namespace Tello.Udp.Demo
                         break;
                 }
 
-                await _flightTest.Invoke();
+                await flightTest.Invoke();
             }
         }
     }

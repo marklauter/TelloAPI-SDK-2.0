@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="Receiver.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,25 +14,25 @@ namespace Messenger
 
     public abstract class Receiver : IReceiver, IDisposable
     {
-        private CancellationTokenSource _cancellationTokenSource = null;
+        private CancellationTokenSource cancellationTokenSource = null;
 
         public async void Start()
         {
-            if (_cancellationTokenSource == null)
+            if (this.cancellationTokenSource == null)
             {
-                _cancellationTokenSource = new CancellationTokenSource();
-                await Task.Run(async () => await Listen(_cancellationTokenSource.Token));
+                this.cancellationTokenSource = new CancellationTokenSource();
+                await Task.Run(async () => await this.Listen(this.cancellationTokenSource.Token));
             }
         }
 
         public void Stop()
         {
-            if (_cancellationTokenSource != null 
-                && !_cancellationTokenSource.IsCancellationRequested)
+            if (this.cancellationTokenSource != null
+                && !this.cancellationTokenSource.IsCancellationRequested)
             {
-                _cancellationTokenSource.Cancel(false);
-                _cancellationTokenSource.Dispose();
-                _cancellationTokenSource = null;
+                this.cancellationTokenSource.Cancel(false);
+                this.cancellationTokenSource.Dispose();
+                this.cancellationTokenSource = null;
             }
         }
 
@@ -35,7 +40,7 @@ namespace Messenger
 
         protected void MessageReceived(IEnvelope message)
         {
-            foreach (var observer in _observers.Keys)
+            foreach (var observer in this.observers.Keys)
             {
                 observer.OnNext(message);
             }
@@ -43,53 +48,56 @@ namespace Messenger
 
         protected void ExceptionThrown(Exception exception)
         {
-            foreach (var observer in _observers.Keys)
+            foreach (var observer in this.observers.Keys)
             {
                 observer.OnError(exception);
             }
         }
 
-        private readonly ConcurrentDictionary<IObserver<IEnvelope>, object> _observers = new ConcurrentDictionary<IObserver<IEnvelope>, object>();
+        private readonly ConcurrentDictionary<IObserver<IEnvelope>, object> observers = new ConcurrentDictionary<IObserver<IEnvelope>, object>();
 
         public IDisposable Subscribe(IObserver<IEnvelope> observer)
         {
-            if (!_observers.ContainsKey(observer))
+            if (!this.observers.ContainsKey(observer))
             {
-                _observers[observer] = null;
+                this.observers[observer] = null;
             }
-            return new Unsubscriber(_observers, observer);
+
+            return new Unsubscriber(this.observers, observer);
         }
 
         private class Unsubscriber : IDisposable
         {
-            private readonly ConcurrentDictionary<IObserver<IEnvelope>, object> _observers;
-            private readonly IObserver<IEnvelope> _observer;
+            private readonly ConcurrentDictionary<IObserver<IEnvelope>, object> observers;
+            private readonly IObserver<IEnvelope> observer;
 
             public Unsubscriber(ConcurrentDictionary<IObserver<IEnvelope>, object> observers, IObserver<IEnvelope> observer)
             {
-                _observers = observers;
-                _observer = observer;
+                this.observers = observers;
+                this.observer = observer;
             }
 
             public void Dispose()
             {
-                if (_observer != null && _observers.ContainsKey(_observer))
+                if (this.observer != null && this.observers.ContainsKey(this.observer))
                 {
-                    while (!_observers.TryRemove(_observer, out _)) { }
+                    while (!this.observers.TryRemove(this.observer, out _))
+                    {
+                    }
                 }
             }
         }
 
         public void Dispose()
         {
-            Stop();
+            this.Stop();
 
-            foreach (var observer in _observers.Keys)
+            foreach (var observer in this.observers.Keys)
             {
                 observer.OnCompleted();
             }
 
-            _observers.Clear();
+            this.observers.Clear();
         }
     }
 }

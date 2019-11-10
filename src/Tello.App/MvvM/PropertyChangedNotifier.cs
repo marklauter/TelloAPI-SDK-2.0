@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="PropertyChangedNotifier.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -16,7 +21,7 @@ namespace Tello.App.MvvM
 
         public PropertyChangedNotifier(IUIDispatcher dispatcher)
         {
-            Dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+            this.Dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -27,7 +32,7 @@ namespace Tello.App.MvvM
             if (!EqualityComparer<T>.Default.Equals(storage, value))
             {
                 storage = value;
-                Dispatcher.Invoke(args => { PropertyChanged?.Invoke(this, args as PropertyChangedEventArgs); }, new PropertyChangedEventArgs(callerMemberName));
+                this.Dispatcher.Invoke(args => { this.PropertyChanged?.Invoke(this, args as PropertyChangedEventArgs); }, new PropertyChangedEventArgs(callerMemberName));
             }
         }
     }
