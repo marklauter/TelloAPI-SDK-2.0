@@ -78,7 +78,7 @@ namespace Repository.Sqlite
         public int Delete<T>(T entity)
             where T : IEntity, new()
         {
-            if(entity == null)
+            if (entity == null)
             {
                 throw new ArgumentNullException(nameof(entity));
             }

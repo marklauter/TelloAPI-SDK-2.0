@@ -36,7 +36,7 @@ namespace Tello.Controller
                 this.State = new TelloState(Encoding.UTF8.GetString(message.Data), message.Timestamp, this.position);
                 this.StateChanged?.Invoke(this, new StateChangedArgs(this.State));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 this.OnError(ex);
             }

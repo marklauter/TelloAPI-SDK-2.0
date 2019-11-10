@@ -38,7 +38,7 @@ namespace Tello.Entities.Sqlite.Test
         [TestMethod]
         public void Session_NewEntity_Insert_Update_Read()
         {
-            using(var repo= this.CreateRepository())
+            using (var repo = this.CreateRepository())
             {
                 Assert.IsTrue(repo.CreateCatalog<Session>());
 
