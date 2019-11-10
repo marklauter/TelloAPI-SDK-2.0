@@ -11,7 +11,9 @@ namespace Tello.Entities.Sqlite
     public sealed class BatteryObservation : Observation, IBattery
     {
         public BatteryObservation()
-            : base() { }
+            : base()
+        {
+        }
 
         public BatteryObservation(
             IObservationGroup group,
@@ -20,7 +22,8 @@ namespace Tello.Entities.Sqlite
                   (group ?? throw new ArgumentNullException(nameof(group))).Id,
                   state.Timestamp,
                   state.Battery)
-        { }
+        {
+        }
 
         public BatteryObservation(
             int groupId,
@@ -29,7 +32,8 @@ namespace Tello.Entities.Sqlite
                   groupId,
                   state.Timestamp,
                   state.Battery)
-        { }
+        {
+        }
 
         private BatteryObservation(
             int groupId,

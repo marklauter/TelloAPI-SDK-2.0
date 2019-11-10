@@ -14,8 +14,8 @@ using Tello.State;
 
 namespace Tello.App.ViewModels
 {
-    //https://www.actiprosoftware.com/products/controls/wpf/gauge
-    //https://docs.microsoft.com/en-us/windows/communitytoolkit/controls/radialgauge
+    // https://www.actiprosoftware.com/products/controls/wpf/gauge
+    // https://docs.microsoft.com/en-us/windows/communitytoolkit/controls/radialgauge
     public class TelloStateViewModel : ViewModel
     {
         private readonly IStateObserver stateObserver;
@@ -47,8 +47,9 @@ namespace Tello.App.ViewModels
 
         private void StateChanged(object sender, Events.StateChangedArgs e)
         {
-            //todo: this should be pushed directly to a queue to minimize time in method. the queue can be picked up by a processor that does what this method is currently doing.
-            this.Dispatcher.Invoke((state) =>
+            // todo: this should be pushed directly to a queue to minimize time in method. the queue can be picked up by a processor that does what this method is currently doing.
+            this.Dispatcher.Invoke(
+                (state) =>
             {
                 this.State = state as ITelloState;
                 this.StateHistory.Add(state as ITelloState);

@@ -28,9 +28,10 @@ namespace Tello
         SetSpeed,
         SetRemoteControl,
         SetWiFiPassword,
-        //SetMissionPadOn,
-        //SetMissionPadOff,
-        //SetMissionPadDirection,
+
+        // SetMissionPadOn,
+        // SetMissionPadOff,
+        // SetMissionPadDirection,
         SetStationMode,
         GetSpeed,
         GetBattery,

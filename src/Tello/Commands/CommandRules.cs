@@ -8,14 +8,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Tello.Types;
 
+// ------------ error messages I've seen -------------
+// error
+// error Motor Stop
+// error Not Joystick
+// error Auto land
 namespace Tello
 {
-    // ------------ error messages I've seen -------------
-    // error
-    // error Motor Stop
-    // error Not Joystick
-    // error Auto land
-
     public abstract class ArgumentRule
     {
         protected ArgumentRule(Type type, Func<object, bool> isTypeAllowed)
@@ -152,12 +151,12 @@ namespace Tello
 
             var movementArgs = new ArgumentRule[]
             {
-                new IntegerRule(new IntegerRule.Range<int>(20, 500))
+                new IntegerRule(new IntegerRule.Range<int>(20, 500)),
             };
 
             var turnArgs = new ArgumentRule[]
             {
-                new IntegerRule(new IntegerRule.Range<int>(1, 360))
+                new IntegerRule(new IntegerRule.Range<int>(1, 360)),
             };
 
             rulesByCommand = new Dictionary<Commands, CommandRule>()
@@ -191,7 +190,7 @@ namespace Tello
                     Commands.SetSpeed, new CommandRule(Commands.SetSpeed, Responses.Ok, "speed",
                         new ArgumentRule[]
                         {
-                            new IntegerRule(new IntegerRule.Range<int>(10, 100))
+                            new IntegerRule(new IntegerRule.Range<int>(10, 100)),
                         },
                         false)
                 },
@@ -200,7 +199,7 @@ namespace Tello
                     Commands.Flip, new CommandRule(Commands.Flip,Responses.Ok, "flip",
                         new ArgumentRule[]
                         {
-                            new CharacterRule("lrfb")
+                            new CharacterRule("lrfb"),
                         },
                         true)
                 },
@@ -212,7 +211,7 @@ namespace Tello
                             new IntegerRule(new IntegerRule.Range<int>(-500, 500)),
                             new IntegerRule(new IntegerRule.Range<int>(-500, 500)),
                             new IntegerRule(new IntegerRule.Range<int>(-500, 500)),
-                            new IntegerRule(new IntegerRule.Range<int>(10, 100))
+                            new IntegerRule(new IntegerRule.Range<int>(10, 100)),
                         },
                         true)
                 },
@@ -226,7 +225,7 @@ namespace Tello
                             new IntegerRule(new IntegerRule.Range<int>(-500, 500)),
                             new IntegerRule(new IntegerRule.Range<int>(-500, 500)),
                             new IntegerRule(new IntegerRule.Range<int>(-500, 500)),
-                            new IntegerRule(new IntegerRule.Range<int>(10, 60))
+                            new IntegerRule(new IntegerRule.Range<int>(10, 60)),
                         },
                         true)
                 },
@@ -237,7 +236,7 @@ namespace Tello
                             new IntegerRule(new IntegerRule.Range<int>(-100, 100)),
                             new IntegerRule(new IntegerRule.Range<int>(-100, 100)),
                             new IntegerRule(new IntegerRule.Range<int>(-100, 100)),
-                            new IntegerRule(new IntegerRule.Range<int>(-100, 100))
+                            new IntegerRule(new IntegerRule.Range<int>(-100, 100)),
                         },
                         true,
                         true)
@@ -247,7 +246,7 @@ namespace Tello
                         new ArgumentRule[]
                         {
                             new StringRule(),
-                            new StringRule()
+                            new StringRule(),
                         },
                         false)
                 },
@@ -256,14 +255,14 @@ namespace Tello
                         new ArgumentRule[]
                         {
                             new StringRule(),
-                            new StringRule()
+                            new StringRule(),
                         },
                         false)
                 },
 
-                //{Commands.SetMissionPadOn, new CommandRule(Commands.SetMissionPadOn, Responses.Ok,"", null) },
-                //{Commands.SetMissionPadOff, new CommandRule(Commands.SetMissionPadOff,Responses.Ok, "", null) },
-                //{Commands.SetMissionPadDirection, new CommandRule(Commands.SetMissionPadDirection, Responses.Ok,"", null) },
+                // {Commands.SetMissionPadOn, new CommandRule(Commands.SetMissionPadOn, Responses.Ok,"", null) },
+                // {Commands.SetMissionPadOff, new CommandRule(Commands.SetMissionPadOff,Responses.Ok, "", null) },
+                // {Commands.SetMissionPadDirection, new CommandRule(Commands.SetMissionPadDirection, Responses.Ok,"", null) },
             };
 
             rulesByString = rulesByCommand

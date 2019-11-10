@@ -18,7 +18,7 @@ namespace Tello.Udp.Demo
         private enum TestType
         {
             JoyStick,
-            WayPoint
+            WayPoint,
         }
 
         private static async Task Main(string[] args)

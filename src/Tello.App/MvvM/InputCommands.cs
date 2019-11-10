@@ -23,7 +23,9 @@ namespace Tello.App.MvvM
         private bool enabled = true;
         private readonly Func<object, bool> canExecute;
 
-        public Command() { }
+        public Command()
+        {
+        }
 
         public Command(Func<object, bool> canExecute)
         {
@@ -75,7 +77,9 @@ namespace Tello.App.MvvM
     public class InputCommand : Command
     {
         public InputCommand(Action action)
-            : this(action, null) { }
+            : this(action, null)
+        {
+        }
 
         public InputCommand(Action action, Func<object, bool> canExecute)
             : base(canExecute)
@@ -94,7 +98,9 @@ namespace Tello.App.MvvM
     public class InputCommand<T> : Command, IInputCommand<T>
     {
         public InputCommand(Action<T> action)
-            : this(action, null) { }
+            : this(action, null)
+        {
+        }
 
         public InputCommand(Action<T> action, Func<object, bool> canExecute)
             : base(canExecute)
@@ -113,7 +119,9 @@ namespace Tello.App.MvvM
     public class AsyncInputCommand : Command
     {
         public AsyncInputCommand(Func<Task> func)
-            : this(func, null) { }
+            : this(func, null)
+        {
+        }
 
         public AsyncInputCommand(Func<Task> func, Func<object, bool> canExecute)
             : base(canExecute)
@@ -132,7 +140,9 @@ namespace Tello.App.MvvM
     public class AsycInputCommand<T> : Command, IInputCommand<T>
     {
         public AsycInputCommand(Func<T, Task> func)
-            : this(func, null) { }
+            : this(func, null)
+        {
+        }
 
         public AsycInputCommand(Func<T, Task> func, Func<object, bool> canExecute)
             : base(canExecute)

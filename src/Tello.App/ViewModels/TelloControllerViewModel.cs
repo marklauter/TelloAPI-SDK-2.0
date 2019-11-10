@@ -60,13 +60,15 @@ namespace Tello.App.ViewModels
 
         private void Controller_VideoStreamingStateChanged(object sender, Events.VideoStreamingStateChangedArgs e)
         {
-            this.Dispatcher.Invoke((isStreaming) =>
+            this.Dispatcher.Invoke(
+                (isStreaming) =>
                 this.IsVideoStreaming = (bool)isStreaming,
                 e.IsStreaming);
 
             var message = $"{DateTime.Now.TimeOfDay} - streaming ? {e.IsStreaming}";
             Debug.WriteLine(message);
-            this.Dispatcher.Invoke((msg) =>
+            this.Dispatcher.Invoke(
+                (msg) =>
             {
                 this.ControlLog.Insert(0, msg as string);
                 if (this.ControlLog.Count > 500)
@@ -81,7 +83,8 @@ namespace Tello.App.ViewModels
         {
             var message = $"{DateTime.Now.TimeOfDay} - '{(Command)e.Response.Request.Data}' completed with response '{e.Response.Message}' in {(int)e.Response.TimeTaken.TotalMilliseconds}ms";
             Debug.WriteLine(message);
-            this.Dispatcher.Invoke((msg) =>
+            this.Dispatcher.Invoke(
+                (msg) =>
             {
                 this.ControlLog.Insert(0, msg as string);
                 if (this.ControlLog.Count > 500)
@@ -257,7 +260,7 @@ namespace Tello.App.ViewModels
 
         public IInputCommand<Tuple<int, int, int, int, int, int, int>> CommandNameCommand => this.curveCommand = this.curveCommand ?? new InputCommand<Tuple<int, int, int, int, int, int, int>>((tuple) => this.controller.Curve(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
 
-        //sides, length, speed, clock, do land
+        // sides, length, speed, clock, do land
         public Tuple<int, int, int, ClockDirections> flyPolygonCommandParams { get; } = new Tuple<int, int, int, ClockDirections>(3, 100, 50, ClockDirections.Clockwise);
 
         private IInputCommand<Tuple<int, int, int, ClockDirections>> flyPolygonCommand;

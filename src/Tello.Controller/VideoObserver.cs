@@ -5,7 +5,8 @@
 
 using System;
 using Messenger;
-//using System.Collections.Generic;
+
+// using System.Collections.Generic;
 using Tello.Events;
 
 namespace Tello.Controller
@@ -32,7 +33,7 @@ namespace Tello.Controller
         {
             try
             {
-                //_videoSegments.Enqueue(message);
+                // _videoSegments.Enqueue(message);
                 this.VideoSampleReady?.Invoke(this, new VideoSampleReadyArgs(message));
             }
             catch (Exception ex)
@@ -41,14 +42,14 @@ namespace Tello.Controller
             }
         }
 
-        //private Queue<IEnvelope> _videoSegments = new Queue<IEnvelope>();
+        // private Queue<IEnvelope> _videoSegments = new Queue<IEnvelope>();
 
-        //public Queue<IEnvelope> VideoSegments()
-        //{
+        // public Queue<IEnvelope> VideoSegments()
+        // {
         //    var result = _videoSegments;
         //    _videoSegments = new Queue<IEnvelope>();
         //    return result;
-        //}
+        // }
 
         public event EventHandler<VideoSampleReadyArgs> VideoSampleReady;
 

@@ -19,4 +19,3 @@ namespace Tello.Simulator.Messaging
         }
     }
 }
-

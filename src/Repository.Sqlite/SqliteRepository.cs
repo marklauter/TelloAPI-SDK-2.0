@@ -19,7 +19,8 @@ namespace Repository.Sqlite
         #region ctor
         public SqliteRepository()
             : this((null, null))
-        { }
+        {
+        }
 
         public SqliteRepository((string databasePath, string databaseName) settings)
         {
@@ -52,6 +53,7 @@ namespace Repository.Sqlite
             where T : IEntity, new()
         {
             var result = (T)Activator.CreateInstance(typeof(T), args);
+
             // inserts fresh, updates ID with auto inc value
             if (this.Insert(result) == 1)
             {
@@ -197,6 +199,7 @@ namespace Repository.Sqlite
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             this.Dispose(true);
+
             // uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
         }

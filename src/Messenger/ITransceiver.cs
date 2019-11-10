@@ -11,7 +11,7 @@ namespace Messenger
     public interface ITransceiver : IDisposable
     {
         /// <summary>
-        /// send request, receive response
+        /// send request, receive response.
         /// </summary>
         Task<IResponse> SendAsync(IRequest request);
     }

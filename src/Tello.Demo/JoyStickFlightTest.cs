@@ -79,13 +79,13 @@ namespace Tello.Demo
 
         private void Continue()
         {
-            //Log.WriteLine("> start video");
-            //_tello.Controller.StartVideo();
+            // Log.WriteLine("> start video");
+            // _tello.Controller.StartVideo();
 
             Log.WriteLine("> take off");
             this.tello.Controller.TakeOff();
 
-            var spinWait = new SpinWait();
+            var spinWait = default(SpinWait);
             while (!this.canMove)
             {
                 spinWait.SpinOnce();
@@ -131,7 +131,7 @@ namespace Tello.Demo
                 this.canMove = true;
             }
 
-            //Log.WriteLine($"{(Command)e.Response.Request.Data} returned '{e.Response.Message}' in {(int)e.Response.TimeTaken.TotalMilliseconds}ms", ConsoleColor.Cyan);
+            // Log.WriteLine($"{(Command)e.Response.Request.Data} returned '{e.Response.Message}' in {(int)e.Response.TimeTaken.TotalMilliseconds}ms", ConsoleColor.Cyan);
 
             var group = this.repository.NewEntity<ObservationGroup>(this.session);
             this.repository.Insert(new ResponseObservation(group, e.Response));

@@ -120,15 +120,16 @@ namespace Tello.App.UWP
                 var mediaStreamSource = new MediaStreamSource(new VideoStreamDescriptor(videoEncodingProperties))
                 {
                     // never turn live on because it tries to skip frame which breaks the h264 decoding
-                    //IsLive = true,
+                    // IsLive = true,
                     BufferTime = TimeSpan.FromSeconds(0.0),
                 };
 
                 mediaStreamSource.SampleRequested += this.MediaStreamSource_SampleRequested;
 
                 this.VideoElement.SetMediaStreamSource(mediaStreamSource);
+
                 // never turn real time playback on
-                //_mediaElement.RealTimePlayback = true;
+                // _mediaElement.RealTimePlayback = true;
             }
         }
 
@@ -139,10 +140,11 @@ namespace Tello.App.UWP
 #if EMULATOR_ON
 #else
             var sample = this.ViewModel.VideoViewModel.GetSample();
-            //Debug.WriteLine($"{nameof(MediaStreamSource_SampleRequested)} - video ready? {sample != null}");
+
+            // Debug.WriteLine($"{nameof(MediaStreamSource_SampleRequested)} - video ready? {sample != null}");
             if (sample != null)
             {
-                //Debug.WriteLine($"{nameof(MediaStreamSource_SampleRequested)} - got sample time index {sample.TimeIndex}, length {sample.Buffer.Length}b, duration {sample.Duration}");
+                // Debug.WriteLine($"{nameof(MediaStreamSource_SampleRequested)} - got sample time index {sample.TimeIndex}, length {sample.Buffer.Length}b, duration {sample.Duration}");
                 args.Request.Sample = MediaStreamSample.CreateFromBuffer(sample.Buffer.AsBuffer(), sample.TimeIndex);
                 args.Request.Sample.Duration = sample.Duration;
             }

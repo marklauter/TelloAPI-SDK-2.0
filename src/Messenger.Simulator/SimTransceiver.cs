@@ -27,7 +27,8 @@ namespace Messenger.Simulator
                 : new Response(request, await this.drone.Invoke(request.Data), stopwatch.Elapsed);
         }
 
-        public override void Dispose() { }
+        public override void Dispose()
+        {
+        }
     }
 }
-

@@ -9,13 +9,15 @@ using System.Text;
 namespace Tello
 {
     /// <summary>
-    /// https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf
+    /// https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf.
     /// </summary>
     public sealed class Command
     {
         #region ctor
         public Command()
-            : this(Commands.EnterSdkMode) { }
+            : this(Commands.EnterSdkMode)
+        {
+        }
 
         public Command(Commands command)
             : this(command, null)
@@ -112,7 +114,7 @@ namespace Tello
             return command.Rule.Response;
         }
 
-        //todo: move command timeouts to command rules
+        // todo: move command timeouts to command rules
         public static explicit operator TimeSpan(Command command)
         {
             var avgspeed = 10.0; // cm/s (using a low speed to give margin of error)
@@ -131,12 +133,12 @@ namespace Tello
                 case Commands.GetSerialNumber:
                     return TimeSpan.FromSeconds(30);
 
-                //todo: if I knew the set speed in cm/s I could get a better timeout value
+                // todo: if I knew the set speed in cm/s I could get a better timeout value
                 case Commands.Left:
                 case Commands.Right:
                 case Commands.Forward:
                 case Commands.Back:
-                    distance = (int)command.Arguments[0]; //cm
+                    distance = (int)command.Arguments[0]; // cm
                     return TimeSpan.FromSeconds(distance / avgspeed * 10);
 
                 case Commands.Go:

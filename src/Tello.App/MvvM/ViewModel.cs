@@ -64,8 +64,12 @@ namespace Tello.App.MvvM
 
         public bool CanClose { get => this.canClose; set => this.SetProperty(ref this.canClose, value); }
 
-        protected virtual void OnOpen(OpenEventArgs args) { }
+        protected virtual void OnOpen(OpenEventArgs args)
+        {
+        }
 
-        protected virtual void OnClosing(ClosingEventArgs args) { }
+        protected virtual void OnClosing(ClosingEventArgs args)
+        {
+        }
     }
 }

@@ -100,17 +100,17 @@ namespace Tello.State
     public interface IAirSpeed : IState
     {
         /// <summary>
-        /// lateral airspeed
+        /// lateral airspeed.
         /// </summary>
         int SpeedX { get; }
 
         /// <summary>
-        /// forward/backward airspeed
+        /// forward/backward airspeed.
         /// </summary>
         int SpeedY { get; }
 
         /// <summary>
-        /// vertical airspeed
+        /// vertical airspeed.
         /// </summary>
         int SpeedZ { get; }
 

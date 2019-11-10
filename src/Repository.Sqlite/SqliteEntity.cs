@@ -8,7 +8,9 @@ namespace Repository.Sqlite
     [System.Diagnostics.DebuggerDisplay("{Id}")]
     public class SqliteEntity : IEntity
     {
-        public SqliteEntity() { }
+        public SqliteEntity()
+        {
+        }
 
         protected SqliteEntity(IEntity entity)
         {

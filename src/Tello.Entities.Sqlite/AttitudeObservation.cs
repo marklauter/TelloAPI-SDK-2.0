@@ -11,7 +11,9 @@ namespace Tello.Entities.Sqlite
     public sealed class AttitudeObservation : Observation, IAttitude
     {
         public AttitudeObservation()
-            : base() { }
+            : base()
+        {
+        }
 
         public AttitudeObservation(
             IObservationGroup group,
@@ -20,7 +22,8 @@ namespace Tello.Entities.Sqlite
                   (group ?? throw new ArgumentNullException(nameof(group))).Id,
                   (state ?? throw new ArgumentNullException(nameof(state))).Timestamp,
                   (state ?? throw new ArgumentNullException(nameof(state))).Attitude)
-        { }
+        {
+        }
 
         public AttitudeObservation(
             int groupId,
@@ -29,7 +32,8 @@ namespace Tello.Entities.Sqlite
                   groupId,
                   (state ?? throw new ArgumentNullException(nameof(state))).Timestamp,
                   (state ?? throw new ArgumentNullException(nameof(state))).Attitude)
-        { }
+        {
+        }
 
         private AttitudeObservation(
             int groupId,

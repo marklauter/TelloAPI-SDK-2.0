@@ -11,7 +11,9 @@ namespace Messenger
     {
         private IDisposable unsubscriber;
 
-        public Observer() { }
+        public Observer()
+        {
+        }
 
         public Observer(IObservable<T> observable)
         {

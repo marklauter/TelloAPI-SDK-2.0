@@ -11,7 +11,9 @@ namespace Tello.Entities.Sqlite
     public sealed class PositionObservation : Observation, IPosition
     {
         public PositionObservation()
-            : base() { }
+            : base()
+        {
+        }
 
         public PositionObservation(
             IObservationGroup group,

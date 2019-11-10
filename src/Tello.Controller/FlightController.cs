@@ -202,7 +202,7 @@ namespace Tello.Controller
         }
 
         /// <summary>
-        /// Tello auto lands after 15 seconds without commands as a safety mesasure, so we're going to send a keep alive message every 5 seconds
+        /// Tello auto lands after 15 seconds without commands as a safety mesasure, so we're going to send a keep alive message every 5 seconds.
         /// </summary>
         private async void RunKeepAlive()
         {
@@ -346,9 +346,9 @@ namespace Tello.Controller
         /// <summary>
         ///
         /// </summary>
-        /// <param name="sides">3 to 15</param>
-        /// <param name="length">length of each side. 20 to 500 in cm</param>
-        /// <param name="speed">cm/s 10 to 100</param>
+        /// <param name="sides">3 to 15.</param>
+        /// <param name="length">length of each side. 20 to 500 in cm.</param>
+        /// <param name="speed">cm/s 10 to 100.</param>
         public void FlyPolygon(int sides, int length, int speed, ClockDirections clockDirection)
         {
             if (!this.CanManeuver)

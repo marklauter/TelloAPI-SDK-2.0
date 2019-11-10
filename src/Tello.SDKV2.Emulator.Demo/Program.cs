@@ -18,7 +18,7 @@ namespace Tello.Simulator.Demo
         private enum TestType
         {
             JoyStick,
-            WayPoint
+            WayPoint,
         }
 
         static Program()

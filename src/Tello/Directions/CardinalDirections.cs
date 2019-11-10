@@ -10,6 +10,6 @@ namespace Tello
         Left,
         Right,
         Front,
-        Back
+        Back,
     }
 }

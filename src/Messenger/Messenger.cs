@@ -51,6 +51,16 @@ namespace Messenger
             return new Unsubscriber(this.observers, observer);
         }
 
+        public void Dispose()
+        {
+            foreach (var observer in this.observers.Keys)
+            {
+                observer.OnCompleted();
+            }
+
+            this.observers.Clear();
+        }
+
         private class Unsubscriber : IDisposable
         {
             private readonly ConcurrentDictionary<IObserver<IResponse<T>>, object> observers;
@@ -71,16 +81,6 @@ namespace Messenger
                     }
                 }
             }
-        }
-
-        public void Dispose()
-        {
-            foreach (var observer in this.observers.Keys)
-            {
-                observer.OnCompleted();
-            }
-
-            this.observers.Clear();
         }
     }
 }

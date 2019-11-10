@@ -28,22 +28,22 @@ namespace Tello.Demo
         private int rInput = 0;
 
         /// <summary>
-        /// Left/Right
+        /// Left/Right.
         /// </summary>
         public int XInput => this.xInput;
 
         /// <summary>
-        /// Up/Down
+        /// Up/Down.
         /// </summary>
         public int YInput => this.yInput;
 
         /// <summary>
-        /// Forward/Backward
+        /// Forward/Backward.
         /// </summary>
         public int ZInput => this.zInput;
 
         /// <summary>
-        /// Yaw
+        /// Yaw.
         /// </summary>
         public int RInput => this.rInput;
 

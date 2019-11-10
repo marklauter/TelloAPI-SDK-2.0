@@ -11,7 +11,9 @@ namespace Tello.Entities.Sqlite
     public sealed class HobbsMeterObservation : Observation, IHobbsMeter
     {
         public HobbsMeterObservation()
-            : base() { }
+            : base()
+        {
+        }
 
         public HobbsMeterObservation(
             IObservationGroup group,
@@ -20,7 +22,8 @@ namespace Tello.Entities.Sqlite
                   (group ?? throw new ArgumentNullException(nameof(group))).Id,
                   (state ?? throw new ArgumentNullException(nameof(state))).Timestamp,
                   (state ?? throw new ArgumentNullException(nameof(state))).HobbsMeter)
-        { }
+        {
+        }
 
         public HobbsMeterObservation(
             int groupId,
@@ -29,7 +32,8 @@ namespace Tello.Entities.Sqlite
                   groupId,
                   (state ?? throw new ArgumentNullException(nameof(state))).Timestamp,
                   (state ?? throw new ArgumentNullException(nameof(state))).HobbsMeter)
-        { }
+        {
+        }
 
         private HobbsMeterObservation(
             int groupId,

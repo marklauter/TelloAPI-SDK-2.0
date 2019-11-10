@@ -10,7 +10,9 @@ namespace Tello
     public class CardinalDirection
     {
         public CardinalDirection()
-            : this(CardinalDirections.Front) { }
+            : this(CardinalDirections.Front)
+        {
+        }
 
         public CardinalDirection(CardinalDirections direction)
         {

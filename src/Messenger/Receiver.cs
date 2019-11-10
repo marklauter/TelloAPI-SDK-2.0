@@ -8,10 +8,9 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
+// https://docs.microsoft.com/en-us/dotnet/api/system.iobservable-1?view=netstandard-2.0
 namespace Messenger
 {
-    //https://docs.microsoft.com/en-us/dotnet/api/system.iobservable-1?view=netstandard-2.0
-
     public abstract class Receiver : IReceiver, IDisposable
     {
         private CancellationTokenSource cancellationTokenSource = null;

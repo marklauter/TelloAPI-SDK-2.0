@@ -80,7 +80,7 @@ namespace Tello.App.ViewModels
 
         public VideoSample GetSample()
         {
-            var wait = new SpinWait();
+            var wait = default(SpinWait);
             VideoSample result;
             while (this.samples.Count == 0 || !this.samples.TryDequeue(out result))
             {
@@ -91,9 +91,9 @@ namespace Tello.App.ViewModels
         }
 
 
-        //todo: implementation - UWP should override this class and implement a MediaStreamSource property which can be used by the MediaElement control
-        //public MediaStreamSource
+        // todo: implementation - UWP should override this class and implement a MediaStreamSource property which can be used by the MediaElement control
+        // public MediaStreamSource
 
-        //todo: maybe we can actually decode the h264 and just provide a Bitmap or Image property???
+        // todo: maybe we can actually decode the h264 and just provide a Bitmap or Image property???
     }
 }

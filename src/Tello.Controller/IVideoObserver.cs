@@ -5,7 +5,8 @@
 
 using System;
 using Messenger;
-//using System.Collections.Generic;
+
+// using System.Collections.Generic;
 using Tello.Events;
 
 namespace Tello.Controller
@@ -16,6 +17,6 @@ namespace Tello.Controller
 
         event EventHandler<Exception> ExceptionThrown;
 
-        //Queue<IEnvelope> VideoSegments();
+        // Queue<IEnvelope> VideoSegments();
     }
 }

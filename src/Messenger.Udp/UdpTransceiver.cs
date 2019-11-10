@@ -35,7 +35,7 @@ namespace Messenger.Udp
             var stopwatch = Stopwatch.StartNew();
             await Task.Run(() =>
             {
-                var spinWait = new SpinWait();
+                var spinWait = default(SpinWait);
                 while (this.client.Available == 0 && stopwatch.Elapsed <= request.Timeout)
                 {
                     spinWait.SpinOnce();

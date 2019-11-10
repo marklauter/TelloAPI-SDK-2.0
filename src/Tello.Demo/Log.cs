@@ -13,7 +13,8 @@ namespace Tello.Demo
     {
         private static readonly object gate = new object();
 
-        public static void WriteLine(string msg,
+        public static void WriteLine(
+            string msg,
             ConsoleColor consoleColor = ConsoleColor.White,
             bool addSeperator = true,
             [CallerFilePath]string callerPath = null,

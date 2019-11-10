@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Tello.App.MvvM
 {
-    //todo: i have no idea if this will work or how to test without an actual UWP app running
+    // todo: i have no idea if this will work or how to test without an actual UWP app running
     public class UIDispatcher : IUIDispatcher
     {
         private readonly SynchronizationContext context;
@@ -18,7 +18,7 @@ namespace Tello.App.MvvM
         }
 
         /// <summary>
-        /// pass main thread context
+        /// pass main thread context.
         /// </summary>
         /// <param name="context"></param>
         public UIDispatcher(SynchronizationContext context)

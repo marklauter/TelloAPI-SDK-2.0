@@ -15,10 +15,10 @@ namespace Tello.Simulator
 {
     public sealed class DroneSimulator
     {
-        //todo: 1. execute the appropriate command simulation
-        //todo: 2. update state
-        //todo: 3. notify state transmitter
-        //todo: 4. compose and return the appropriate command response
+        // todo: 1. execute the appropriate command simulation
+        // todo: 2. update state
+        // todo: 3. notify state transmitter
+        // todo: 4. compose and return the appropriate command response
 
         private bool isVideoStreaming = false;
         private bool isFlying = false;
@@ -49,12 +49,12 @@ namespace Tello.Simulator
             var bytes = Encoding.UTF8.GetBytes("this is fake video data");
             await Task.Run(async () =>
             {
-                var spinWait = new SpinWait();
+                var spinWait = default(SpinWait);
                 while (true)
                 {
                     if (this.isVideoStreaming)
                     {
-                        //(VideoTransmitter as VideoTransmitter).AddVideoSegment(Array.Empty<byte>());
+                        // (VideoTransmitter as VideoTransmitter).AddVideoSegment(Array.Empty<byte>());
                         (this.VideoTransmitter as VideoTransmitter).AddVideoSegment(bytes);
                         await Task.Delay(1000 / 30);
                     }

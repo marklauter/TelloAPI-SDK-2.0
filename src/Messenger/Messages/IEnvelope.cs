@@ -10,17 +10,17 @@ namespace Messenger
     public interface IEnvelope
     {
         /// <summary>
-        /// id for use in queuing systems or logs
+        /// id for use in queuing systems or logs.
         /// </summary>
         Guid Id { get; }
 
         /// <summary>
-        /// time that the message was created/initiated
+        /// time that the message was created/initiated.
         /// </summary>
         DateTime Timestamp { get; }
 
         /// <summary>
-        /// marshalled data
+        /// marshalled data.
         /// </summary>
         byte[] Data { get; }
     }
@@ -28,7 +28,7 @@ namespace Messenger
     public interface IEnvelope<T> : IEnvelope
     {
         /// <summary>
-        /// typed message
+        /// typed message.
         /// </summary>
         T Message { get; }
     }

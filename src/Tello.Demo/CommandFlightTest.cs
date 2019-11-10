@@ -79,13 +79,13 @@ namespace Tello.Demo
 
         private void Continue()
         {
-            //Log.WriteLine("> start video");
-            //_tello.Controller.StartVideo();
+            // Log.WriteLine("> start video");
+            // _tello.Controller.StartVideo();
 
             Log.WriteLine("> take off");
             this.tello.Controller.TakeOff();
 
-            var spinWait = new SpinWait();
+            var spinWait = default(SpinWait);
             while (!this.canMove)
             {
                 spinWait.SpinOnce();

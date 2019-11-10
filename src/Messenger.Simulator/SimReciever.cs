@@ -25,7 +25,7 @@ namespace Messenger.Simulator
                 throw new ArgumentNullException(nameof(cancellationToken));
             }
 
-            var wait = new SpinWait();
+            var wait = default(SpinWait);
 
             while (!cancellationToken.IsCancellationRequested)
             {

@@ -11,7 +11,8 @@ namespace Tello
 {
     public static class Log
     {
-        public static void WriteLine(string msg,
+        public static void WriteLine(
+            string msg,
             bool addSeperator = true,
             [CallerFilePath]string callerPath = null,
             [CallerMemberName]string callerMemberName = null,

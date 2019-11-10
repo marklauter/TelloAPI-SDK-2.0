@@ -26,7 +26,7 @@ namespace Messenger.Udp
                 throw new ArgumentNullException(nameof(cancellationToken));
             }
 
-            var wait = new SpinWait();
+            var wait = default(SpinWait);
 
             using (var client = new UdpClient(this.port))
             {
