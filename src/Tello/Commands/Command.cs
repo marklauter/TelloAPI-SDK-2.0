@@ -33,9 +33,25 @@ namespace Tello
         }
         #endregion
 
-        public readonly object[] Arguments;
-        public readonly bool Immediate;
-        public readonly CommandRule Rule;
+        /// <summary>
+        /// Gets a value containing the command arguments.
+        /// </summary>
+        public object[] Arguments { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the command is executed immediately or queued for execution after the current command terminates.
+        /// </summary>
+        /// <remarks>
+        /// Indicates whether or not the flight controller should queue the command (Immediate == false) or send the command immediately (Immediate == true).
+        /// Examples of immediate commands include Set4ChannelRC and EmergencyStop.
+        /// Examples of non-immediate commands include Move, Land and Flip.
+        /// </remarks>
+        public bool Immediate { get; }
+
+        /// <summary>
+        /// Gets the ruleset that governs the exectution of the command.
+        /// </summary>
+        public CommandRule Rule { get; }
 
         #region operators
         public static implicit operator Command(Commands command)

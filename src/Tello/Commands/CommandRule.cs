@@ -10,6 +10,9 @@
 // error Auto land
 namespace Tello
 {
+    /// <summary>
+    /// CommandRule governs the exection of a command.
+    /// </summary>
     public sealed class CommandRule
     {
         internal CommandRule(
