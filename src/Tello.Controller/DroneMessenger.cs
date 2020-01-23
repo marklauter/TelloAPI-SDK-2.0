@@ -1,65 +1,71 @@
-﻿using Messenger;
+﻿// <copyright file="DroneMessenger.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
+using Messenger;
 using Tello.Events;
 
 namespace Tello.Controller
 {
     public sealed class DroneMessenger
     {
-        private readonly ITransceiver _transceiver;
-        private readonly IReceiver _stateReceiver;
-        private readonly IReceiver _videoReceiver;
+        private readonly ITransceiver transceiver;
+        private readonly IReceiver stateReceiver;
+        private readonly IReceiver videoReceiver;
 
         public DroneMessenger(
             ITransceiver transceiver,
             IReceiver stateReceiver,
             IReceiver videoReceiver)
         {
-            _transceiver = transceiver ?? throw new ArgumentNullException(nameof(transceiver));
-            _stateReceiver = stateReceiver ?? throw new ArgumentNullException(nameof(stateReceiver));
-            _videoReceiver = videoReceiver ?? throw new ArgumentNullException(nameof(videoReceiver));
+            this.transceiver = transceiver ?? throw new ArgumentNullException(nameof(transceiver));
+            this.stateReceiver = stateReceiver ?? throw new ArgumentNullException(nameof(stateReceiver));
+            this.videoReceiver = videoReceiver ?? throw new ArgumentNullException(nameof(videoReceiver));
 
-            Controller = new FlightController(_transceiver);
+            this.Controller = new FlightController(this.transceiver);
 
-            Controller.ConnectionStateChanged +=
+            this.Controller.ConnectionStateChanged +=
                 (object sender, ConnectionStateChangedArgs e) =>
                 {
                     if (e.IsConnected)
                     {
-                        StartLisenters();
+                        this.StartLisenters();
                     }
                     else
                     {
-                        StopListeners();
+                        this.StopListeners();
                     }
                 };
 
-            StateObserver = new StateObserver(_stateReceiver);
-            StateObserver.StateChanged += Controller.UpdateState;
-            Controller.PositionChanged += StateObserver.UpdatePosition;
+            this.StateObserver = new StateObserver(this.stateReceiver);
+            this.StateObserver.StateChanged += this.Controller.UpdateState;
+            this.Controller.PositionChanged += this.StateObserver.UpdatePosition;
 
-            VideoObserver = new VideoObserver(_videoReceiver);
+            this.VideoObserver = new VideoObserver(this.videoReceiver);
         }
-
 
         #region Listeners
 
         private void StartLisenters()
         {
-            _stateReceiver.Start();
-            _videoReceiver.Start();
+            this.stateReceiver.Start();
+            this.videoReceiver.Start();
         }
 
         private void StopListeners()
         {
-            _stateReceiver.Stop();
-            _videoReceiver.Stop();
+            this.stateReceiver.Stop();
+            this.videoReceiver.Stop();
         }
 
         #endregion
 
         public IFlightController Controller { get; }
+
         public IStateObserver StateObserver { get; }
+
         public IVideoObserver VideoObserver { get; }
     }
 }

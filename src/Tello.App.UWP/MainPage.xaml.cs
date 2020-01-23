@@ -1,25 +1,30 @@
-﻿#define EMULATOR_OFF
+﻿// <copyright file="MainPage.xaml.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+#define EMULATOR_OFF
 
 #if EMULATOR_ON
 using Messenger.Simulator;
 using Tello.Simulator;
 #else
-using Messenger.Udp;
 using System.Net;
+using Messenger.Udp;
 #endif
 
-using Repository.Sqlite;
+using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
+using Repository.Sqlite;
 using Tello.App.MvvM;
 using Tello.App.UWP.Services;
 using Tello.App.ViewModels;
+using Windows.Media.Core;
+using Windows.Media.MediaProperties;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Windows.Media.MediaProperties;
-using Windows.Media.Core;
-using System;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Diagnostics;
 
 namespace Tello.App.UWP
 {
@@ -27,8 +32,8 @@ namespace Tello.App.UWP
     {
         public MainViewModel ViewModel { get; }
 
-        private readonly IUIDispatcher _dispatcher;
-        private readonly IUINotifier _notifier;
+        private readonly IUIDispatcher dispatcher;
+        private readonly IUINotifier notifier;
 #if EMULATOR_ON
         private DroneSimulator _simulator;
 #endif
@@ -46,8 +51,8 @@ namespace Tello.App.UWP
             var videoReceiver = new UdpReceiver(11111);
 #endif
             return new MainViewModel(
-                _dispatcher,
-                _notifier,
+                this.dispatcher,
+                this.notifier,
                 new SqliteRepository((null, "tello.sqlite")),
                 transceiver,
                 stateReceiver,
@@ -56,29 +61,29 @@ namespace Tello.App.UWP
 
         public MainPage()
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
-            _dispatcher = new UIDispatcher(SynchronizationContext.Current);
-            _notifier = new UINotifier();
+            this.dispatcher = new UIDispatcher(SynchronizationContext.Current);
+            this.notifier = new UINotifier();
 
-            ViewModel = CreateMainViewModel(_dispatcher, _notifier);
-            DataContext = ViewModel;
-            ViewModel.ControllerViewModel.PropertyChanged += ControllerViewModel_PropertyChanged;
+            this.ViewModel = this.CreateMainViewModel(this.dispatcher, this.notifier);
+            this.DataContext = this.ViewModel;
+            this.ViewModel.ControllerViewModel.PropertyChanged += this.ControllerViewModel_PropertyChanged;
         }
 
         private void ControllerViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             var property = typeof(TelloControllerViewModel).GetProperty(e.PropertyName);
             var value = property.GetValue(sender);
-            Debug.WriteLine($"{nameof(ControllerViewModel_PropertyChanged)} - property '{e.PropertyName}', value '{value}'");
+            Debug.WriteLine($"{nameof(this.ControllerViewModel_PropertyChanged)} - property '{e.PropertyName}', value '{value}'");
 
             if (e.PropertyName == nameof(TelloControllerViewModel.IsVideoStreaming) && (bool)value)
             {
-                VideoElement.Play();
+                this.VideoElement.Play();
             }
             else
             {
-                VideoElement.Stop();
+                this.VideoElement.Stop();
             }
         }
 
@@ -86,26 +91,27 @@ namespace Tello.App.UWP
         {
             base.OnNavigatedTo(e);
 
-            ViewModel.Open();
+            this.ViewModel.Open();
 
-            InitializeVideo();
+            this.InitializeVideo();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            ViewModel.Close();
+            this.ViewModel.Close();
 
             base.OnNavigatedFrom(e);
         }
 
         #region video display
 
-        private bool _videoInitilized = false;
+        private bool videoInitilized = false;
+
         private void InitializeVideo()
         {
-            if (!_videoInitilized)
+            if (!this.videoInitilized)
             {
-                _videoInitilized = true;
+                this.videoInitilized = true;
 
                 var videoEncodingProperties = VideoEncodingProperties.CreateH264();
                 videoEncodingProperties.Height = 720;
@@ -114,15 +120,16 @@ namespace Tello.App.UWP
                 var mediaStreamSource = new MediaStreamSource(new VideoStreamDescriptor(videoEncodingProperties))
                 {
                     // never turn live on because it tries to skip frame which breaks the h264 decoding
-                    //IsLive = true,
-                    BufferTime = TimeSpan.FromSeconds(0.0),                    
+                    // IsLive = true,
+                    BufferTime = TimeSpan.FromSeconds(0.0),
                 };
 
-                mediaStreamSource.SampleRequested += MediaStreamSource_SampleRequested;
+                mediaStreamSource.SampleRequested += this.MediaStreamSource_SampleRequested;
 
-                VideoElement.SetMediaStreamSource(mediaStreamSource);
+                this.VideoElement.SetMediaStreamSource(mediaStreamSource);
+
                 // never turn real time playback on
-                //_mediaElement.RealTimePlayback = true;
+                // _mediaElement.RealTimePlayback = true;
             }
         }
 
@@ -132,11 +139,12 @@ namespace Tello.App.UWP
         {
 #if EMULATOR_ON
 #else
-            var sample = ViewModel.VideoViewModel.GetSample();
-            //Debug.WriteLine($"{nameof(MediaStreamSource_SampleRequested)} - video ready? {sample != null}");
+            var sample = this.ViewModel.VideoViewModel.GetSample();
+
+            // Debug.WriteLine($"{nameof(MediaStreamSource_SampleRequested)} - video ready? {sample != null}");
             if (sample != null)
             {
-                //Debug.WriteLine($"{nameof(MediaStreamSource_SampleRequested)} - got sample time index {sample.TimeIndex}, length {sample.Buffer.Length}b, duration {sample.Duration}");
+                // Debug.WriteLine($"{nameof(MediaStreamSource_SampleRequested)} - got sample time index {sample.TimeIndex}, length {sample.Buffer.Length}b, duration {sample.Duration}");
                 args.Request.Sample = MediaStreamSample.CreateFromBuffer(sample.Buffer.AsBuffer(), sample.TimeIndex);
                 args.Request.Sample.Duration = sample.Duration;
             }

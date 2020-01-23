@@ -1,7 +1,12 @@
-﻿using Repository;
+﻿// <copyright file="TelloControllerViewModel.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Repository;
 using Tello.App.MvvM;
 using Tello.Entities;
 using Tello.Entities.Sqlite;
@@ -11,9 +16,9 @@ namespace Tello.App.ViewModels
 {
     public class TelloControllerViewModel : ViewModel
     {
-        private readonly IFlightController _controller;
-        private readonly IRepository _repository;
-        private readonly ISession _session;
+        private readonly IFlightController controller;
+        private readonly IRepository repository;
+        private readonly ISession session;
 
         public TelloControllerViewModel(
             IUIDispatcher dispatcher,
@@ -23,245 +28,284 @@ namespace Tello.App.ViewModels
             ISession session)
             : base(dispatcher, notifier)
         {
-            _controller = controller ?? throw new ArgumentNullException(nameof(controller));
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-            _session = session ?? throw new ArgumentNullException(nameof(session));
+            this.controller = controller ?? throw new ArgumentNullException(nameof(controller));
+            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            this.session = session ?? throw new ArgumentNullException(nameof(session));
         }
 
         protected override void OnOpen(OpenEventArgs args)
         {
-            _controller.ConnectionStateChanged += ConnectionStateChanged;
-            _controller.ExceptionThrown += ExceptionThrown;
-            _controller.PositionChanged += PositionChanged;
-            _controller.ResponseReceived += ResponseReceived;
-            _controller.VideoStreamingStateChanged += Controller_VideoStreamingStateChanged;
+            this.controller.ConnectionStateChanged += this.ConnectionStateChanged;
+            this.controller.ExceptionThrown += this.ExceptionThrown;
+            this.controller.PositionChanged += this.PositionChanged;
+            this.controller.ResponseReceived += this.ResponseReceived;
+            this.controller.VideoStreamingStateChanged += this.Controller_VideoStreamingStateChanged;
         }
 
         protected override void OnClosing(ClosingEventArgs args)
         {
-            _controller.ConnectionStateChanged -= ConnectionStateChanged;
-            _controller.ExceptionThrown -= ExceptionThrown;
-            _controller.PositionChanged -= PositionChanged;
-            _controller.ResponseReceived -= ResponseReceived;
+            this.controller.ConnectionStateChanged -= this.ConnectionStateChanged;
+            this.controller.ExceptionThrown -= this.ExceptionThrown;
+            this.controller.PositionChanged -= this.PositionChanged;
+            this.controller.ResponseReceived -= this.ResponseReceived;
         }
 
-        private bool _isVideoStreaming = false;
+        private bool isVideoStreaming = false;
+
         public bool IsVideoStreaming
         {
-            get => _isVideoStreaming;
-            set => SetProperty(ref _isVideoStreaming, value);
+            get => this.isVideoStreaming;
+            set => this.SetProperty(ref this.isVideoStreaming, value);
         }
 
         private void Controller_VideoStreamingStateChanged(object sender, Events.VideoStreamingStateChangedArgs e)
         {
-            Dispatcher.Invoke((isStreaming) =>
-                IsVideoStreaming = (bool)isStreaming,
+            this.Dispatcher.Invoke(
+                (isStreaming) =>
+                this.IsVideoStreaming = (bool)isStreaming,
                 e.IsStreaming);
 
             var message = $"{DateTime.Now.TimeOfDay} - streaming ? {e.IsStreaming}";
             Debug.WriteLine(message);
-            Dispatcher.Invoke((msg) =>
+            this.Dispatcher.Invoke(
+                (msg) =>
             {
-                ControlLog.Insert(0, msg as string);
-                if (ControlLog.Count > 500)
+                this.ControlLog.Insert(0, msg as string);
+                if (this.ControlLog.Count > 500)
                 {
-                    ControlLog.RemoveAt(ControlLog.Count - 1);
+                    this.ControlLog.RemoveAt(this.ControlLog.Count - 1);
                 }
             },
-            message);
+                message);
         }
 
         private void ResponseReceived(object sender, Events.ResponseReceivedArgs e)
         {
             var message = $"{DateTime.Now.TimeOfDay} - '{(Command)e.Response.Request.Data}' completed with response '{e.Response.Message}' in {(int)e.Response.TimeTaken.TotalMilliseconds}ms";
             Debug.WriteLine(message);
-            Dispatcher.Invoke((msg) =>
+            this.Dispatcher.Invoke(
+                (msg) =>
             {
-                ControlLog.Insert(0, msg as string);
-                if (ControlLog.Count > 500)
+                this.ControlLog.Insert(0, msg as string);
+                if (this.ControlLog.Count > 500)
                 {
-                    ControlLog.RemoveAt(ControlLog.Count - 1);
+                    this.ControlLog.RemoveAt(this.ControlLog.Count - 1);
                 }
             },
-            message);
+                message);
 
-            var group = _repository.NewEntity<ObservationGroup>(_session);
-            _repository.Insert(new ResponseObservation(group, e.Response));
+            var group = this.repository.NewEntity<ObservationGroup>(this.session);
+            this.repository.Insert(new ResponseObservation(group, e.Response));
         }
 
         private void PositionChanged(object sender, Events.PositionChangedArgs e)
         {
-            Dispatcher.Invoke((position) => 
-                Position = position as Vector,
+            this.Dispatcher.Invoke(
+                (position) => this.Position = position as Vector,
                 e.Position);
 
             var message = $"{DateTime.Now.TimeOfDay} - new position {e.Position}";
             Debug.WriteLine(message);
-            Dispatcher.Invoke((msg) =>
-            {
-                ControlLog.Insert(0, msg as string);
-                if (ControlLog.Count > 500)
+            this.Dispatcher.Invoke(
+                (msg) =>
                 {
-                    ControlLog.RemoveAt(ControlLog.Count - 1);
-                }
-            },
-            message);
+                    this.ControlLog.Insert(0, msg as string);
+                    if (this.ControlLog.Count > 500)
+                    {
+                        this.ControlLog.RemoveAt(this.ControlLog.Count - 1);
+                    }
+                },
+                message);
         }
 
         private void ConnectionStateChanged(object sender, Events.ConnectionStateChangedArgs e)
         {
-            Dispatcher.Invoke((connected) =>
-                IsConnected = (bool)connected,
+            this.Dispatcher.Invoke(
+                (connected) => this.IsConnected = (bool)connected,
                 e.IsConnected);
 
             var message = $"{DateTime.Now.TimeOfDay} - connected ? {e.IsConnected}";
             Debug.WriteLine(message);
-            Dispatcher.Invoke((msg) =>
-            {
-                ControlLog.Insert(0, msg as string);
-                if (ControlLog.Count > 500)
+            this.Dispatcher.Invoke(
+                (msg) =>
                 {
-                    ControlLog.RemoveAt(ControlLog.Count - 1);
-                }
-            },
-            message);
+                    this.ControlLog.Insert(0, msg as string);
+                    if (this.ControlLog.Count > 500)
+                    {
+                        this.ControlLog.RemoveAt(this.ControlLog.Count - 1);
+                    }
+                },
+                message);
         }
 
         private void ExceptionThrown(object sender, Events.ExceptionThrownArgs e)
         {
             var message = $"{DateTime.Now.TimeOfDay} - Controller failed with exception '{e.Exception.GetType().FullName}' - {e.Exception.Message} at {e.Exception.StackTrace}";
             Debug.WriteLine(message);
-            Dispatcher.Invoke((msg) => ControlLog.Insert(0, msg as string), message);
+            this.Dispatcher.Invoke((msg) => this.ControlLog.Insert(0, msg as string), message);
         }
 
         public ObservableCollection<string> ControlLog { get; } = new ObservableCollection<string>();
 
         internal void ClearDatabase()
         {
-            if (_repository != null)
+            if (this.repository != null)
             {
-                _repository.Delete<ResponseObservation>();
+                this.repository.Delete<ResponseObservation>();
             }
         }
 
-        private bool _isConnected = false;
+        private bool isConnected = false;
+
         public bool IsConnected
         {
-            get => _isConnected;
-            set => SetProperty(ref _isConnected, value);
+            get => this.isConnected;
+            set => this.SetProperty(ref this.isConnected, value);
         }
 
-        private Vector _position = new Vector();
+        private Vector position = new Vector();
+
         public Vector Position
         {
-            get => _position;
-            set => SetProperty(ref _position, value);
+            get => this.position;
+            set => this.SetProperty(ref this.position, value);
         }
 
 #pragma warning disable IDE1006 // Naming Styles
-        private IInputCommand _ClearDatabaseCommand;
-        public IInputCommand ClearDatabaseCommand => _ClearDatabaseCommand = _ClearDatabaseCommand ?? new InputCommand(ClearDatabase);
+        private IInputCommand clearDatabaseCommand;
 
-        private IInputCommand _EnterSdkModeCommand;
-        public IInputCommand EnterSdkModeCommand => _EnterSdkModeCommand = _EnterSdkModeCommand ?? new AsyncInputCommand(_controller.Connect);
+        public IInputCommand ClearDatabaseCommand => this.clearDatabaseCommand = this.clearDatabaseCommand ?? new InputCommand(this.ClearDatabase);
 
-        private IInputCommand _DisconnectCommand;
-        public IInputCommand DisconnectCommand => _DisconnectCommand = _DisconnectCommand ?? new InputCommand(_controller.Disconnect);
+        private IInputCommand enterSdkModeCommand;
 
-        private IInputCommand _TakeOffCommand;
-        public IInputCommand TakeOffCommand => _TakeOffCommand = _TakeOffCommand ?? new InputCommand(_controller.TakeOff);
+        public IInputCommand EnterSdkModeCommand => this.enterSdkModeCommand = this.enterSdkModeCommand ?? new AsyncInputCommand(this.controller.Connect);
 
-        private IInputCommand _LandCommand;
-        public IInputCommand LandCommand => _LandCommand = _LandCommand ?? new InputCommand(_controller.Land);
+        private IInputCommand disconnectCommand;
 
-        private IInputCommand _StopCommand;
-        public IInputCommand StopCommand => _StopCommand = _StopCommand ?? new AsyncInputCommand(_controller.Stop);
+        public IInputCommand DisconnectCommand => this.disconnectCommand = this.disconnectCommand ?? new InputCommand(this.controller.Disconnect);
 
-        private IInputCommand _EmergencyStopCommand;
-        public IInputCommand EmergencyStopCommand => _EmergencyStopCommand = _EmergencyStopCommand ?? new AsyncInputCommand(_controller.EmergencyStop);
+        private IInputCommand takeOffCommand;
 
-        private IInputCommand _StartVideoCommand;
-        public IInputCommand StartVideoCommand => _StartVideoCommand = _StartVideoCommand ?? new InputCommand(_controller.StartVideo);
+        public IInputCommand TakeOffCommand => this.takeOffCommand = this.takeOffCommand ?? new InputCommand(this.controller.TakeOff);
 
-        private IInputCommand _StopVideoCommand;
-        public IInputCommand StopVideoCommand => _StopVideoCommand = _StopVideoCommand ?? new InputCommand(_controller.StopVideo);
+        private IInputCommand landCommand;
 
-        private IInputCommand<int> _GoUpCommand;
-        public IInputCommand<int> GoUpCommand => _GoUpCommand = _GoUpCommand ?? new InputCommand<int>(_controller.GoUp);
+        public IInputCommand LandCommand => this.landCommand = this.landCommand ?? new InputCommand(this.controller.Land);
 
-        private IInputCommand<int> _GoDownCommand;
-        public IInputCommand<int> GoDownCommand => _GoDownCommand = _GoDownCommand ?? new InputCommand<int>(_controller.GoDown);
+        private IInputCommand stopCommand;
 
-        private IInputCommand<int> _GoLeftCommand;
-        public IInputCommand<int> GoLeftCommand => _GoLeftCommand = _GoLeftCommand ?? new InputCommand<int>(_controller.GoLeft);
+        public IInputCommand StopCommand => this.stopCommand = this.stopCommand ?? new AsyncInputCommand(this.controller.Stop);
 
-        private IInputCommand<int> _GoRightCommand;
-        public IInputCommand<int> GoRightCommand => _GoRightCommand = _GoRightCommand ?? new InputCommand<int>(_controller.GoRight);
+        private IInputCommand emergencyStopCommand;
 
-        private IInputCommand<int> _GoForwardCommand;
-        public IInputCommand<int> GoForwardCommand => _GoForwardCommand = _GoForwardCommand ?? new InputCommand<int>(_controller.GoForward);
+        public IInputCommand EmergencyStopCommand => this.emergencyStopCommand = this.emergencyStopCommand ?? new AsyncInputCommand(this.controller.EmergencyStop);
 
-        private IInputCommand<int> _GoBackwardCommand;
-        public IInputCommand<int> GoBackwardCommand => _GoBackwardCommand = _GoBackwardCommand ?? new InputCommand<int>(_controller.GoBackward);
+        private IInputCommand startVideoCommand;
 
-        private IInputCommand<int> _TurnClockwiseCommand;
-        public IInputCommand<int> TurnClockwiseCommand => _TurnClockwiseCommand = _TurnClockwiseCommand ?? new InputCommand<int>(_controller.TurnClockwise);
+        public IInputCommand StartVideoCommand => this.startVideoCommand = this.startVideoCommand ?? new InputCommand(this.controller.StartVideo);
 
-        private IInputCommand<int> _TurnRightCommand;
-        public IInputCommand<int> TurnRightCommand => _TurnRightCommand = _TurnRightCommand ?? new InputCommand<int>(_controller.TurnRight);
+        private IInputCommand stopVideoCommand;
 
-        private IInputCommand<int> _TurnCounterClockwiseCommand;
-        public IInputCommand<int> TurnCounterClockwiseCommand => _TurnCounterClockwiseCommand = _TurnCounterClockwiseCommand ?? new InputCommand<int>(_controller.TurnCounterClockwise);
+        public IInputCommand StopVideoCommand => this.stopVideoCommand = this.stopVideoCommand ?? new InputCommand(this.controller.StopVideo);
 
-        private IInputCommand<int> _TurnLeftCommand;
-        public IInputCommand<int> TurnLeftCommand => _TurnLeftCommand = _TurnLeftCommand ?? new InputCommand<int>(_controller.TurnLeft);
+        private IInputCommand<int> goUpCommand;
 
-        private IInputCommand<CardinalDirections> _FlipCommand;
-        public IInputCommand<CardinalDirections> FlipCommand => _FlipCommand = _FlipCommand ?? new InputCommand<CardinalDirections>(_controller.Flip);
+        public IInputCommand<int> GoUpCommand => this.goUpCommand = this.goUpCommand ?? new InputCommand<int>(this.controller.GoUp);
 
-        private IInputCommand<Tuple<int, int, int, int>> _GoCommand;
-        public IInputCommand<Tuple<int, int, int, int>> GoCommand => _GoCommand = _GoCommand ?? new InputCommand<Tuple<int, int, int, int>>((tuple) => _controller.Go(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+        private IInputCommand<int> goDownCommand;
 
-        private IInputCommand<Tuple<int, int, int, int, int, int, int>> _CurveCommand;
-        public IInputCommand<Tuple<int, int, int, int, int, int, int>> CommandNameCommand => _CurveCommand = _CurveCommand ?? new InputCommand<Tuple<int, int, int, int, int, int, int>>((tuple) => _controller.Curve(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+        public IInputCommand<int> GoDownCommand => this.goDownCommand = this.goDownCommand ?? new InputCommand<int>(this.controller.GoDown);
 
-        //sides, length, speed, clock, do land
+        private IInputCommand<int> goLeftCommand;
+
+        public IInputCommand<int> GoLeftCommand => this.goLeftCommand = this.goLeftCommand ?? new InputCommand<int>(this.controller.GoLeft);
+
+        private IInputCommand<int> goRightCommand;
+
+        public IInputCommand<int> GoRightCommand => this.goRightCommand = this.goRightCommand ?? new InputCommand<int>(this.controller.GoRight);
+
+        private IInputCommand<int> goForwardCommand;
+
+        public IInputCommand<int> GoForwardCommand => this.goForwardCommand = this.goForwardCommand ?? new InputCommand<int>(this.controller.GoForward);
+
+        private IInputCommand<int> goBackwardCommand;
+
+        public IInputCommand<int> GoBackwardCommand => this.goBackwardCommand = this.goBackwardCommand ?? new InputCommand<int>(this.controller.GoBackward);
+
+        private IInputCommand<int> turnClockwiseCommand;
+
+        public IInputCommand<int> TurnClockwiseCommand => this.turnClockwiseCommand = this.turnClockwiseCommand ?? new InputCommand<int>(this.controller.TurnClockwise);
+
+        private IInputCommand<int> turnRightCommand;
+
+        public IInputCommand<int> TurnRightCommand => this.turnRightCommand = this.turnRightCommand ?? new InputCommand<int>(this.controller.TurnRight);
+
+        private IInputCommand<int> turnCounterClockwiseCommand;
+
+        public IInputCommand<int> TurnCounterClockwiseCommand => this.turnCounterClockwiseCommand = this.turnCounterClockwiseCommand ?? new InputCommand<int>(this.controller.TurnCounterClockwise);
+
+        private IInputCommand<int> turnLeftCommand;
+
+        public IInputCommand<int> TurnLeftCommand => this.turnLeftCommand = this.turnLeftCommand ?? new InputCommand<int>(this.controller.TurnLeft);
+
+        private IInputCommand<CardinalDirections> flipCommand;
+
+        public IInputCommand<CardinalDirections> FlipCommand => this.flipCommand = this.flipCommand ?? new InputCommand<CardinalDirections>(this.controller.Flip);
+
+        private IInputCommand<Tuple<int, int, int, int>> goCommand;
+
+        public IInputCommand<Tuple<int, int, int, int>> GoCommand => this.goCommand = this.goCommand ?? new InputCommand<Tuple<int, int, int, int>>((tuple) => this.controller.Go(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+
+        private IInputCommand<Tuple<int, int, int, int, int, int, int>> curveCommand;
+
+        public IInputCommand<Tuple<int, int, int, int, int, int, int>> CommandNameCommand => this.curveCommand = this.curveCommand ?? new InputCommand<Tuple<int, int, int, int, int, int, int>>((tuple) => this.controller.Curve(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+
+        // sides, length, speed, clock, do land
         public Tuple<int, int, int, ClockDirections> FlyPolygonCommandParams { get; } = new Tuple<int, int, int, ClockDirections>(3, 100, 50, ClockDirections.Clockwise);
-        private IInputCommand<Tuple<int, int, int, ClockDirections>> _FlyPolygonCommand;
-        public IInputCommand<Tuple<int, int, int, ClockDirections>> FlyPolygonCommand => 
-            _FlyPolygonCommand = 
-                _FlyPolygonCommand ?? 
-                    new InputCommand<Tuple<int, int, int, ClockDirections>>((tuple) => _controller.FlyPolygon(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
 
-        private IInputCommand<int> _SetSpeedCommand;
-        public IInputCommand<int> SetSpeedCommand => _SetSpeedCommand = _SetSpeedCommand ?? new InputCommand<int>(_controller.SetSpeed);
+        private IInputCommand<Tuple<int, int, int, ClockDirections>> flyPolygonCommand;
 
-        private IInputCommand<Tuple<int, int, int, int>> _Set4ChannelRCCommand;
-        public IInputCommand<Tuple<int, int, int, int>> Set4ChannelRCCommand => _Set4ChannelRCCommand = _Set4ChannelRCCommand ?? new InputCommand<Tuple<int, int, int, int>>((tuple) => _controller.Set4ChannelRC(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+        public IInputCommand<Tuple<int, int, int, ClockDirections>> FlyPolygonCommand => this.flyPolygonCommand = this.flyPolygonCommand ?? new InputCommand<Tuple<int, int, int, ClockDirections>>((tuple) => this.controller.FlyPolygon(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
 
-        private IInputCommand<Tuple<string, string>> _SetWIFIPasswordCommand;
-        public IInputCommand<Tuple<string, string>> SetWIFIPassowrdCommand => _SetWIFIPasswordCommand = _SetWIFIPasswordCommand ?? new InputCommand<Tuple<string, string>>((tuple) => _controller.SetWIFIPassword(tuple.Item1, tuple.Item2));
+        private IInputCommand<int> setSpeedCommand;
 
-        private IInputCommand<Tuple<string, string>> _SetStationModeCommand;
-        public IInputCommand<Tuple<string, string>> SetStationModeCommand => _SetStationModeCommand = _SetStationModeCommand ?? new InputCommand<Tuple<string, string>>((tuple) => _controller.SetStationMode(tuple.Item1, tuple.Item2));
+        public IInputCommand<int> SetSpeedCommand => this.setSpeedCommand = this.setSpeedCommand ?? new InputCommand<int>(this.controller.SetSpeed);
 
-        private IInputCommand _GetSpeedCommand;
-        public IInputCommand GetSpeedCommand => _GetSpeedCommand = _GetSpeedCommand ?? new InputCommand(_controller.GetSpeed);
+        private IInputCommand<Tuple<int, int, int, int>> set4ChannelRCCommand;
 
-        private IInputCommand _GetBatteryCommand;
-        public IInputCommand GetBatteryCommand => _GetBatteryCommand = _GetBatteryCommand ?? new InputCommand(_controller.GetBattery);
+        public IInputCommand<Tuple<int, int, int, int>> Set4ChannelRCCommand => this.set4ChannelRCCommand = this.set4ChannelRCCommand ?? new InputCommand<Tuple<int, int, int, int>>((tuple) => this.controller.Set4ChannelRC(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
 
-        private IInputCommand _GetTimeCommand;
-        public IInputCommand GetTimeCommand => _GetTimeCommand = _GetTimeCommand ?? new InputCommand(_controller.GetTime);
+        private IInputCommand<Tuple<string, string>> setWIFIPasswordCommand;
 
-        private IInputCommand _GetWIFISNRCommand;
-        public IInputCommand GetWIFISNRCommand => _GetWIFISNRCommand = _GetWIFISNRCommand ?? new InputCommand(_controller.GetWIFISNR);
+        public IInputCommand<Tuple<string, string>> SetWIFIPassowrdCommand => this.setWIFIPasswordCommand = this.setWIFIPasswordCommand ?? new InputCommand<Tuple<string, string>>((tuple) => this.controller.SetWIFIPassword(tuple.Item1, tuple.Item2));
 
-        private IInputCommand _GetSdkVersionCommand;
-        public IInputCommand GetSdkVersionCommand => _GetSdkVersionCommand = _GetSdkVersionCommand ?? new InputCommand(_controller.GetSdkVersion);
+        private IInputCommand<Tuple<string, string>> setStationModeCommand;
 
-        private IInputCommand _GetSerialNumberCommand;
-        public IInputCommand GetSerialNumberCommand => _GetSerialNumberCommand = _GetSerialNumberCommand ?? new InputCommand(_controller.GetSerialNumber);
+        public IInputCommand<Tuple<string, string>> SetStationModeCommand => this.setStationModeCommand = this.setStationModeCommand ?? new InputCommand<Tuple<string, string>>((tuple) => this.controller.SetStationMode(tuple.Item1, tuple.Item2));
+
+        private IInputCommand getSpeedCommand;
+
+        public IInputCommand GetSpeedCommand => this.getSpeedCommand = this.getSpeedCommand ?? new InputCommand(this.controller.GetSpeed);
+
+        private IInputCommand getBatteryCommand;
+
+        public IInputCommand GetBatteryCommand => this.getBatteryCommand = this.getBatteryCommand ?? new InputCommand(this.controller.GetBattery);
+
+        private IInputCommand getTimeCommand;
+
+        public IInputCommand GetTimeCommand => this.getTimeCommand = this.getTimeCommand ?? new InputCommand(this.controller.GetTime);
+
+        private IInputCommand getWIFISNRCommand;
+
+        public IInputCommand GetWIFISNRCommand => this.getWIFISNRCommand = this.getWIFISNRCommand ?? new InputCommand(this.controller.GetWIFISNR);
+
+        private IInputCommand getSdkVersionCommand;
+
+        public IInputCommand GetSdkVersionCommand => this.getSdkVersionCommand = this.getSdkVersionCommand ?? new InputCommand(this.controller.GetSdkVersion);
+
+        private IInputCommand getSerialNumberCommand;
+
+        public IInputCommand GetSerialNumberCommand => this.getSerialNumberCommand = this.getSerialNumberCommand ?? new InputCommand(this.controller.GetSerialNumber);
 #pragma warning restore IDE1006 // Naming Styles
 
     }

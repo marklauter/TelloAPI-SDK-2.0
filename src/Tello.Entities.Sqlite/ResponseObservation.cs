@@ -1,5 +1,10 @@
-﻿using Messenger;
+﻿// <copyright file="ResponseObservation.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
+using Messenger;
 
 namespace Tello.Entities.Sqlite
 {
@@ -34,14 +39,14 @@ namespace Tello.Entities.Sqlite
                 throw new ArgumentNullException(nameof(response));
             }
 
-            TimeInitiated = response.Request.Timestamp;
-            TimeTaken = response.TimeTaken;
-            Command = (Command)response.Request.Data;
-            Response = response.Message;
-            Success = response.Success;
-            StatusMessage = response.StatusMessage;
-            ExceptionType = response.Exception?.GetType().Name;
-            ExceptionType = response.Exception?.GetType().Name;
+            this.TimeInitiated = response.Request.Timestamp;
+            this.TimeTaken = response.TimeTaken;
+            this.Command = (Command)response.Request.Data;
+            this.Response = response.Message;
+            this.Success = response.Success;
+            this.StatusMessage = response.StatusMessage;
+            this.ExceptionType = response.Exception?.GetType().Name;
+            this.ExceptionType = response.Exception?.GetType().Name;
         }
 
         #region TimeInitiated
@@ -51,7 +56,7 @@ namespace Tello.Entities.Sqlite
         // this is just to put a human readable value in sqlite for debugging
         public string TimeInitiatedString
         {
-            get => TimeInitiated.ToString("o");
+            get => this.TimeInitiated.ToString("o");
             set { }
         }
         #endregion
@@ -63,8 +68,8 @@ namespace Tello.Entities.Sqlite
         [SQLite.Indexed]
         public int TimeTakenMS
         {
-            get => (int)TimeTaken.TotalMilliseconds;
-            set => TimeTaken = TimeSpan.FromMilliseconds(value);
+            get => (int)this.TimeTaken.TotalMilliseconds;
+            set => this.TimeTaken = TimeSpan.FromMilliseconds(value);
         }
         #endregion
 
@@ -77,8 +82,8 @@ namespace Tello.Entities.Sqlite
         [SQLite.Column("Command")]
         public string CommandValue
         {
-            get => (string)Command;
-            set => Command = (Command)value;
+            get => (string)this.Command;
+            set => this.Command = (Command)value;
         }
 
         #endregion

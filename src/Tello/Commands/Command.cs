@@ -1,16 +1,23 @@
-﻿using System;
+﻿// <copyright file="Command.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Text;
 
 namespace Tello
 {
     /// <summary>
-    /// https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf
+    /// https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf.
     /// </summary>
     public sealed class Command
     {
         #region ctor
         public Command()
-            : this(Commands.EnterSdkMode) { }
+            : this(Commands.EnterSdkMode)
+        {
+        }
 
         public Command(Commands command)
             : this(command, null)
@@ -19,16 +26,32 @@ namespace Tello
 
         public Command(Commands command, params object[] args)
         {
-            Rule = CommandRules.Rules(command);
-            Validate(command, args);
-            Arguments = args;
-            Immediate = Rule.Immediate;
+            this.Rule = CommandRules.Rules(command);
+            this.Validate(command, args);
+            this.Arguments = args;
+            this.Immediate = this.Rule.Immediate;
         }
         #endregion
 
-        public readonly object[] Arguments;
-        public readonly bool Immediate;
-        public readonly CommandRule Rule;
+        /// <summary>
+        /// Gets a value containing the command arguments.
+        /// </summary>
+        public object[] Arguments { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the command is executed immediately or queued for execution after the current command terminates.
+        /// </summary>
+        /// <remarks>
+        /// Indicates whether or not the flight controller should queue the command (Immediate == false) or send the command immediately (Immediate == true).
+        /// Examples of immediate commands include Set4ChannelRC and EmergencyStop.
+        /// Examples of non-immediate commands include Move, Land and Flip.
+        /// </remarks>
+        public bool Immediate { get; }
+
+        /// <summary>
+        /// Gets the ruleset that governs the exectution of the command.
+        /// </summary>
+        public CommandRule Rule { get; }
 
         #region operators
         public static implicit operator Command(Commands command)
@@ -97,6 +120,7 @@ namespace Tello
                 {
                     args[i] = Convert.ChangeType(tokens[i + 1], rule.Arguments[i].Type);
                 }
+
                 return new Command(rule.Command, args);
             }
         }
@@ -106,7 +130,7 @@ namespace Tello
             return command.Rule.Response;
         }
 
-        //todo: move command timeouts to command rules
+        // todo: move command timeouts to command rules
         public static explicit operator TimeSpan(Command command)
         {
             var avgspeed = 10.0; // cm/s (using a low speed to give margin of error)
@@ -125,12 +149,12 @@ namespace Tello
                 case Commands.GetSerialNumber:
                     return TimeSpan.FromSeconds(30);
 
-                //todo: if I knew the set speed in cm/s I could get a better timeout value
+                // todo: if I knew the set speed in cm/s I could get a better timeout value
                 case Commands.Left:
                 case Commands.Right:
                 case Commands.Forward:
                 case Commands.Back:
-                    distance = (int)command.Arguments[0]; //cm
+                    distance = (int)command.Arguments[0]; // cm
                     return TimeSpan.FromSeconds(distance / avgspeed * 10);
 
                 case Commands.Go:
@@ -165,18 +189,18 @@ namespace Tello
 
         private void Validate(Commands command, params object[] args)
         {
-            if (args == null && Rule.Arguments.Length > 0)
+            if (args == null && this.Rule.Arguments.Length > 0)
             {
                 throw new ArgumentNullException($"{command}: {nameof(args)}");
             }
 
-            if (args != null && args.Length != Rule.Arguments.Length)
+            if (args != null && args.Length != this.Rule.Arguments.Length)
             {
                 throw new ArgumentException(
-                    $"{command}: argument count mismatch. expected: {Rule.Arguments.Length} actual: {(args == null ? 0 : args.Length)}");
+                    $"{command}: argument count mismatch. expected: {this.Rule.Arguments.Length} actual: {(args == null ? 0 : args.Length)}");
             }
 
-            if (Rule.Arguments.Length > 0)
+            if (this.Rule.Arguments.Length > 0)
             {
                 for (var i = 0; i < args.Length; ++i)
                 {
@@ -186,7 +210,7 @@ namespace Tello
                         throw new ArgumentNullException($"{command}: {nameof(args)}[{i}]");
                     }
 
-                    var argumentRule = Rule.Arguments[i];
+                    var argumentRule = this.Rule.Arguments[i];
                     if (!argumentRule.IsTypeAllowed(arg))
                     {
                         throw new ArgumentException($"{command}: {nameof(args)}[{i}] type mismatch. expected: '{argumentRule.Type.Name}' actual: '{arg.GetType().Name}'");
@@ -213,6 +237,7 @@ namespace Tello
                                 throw new ArgumentOutOfRangeException($"{command}: {nameof(args)} x, y and z can't match /[-20-20]/ simultaneously.");
                             }
                         }
+
                         break;
                 }
             }
@@ -221,8 +246,8 @@ namespace Tello
         public override string ToString()
         {
             return CommandRules
-                .Rules(Rule.Command)
-                .ToString(Arguments);
+                .Rules(this.Rule.Command)
+                .ToString(this.Arguments);
         }
     }
 }

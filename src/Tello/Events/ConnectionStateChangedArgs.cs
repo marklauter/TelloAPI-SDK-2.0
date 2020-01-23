@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="ConnectionStateChangedArgs.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 
 namespace Tello.Events
 {
@@ -6,7 +11,7 @@ namespace Tello.Events
     {
         public ConnectionStateChangedArgs(bool isConnected)
         {
-            IsConnected = isConnected;
+            this.IsConnected = isConnected;
         }
 
         public bool IsConnected { get; }

@@ -1,4 +1,9 @@
-﻿using Messenger.Simulator;
+﻿// <copyright file="ReceiveResult.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using Messenger.Simulator;
 
 namespace Tello.Simulator.Messaging
 {
@@ -6,7 +11,7 @@ namespace Tello.Simulator.Messaging
     {
         public ReceiveResult(byte[] buffer)
         {
-            Buffer = buffer ?? throw new System.ArgumentNullException(nameof(buffer));
+            this.Buffer = buffer ?? throw new System.ArgumentNullException(nameof(buffer));
         }
 
         public byte[] Buffer { get; }

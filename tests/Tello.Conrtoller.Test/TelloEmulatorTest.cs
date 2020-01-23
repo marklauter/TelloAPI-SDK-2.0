@@ -1,12 +1,9 @@
-﻿//using Microsoft.VisualStudio.TestTools.UnitTesting;
-//using System;
-//using System.Text;
-//using System.Threading.Tasks;
-//using Tello.Emulator.SDKV2;
-//using Tello.Messaging;
-
-//namespace Tello.Controller.Test
-//{
+﻿// <copyright file="TelloEmulatorTest.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+// namespace Tello.Controller.Test
+// {
 //    [TestClass]
 //    public class TelloEmulatorTest
 //    {
@@ -26,19 +23,19 @@
 //            Assert.AreEqual(0, tello.Position.Height);
 //        }
 
-//        [TestMethod]
+// [TestMethod]
 //        public void TelloEmulator_Power_Test()
 //        {
 //            var tello = new TelloEmulator();
 
-//            tello.PowerOn();
+// tello.PowerOn();
 //            Assert.IsTrue(tello.IsPoweredUp);
 
-//            tello.PowerOff();
+// tello.PowerOff();
 //            Assert.IsFalse(tello.IsPoweredUp);
 //        }
 
-//        [TestMethod]
+// [TestMethod]
 //        public void TelloEmulator_Connection_Test()
 //        {
 //            var tello = new TelloEmulator();
@@ -48,7 +45,7 @@
 //                tello.Connect();
 //                Assert.AreEqual(MessengerStates.Connected, tello.MessengerState);
 
-//                tello.Disconnect();
+// tello.Disconnect();
 //                Assert.AreEqual(MessengerStates.Disconnected, tello.MessengerState);
 //            }
 //            finally
@@ -57,12 +54,12 @@
 //            }
 //        }
 
-//        [TestMethod]
+// [TestMethod]
 //        public async Task TelloEmulator_SendAsync_Test()
 //        {
 //            var tello = new TelloEmulator();
 
-//            tello.PowerOn();
+// tello.PowerOn();
 //            try
 //            {
 //                tello.Connect();
@@ -88,12 +85,12 @@
 //            }
 //        }
 
-//        [TestMethod]
+// [TestMethod]
 //        public async Task TelloEmulator_SendAsync_NotConnected_Test()
 //        {
 //            var tello = new TelloEmulator();
 
-//            tello.PowerOn();
+// tello.PowerOn();
 //            try
 //            {
 //                var bytes = Encoding.UTF8.GetBytes("dummy");
@@ -110,12 +107,12 @@
 //            }
 //        }
 
-//        [TestMethod]
+// [TestMethod]
 //        public async Task TelloEmulator_SendAsync_BadCommand_Test()
 //        {
 //            var tello = new TelloEmulator();
 
-//            tello.PowerOn();
+// tello.PowerOn();
 //            try
 //            {
 //                tello.Connect();
@@ -141,5 +138,4 @@
 //            }
 //        }
 //    }
-//}
-
+// }

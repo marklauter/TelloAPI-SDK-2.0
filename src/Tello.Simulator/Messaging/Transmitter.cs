@@ -1,31 +1,37 @@
-﻿using Messenger.Simulator;
+﻿// <copyright file="Transmitter.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
 using System.Threading.Tasks;
+using Messenger.Simulator;
 
 namespace Tello.Simulator.Messaging
 {
     internal class Transmitter : IDroneTransmitter
     {
-        private byte[] _buffer = Array.Empty<byte>();
+        private byte[] buffer = Array.Empty<byte>();
 
         protected byte[] Buffer
         {
-            get => _buffer;
+            get => this.buffer;
             set
             {
-                _buffer = value ?? throw new System.ArgumentNullException(nameof(value));
-                _available = _buffer.Length;
+                this.buffer = value ?? throw new System.ArgumentNullException(nameof(value));
+                this.available = this.buffer.Length;
             }
         }
 
-        protected int _available = 0;
-        public int Available => _available;
+        protected int available = 0;
+
+        public int Available => this.available;
 
         public Task<IReceiveResult> ReceiveAsync()
         {
-            _available = 0;
-            var result = new ReceiveResult(Buffer) as IReceiveResult;
-            Buffer = Array.Empty<byte>();
+            this.available = 0;
+            var result = new ReceiveResult(this.Buffer) as IReceiveResult;
+            this.Buffer = Array.Empty<byte>();
             return Task.FromResult(result);
         }
     }

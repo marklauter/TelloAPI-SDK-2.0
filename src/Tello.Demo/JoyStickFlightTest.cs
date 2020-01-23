@@ -1,21 +1,25 @@
-﻿using Messenger;
-using Repository;
+﻿// <copyright file="JoyStickFlightTest.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Messenger;
+using Repository;
 using Tello.Controller;
 using Tello.Entities.Sqlite;
-
 
 namespace Tello.Demo
 {
     public sealed class JoyStickFlightTest : IFlightTest
     {
-        private readonly DroneMessenger _tello;
-        private readonly IRepository _repository;
-        private readonly Session _session;
-        private bool _canMove = false;
+        private readonly DroneMessenger tello;
+        private readonly IRepository repository;
+        private readonly Session session;
+        private bool canMove = false;
 
         public JoyStickFlightTest(
             IRepository repository,
@@ -23,27 +27,27 @@ namespace Tello.Demo
             IReceiver stateReceiver,
             IReceiver videoReceiver)
         {
-            _tello = new DroneMessenger(transceiver, stateReceiver, videoReceiver);
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            this.tello = new DroneMessenger(transceiver, stateReceiver, videoReceiver);
+            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
 
-            _tello.Controller.ConnectionStateChanged += Controller_ConnectionStateChanged;
-            _tello.Controller.ExceptionThrown += Controller_ExceptionThrown;
-            _tello.Controller.ResponseReceived += Controller_ResponseReceived;
+            this.tello.Controller.ConnectionStateChanged += this.Controller_ConnectionStateChanged;
+            this.tello.Controller.ExceptionThrown += this.Controller_ExceptionThrown;
+            this.tello.Controller.ResponseReceived += this.Controller_ResponseReceived;
 
-            _tello.StateObserver.StateChanged += StateObserver_StateChanged;
-            _tello.VideoObserver.VideoSampleReady += VideoObserver_VideoSampleReady;
+            this.tello.StateObserver.StateChanged += this.StateObserver_StateChanged;
+            this.tello.VideoObserver.VideoSampleReady += this.VideoObserver_VideoSampleReady;
 
-            _repository.CreateCatalog<Session>();
-            _repository.CreateCatalog<ObservationGroup>();
-            _repository.CreateCatalog<StateObservation>();
-            _repository.CreateCatalog<AirSpeedObservation>();
-            _repository.CreateCatalog<AttitudeObservation>();
-            _repository.CreateCatalog<BatteryObservation>();
-            _repository.CreateCatalog<HobbsMeterObservation>();
-            _repository.CreateCatalog<PositionObservation>();
-            _repository.CreateCatalog<ResponseObservation>();
+            this.repository.CreateCatalog<Session>();
+            this.repository.CreateCatalog<ObservationGroup>();
+            this.repository.CreateCatalog<StateObservation>();
+            this.repository.CreateCatalog<AirSpeedObservation>();
+            this.repository.CreateCatalog<AttitudeObservation>();
+            this.repository.CreateCatalog<BatteryObservation>();
+            this.repository.CreateCatalog<HobbsMeterObservation>();
+            this.repository.CreateCatalog<PositionObservation>();
+            this.repository.CreateCatalog<ResponseObservation>();
 
-            _session = _repository.NewEntity<Session>();
+            this.session = this.repository.NewEntity<Session>();
         }
 
         public async Task Invoke()
@@ -53,7 +57,7 @@ namespace Tello.Demo
             Console.ReadKey(true);
 
             Log.WriteLine("> enter sdk mode");
-            if (await _tello.Controller.Connect())
+            if (await this.tello.Controller.Connect())
             {
                 Console.WriteLine("Remember to turn Tello off to keep it from overheating.");
                 Console.WriteLine("press any key when ready to end program...");
@@ -65,24 +69,23 @@ namespace Tello.Demo
 
             Console.ReadKey(true);
 
-            if (_videoFile != null)
+            if (this.videoFile != null)
             {
-                _videoFile.Close();
+                this.videoFile.Close();
             }
 
-            _repository.Dispose();
+            this.repository.Dispose();
         }
 
         private void Continue()
         {
-            //Log.WriteLine("> start video");
-            //_tello.Controller.StartVideo();
-
+            // Log.WriteLine("> start video");
+            // _tello.Controller.StartVideo();
             Log.WriteLine("> take off");
-            _tello.Controller.TakeOff();
+            this.tello.Controller.TakeOff();
 
-            var spinWait = new SpinWait();
-            while (!_canMove)
+            var spinWait = default(SpinWait);
+            while (!this.canMove)
             {
                 spinWait.SpinOnce();
             }
@@ -107,54 +110,54 @@ namespace Tello.Demo
             {
                 if (scanstate == JoyStick.ScanStates.Changed)
                 {
-                    _tello.Controller.Set4ChannelRC(joystick.XInput, joystick.ZInput, joystick.YInput, joystick.RInput);
+                    this.tello.Controller.Set4ChannelRC(joystick.XInput, joystick.ZInput, joystick.YInput, joystick.RInput);
                 }
 
                 scanstate = joystick.Scan();
-            } while (scanstate != JoyStick.ScanStates.Exit);
+            }
+            while (scanstate != JoyStick.ScanStates.Exit);
 
             Log.WriteLine("> land");
-            _tello.Controller.Land();
+            this.tello.Controller.Land();
         }
 
         #region event handlers
         private void Controller_ResponseReceived(object sender, Events.ResponseReceivedArgs e)
         {
-            if (!_canMove
+            if (!this.canMove
                 && (Command)e.Response.Request.Data == Commands.Takeoff
                 && e.Response.Success && e.Response.Message == Responses.Ok.ToString().ToLowerInvariant())
             {
-                _canMove = true;
+                this.canMove = true;
             }
 
-            //Log.WriteLine($"{(Command)e.Response.Request.Data} returned '{e.Response.Message}' in {(int)e.Response.TimeTaken.TotalMilliseconds}ms", ConsoleColor.Cyan);
-
-            var group = _repository.NewEntity<ObservationGroup>(_session);
-            _repository.Insert(new ResponseObservation(group, e.Response));
+            // Log.WriteLine($"{(Command)e.Response.Request.Data} returned '{e.Response.Message}' in {(int)e.Response.TimeTaken.TotalMilliseconds}ms", ConsoleColor.Cyan);
+            var group = this.repository.NewEntity<ObservationGroup>(this.session);
+            this.repository.Insert(new ResponseObservation(group, e.Response));
         }
 
-        private long _videoLength = 0;
-        private FileStream _videoFile = null;
+        private long videoLength = 0;
+        private FileStream videoFile = null;
 
         private void VideoObserver_VideoSampleReady(object sender, Events.VideoSampleReadyArgs e)
         {
-            _videoFile = _videoFile ?? File.OpenWrite($"tello.video.{_session.Id}.h264");
-            _videoFile.Write(e.Message.Data, 0, e.Message.Data.Length);
+            this.videoFile = this.videoFile ?? File.OpenWrite($"tello.video.{this.session.Id}.h264");
+            this.videoFile.Write(e.Message.Data, 0, e.Message.Data.Length);
 
-            _videoLength = _videoLength < Int64.MaxValue
-                ? _videoLength + e.Message.Data.Length
+            this.videoLength = this.videoLength < Int64.MaxValue
+                ? this.videoLength + e.Message.Data.Length
                 : 0;
         }
 
         private void StateObserver_StateChanged(object sender, Events.StateChangedArgs e)
         {
-            var group = _repository.NewEntity<ObservationGroup>(_session);
-            _repository.Insert(new StateObservation(group, e.State));
-            _repository.Insert(new AirSpeedObservation(group, e.State));
-            _repository.Insert(new AttitudeObservation(group, e.State));
-            _repository.Insert(new BatteryObservation(group, e.State));
-            _repository.Insert(new HobbsMeterObservation(group, e.State));
-            _repository.Insert(new PositionObservation(group, e.State));
+            var group = this.repository.NewEntity<ObservationGroup>(this.session);
+            this.repository.Insert(new StateObservation(group, e.State));
+            this.repository.Insert(new AirSpeedObservation(group, e.State));
+            this.repository.Insert(new AttitudeObservation(group, e.State));
+            this.repository.Insert(new BatteryObservation(group, e.State));
+            this.repository.Insert(new HobbsMeterObservation(group, e.State));
+            this.repository.Insert(new PositionObservation(group, e.State));
         }
 
         private void Controller_ExceptionThrown(object sender, Events.ExceptionThrownArgs e)
@@ -169,7 +172,7 @@ namespace Tello.Demo
             Log.WriteLine($"Connection State: {e.IsConnected}");
             if (e.IsConnected)
             {
-                Continue();
+                this.Continue();
             }
         }
         #endregion

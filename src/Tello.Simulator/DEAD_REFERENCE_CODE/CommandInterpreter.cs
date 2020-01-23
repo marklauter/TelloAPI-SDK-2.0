@@ -1,9 +1,9 @@
-﻿//using System;
-//using System.Threading.Tasks;
-//using Tello.Messaging;
-
-//namespace Tello.Emulator.SDKV2
-//{
+﻿// <copyright file="CommandInterpreter.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+// namespace Tello.Emulator.SDKV2
+// {
 //    internal sealed class CommandInterpreter
 //    {
 //        public CommandInterpreter(StateManager stateManager)
@@ -11,11 +11,11 @@
 //            _stateManager = stateManager ?? throw new ArgumentNullException(nameof(stateManager));
 //        }
 
-//        private readonly StateManager _stateManager;
+// private readonly StateManager _stateManager;
 //        private readonly string _ok = "ok";
 //        private readonly string _error = "error";
 
-//        public string Interpret(string message)
+// public string Interpret(string message)
 //        {
 //            try
 //            {
@@ -32,7 +32,7 @@
 //                }
 //                Log.WriteLine($"message received: {message}, command identified: {command}");
 
-//                var args = CommandParser.GetArgs(message);
+// var args = CommandParser.GetArgs(message);
 //                switch (command)
 //                {
 //                    case TelloCommands.EnterSdkMode:
@@ -270,4 +270,4 @@
 //            }
 //        }
 //    }
-//}
+// }

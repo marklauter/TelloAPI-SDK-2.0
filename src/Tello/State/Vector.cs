@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="Vector.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 
 namespace Tello.State
 {
@@ -6,9 +11,9 @@ namespace Tello.State
     {
         public Vector(int heading, double x, double y)
         {
-            Heading = heading;
-            X = x;
-            Y = y;
+            this.Heading = heading;
+            this.X = x;
+            this.Y = y;
         }
 
         public Vector()
@@ -17,17 +22,19 @@ namespace Tello.State
         }
 
         public int Heading { get; }
+
         public double X { get; }
+
         public double Y { get; }
 
         public Vector Go(int xDelta, int yDelta)
         {
-            return new Vector(Heading, X + xDelta, Y + yDelta);
+            return new Vector(this.Heading, this.X + xDelta, this.Y + yDelta);
         }
 
         public Vector Move(CardinalDirections direction, int distance)
         {
-            var heading = Heading;
+            var heading = this.Heading;
             switch (direction)
             {
                 case CardinalDirections.Right:
@@ -45,7 +52,7 @@ namespace Tello.State
             var adjacent = Math.Cos(radians) * distance;
             var opposite = Math.Sin(radians) * distance;
 
-            return new Vector(Heading, Math.Round(X + adjacent, 2), Math.Round(Y + opposite, 2));
+            return new Vector(this.Heading, Math.Round(this.X + adjacent, 2), Math.Round(this.Y + opposite, 2));
         }
 
         public Vector Turn(ClockDirections direction, int degrees)
@@ -57,7 +64,7 @@ namespace Tello.State
 
             degrees %= 360;
 
-            var heading = Heading;
+            var heading = this.Heading;
             switch (direction)
             {
                 case ClockDirections.Clockwise:
@@ -66,6 +73,7 @@ namespace Tello.State
                     {
                         heading -= 360;
                     }
+
                     break;
                 case ClockDirections.CounterClockwise:
                     heading -= degrees;
@@ -73,15 +81,16 @@ namespace Tello.State
                     {
                         heading += 360;
                     }
+
                     break;
             }
 
-            return new Vector(heading, X, Y);
+            return new Vector(heading, this.X, this.Y);
         }
 
         public override string ToString()
         {
-            return $"P({X}, {Y}) \u0398({Heading})";
+            return $"P({this.X}, {this.Y}) \u0398({this.Heading})";
         }
     }
 }

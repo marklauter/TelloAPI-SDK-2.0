@@ -1,14 +1,19 @@
-﻿using Messenger;
+﻿// <copyright file="TelloRequest.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
 using System.Text;
+using Messenger;
 
 namespace Tello.Messaging
 {
     public sealed class TelloRequest : Request<string>
     {
-        public TelloRequest(Command command) 
+        public TelloRequest(Command command)
             : base(
-                  (string)command, 
+                  (string)command,
                   (TimeSpan)command,
                   command.Rule.Response == Responses.None)
         {

@@ -1,5 +1,10 @@
-﻿using Repository.Sqlite;
+﻿// <copyright file="Observation.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
+using Repository.Sqlite;
 
 namespace Tello.Entities.Sqlite
 {
@@ -18,25 +23,25 @@ namespace Tello.Entities.Sqlite
 
         public Observation(int groupId)
             : this(
-                  groupId, 
+                  groupId,
                   DateTime.UtcNow)
         {
         }
 
         public Observation(
-            int groupId, 
+            int groupId,
             DateTime timestamp)
             : base()
         {
-            GroupId = groupId;
-            Timestamp = timestamp;
+            this.GroupId = groupId;
+            this.Timestamp = timestamp;
         }
 
         public Observation(IObservation observation)
             : base(observation)
         {
-            GroupId = observation.GroupId;
-            Timestamp = observation.Timestamp;
+            this.GroupId = observation.GroupId;
+            this.Timestamp = observation.Timestamp;
         }
 
         [SQLite.Indexed]
@@ -48,7 +53,7 @@ namespace Tello.Entities.Sqlite
         // this is just to put a human readable value in sqlite for debugging
         public string TimestampString
         {
-            get => Timestamp.ToString("o");
+            get => this.Timestamp.ToString("o");
             set { }
         }
     }

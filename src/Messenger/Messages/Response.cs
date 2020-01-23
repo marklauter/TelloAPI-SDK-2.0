@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="Response.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 
 namespace Messenger
 {
@@ -11,33 +16,35 @@ namespace Messenger
                 throw new ArgumentNullException(nameof(response));
             }
 
-            Id = response.Id;
-            Timestamp = response.Timestamp;
-            Data = response.Data;
+            this.Id = response.Id;
+            this.Timestamp = response.Timestamp;
+            this.Data = response.Data;
 
-            Request = response.Request;
-            Exception = response.Exception;
-            StatusMessage = response.StatusMessage;
-            TimeTaken = response.TimeTaken;
-            Success = response.Success;
+            this.Request = response.Request;
+            this.Exception = response.Exception;
+            this.StatusMessage = response.StatusMessage;
+            this.TimeTaken = response.TimeTaken;
+            this.Success = response.Success;
         }
 
         public Response(IRequest request, TimeSpan timeTaken, bool success)
         {
-            Request = request ?? throw new ArgumentNullException(nameof(request));
-            TimeTaken = timeTaken;
-            Success = success;
-            Timestamp = DateTime.UtcNow;
-            Id = Guid.NewGuid();
+            this.Request = request ?? throw new ArgumentNullException(nameof(request));
+            this.TimeTaken = timeTaken;
+            this.Success = success;
+            this.Timestamp = DateTime.UtcNow;
+            this.Id = Guid.NewGuid();
         }
 
-        public Response(IRequest request, Exception exception, TimeSpan timeTaken) : this(request, timeTaken, false)
+        public Response(IRequest request, Exception exception, TimeSpan timeTaken)
+            : this(request, timeTaken, false)
         {
-            Exception = exception ?? throw new ArgumentNullException(nameof(exception));
-            StatusMessage = $"{exception.GetType().Name} - {exception.Message}";
+            this.Exception = exception ?? throw new ArgumentNullException(nameof(exception));
+            this.StatusMessage = $"{exception.GetType().Name} - {exception.Message}";
         }
 
-        public Response(IRequest request, byte[] data, TimeSpan timeTaken) : this(request, timeTaken, true)
+        public Response(IRequest request, byte[] data, TimeSpan timeTaken)
+            : this(request, timeTaken, true)
         {
             if (data == null)
             {
@@ -49,7 +56,7 @@ namespace Messenger
                 throw new ArgumentOutOfRangeException(nameof(data));
             }
 
-            Data = data;
+            this.Data = data;
         }
 
         public IRequest Request { get; }
@@ -67,30 +74,5 @@ namespace Messenger
         public DateTime Timestamp { get; }
 
         public Guid Id { get; }
-    }
-
-    public abstract class Response<T> : Response, IResponse<T>
-    {
-        public Response(IResponse response) 
-            : base(response)
-        {
-            Message = Deserialize(Data);
-        }
-
-        public Response(IRequest request, Exception exception, TimeSpan timeTaken) 
-            : base(request, exception, timeTaken)
-        {
-            Message = Deserialize(Data);
-        }
-
-        public Response(IRequest request, byte[] data, TimeSpan timeTaken) 
-            : base(request, data, timeTaken)
-        {
-            Message = Deserialize(Data);
-        }
-        
-        protected abstract T Deserialize(byte[] data);
-
-        public T Message { get; }
     }
 }

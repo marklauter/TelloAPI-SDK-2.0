@@ -1,16 +1,23 @@
-﻿using System;
+﻿// <copyright file="Observer.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 
 namespace Messenger
 {
     public abstract class Observer<T> : IObserver<T>
     {
-        private IDisposable _unsubscriber;
+        private IDisposable unsubscriber;
 
-        public Observer() { }
+        public Observer()
+        {
+        }
 
         public Observer(IObservable<T> observable)
         {
-            Subscribe(observable);
+            this.Subscribe(observable);
         }
 
         public void Subscribe(IObservable<T> observable)
@@ -20,24 +27,24 @@ namespace Messenger
                 throw new ArgumentNullException(nameof(observable));
             }
 
-            if (_unsubscriber == null)
+            if (this.unsubscriber == null)
             {
-                _unsubscriber = observable.Subscribe(this);
+                this.unsubscriber = observable.Subscribe(this);
             }
         }
 
         public void Unsubscribe()
         {
-            if (_unsubscriber != null)
+            if (this.unsubscriber != null)
             {
-                _unsubscriber.Dispose();
-                _unsubscriber = null;
+                this.unsubscriber.Dispose();
+                this.unsubscriber = null;
             }
         }
 
         public void OnCompleted()
         {
-            Unsubscribe();
+            this.Unsubscribe();
         }
 
         public abstract void OnError(Exception error);

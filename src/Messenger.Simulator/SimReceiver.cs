@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="SimReceiver.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,11 +11,11 @@ namespace Messenger.Simulator
 {
     public sealed class SimReceiver : Receiver
     {
-        private readonly IDroneTransmitter _transmitter;
+        private readonly IDroneTransmitter transmitter;
 
         public SimReceiver(IDroneTransmitter transmitter)
         {
-            _transmitter = transmitter ?? throw new ArgumentNullException(nameof(transmitter));
+            this.transmitter = transmitter ?? throw new ArgumentNullException(nameof(transmitter));
         }
 
         protected override async Task Listen(CancellationToken cancellationToken)
@@ -20,15 +25,15 @@ namespace Messenger.Simulator
                 throw new ArgumentNullException(nameof(cancellationToken));
             }
 
-            var wait = new SpinWait();
+            var wait = default(SpinWait);
 
             while (!cancellationToken.IsCancellationRequested)
             {
                 try
                 {
-                    if (_transmitter.Available > 0)
+                    if (this.transmitter.Available > 0)
                     {
-                        MessageReceived(new Envelope((await _transmitter.ReceiveAsync()).Buffer));
+                        this.MessageReceived(new Envelope((await this.transmitter.ReceiveAsync()).Buffer));
                     }
                     else
                     {
@@ -37,7 +42,7 @@ namespace Messenger.Simulator
                 }
                 catch (Exception ex)
                 {
-                    ExceptionThrown(ex);
+                    this.ExceptionThrown(ex);
                 }
             }
         }

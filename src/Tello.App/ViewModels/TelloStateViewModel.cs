@@ -1,6 +1,11 @@
-﻿using Repository;
+﻿// <copyright file="TelloStateViewModel.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
 using System;
 using System.Collections.ObjectModel;
+using Repository;
 using Tello.App.MvvM;
 using Tello.Controller;
 using Tello.Entities;
@@ -9,13 +14,13 @@ using Tello.State;
 
 namespace Tello.App.ViewModels
 {
-    //https://www.actiprosoftware.com/products/controls/wpf/gauge
-    //https://docs.microsoft.com/en-us/windows/communitytoolkit/controls/radialgauge
+    // https://www.actiprosoftware.com/products/controls/wpf/gauge
+    // https://docs.microsoft.com/en-us/windows/communitytoolkit/controls/radialgauge
     public class TelloStateViewModel : ViewModel
     {
-        private readonly IStateObserver _stateObserver;
-        private readonly IRepository _repository;
-        private readonly ISession _session;
+        private readonly IStateObserver stateObserver;
+        private readonly IRepository repository;
+        private readonly ISession session;
 
         public TelloStateViewModel(
             IUIDispatcher dispatcher,
@@ -25,67 +30,68 @@ namespace Tello.App.ViewModels
             ISession session)
             : base(dispatcher, notifier)
         {
-            _stateObserver = stateObserver ?? throw new ArgumentNullException(nameof(stateObserver));
-            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-            _session = session ?? throw new ArgumentNullException(nameof(session));
+            this.stateObserver = stateObserver ?? throw new ArgumentNullException(nameof(stateObserver));
+            this.repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            this.session = session ?? throw new ArgumentNullException(nameof(session));
         }
 
         protected override void OnOpen(OpenEventArgs args)
         {
-            _stateObserver.StateChanged += StateChanged;
+            this.stateObserver.StateChanged += this.StateChanged;
         }
 
         protected override void OnClosing(ClosingEventArgs args)
         {
-            _stateObserver.StateChanged -= StateChanged;
+            this.stateObserver.StateChanged -= this.StateChanged;
         }
 
         private void StateChanged(object sender, Events.StateChangedArgs e)
         {
-            //todo: this should be pushed directly to a queue to minimize time in method. the queue can be picked up by a processor that does what this method is currently doing.
-            Dispatcher.Invoke((state) =>
-            {
-                State = state as ITelloState;
-                StateHistory.Add(state as ITelloState);
-                if (StateHistory.Count > 500)
+            // todo: this should be pushed directly to a queue to minimize time in method. the queue can be picked up by a processor that does what this method is currently doing.
+            this.Dispatcher.Invoke(
+                (state) =>
                 {
-                    StateHistory.RemoveAt(0);
-                }
-            },
-            e.State);
+                    this.State = state as ITelloState;
+                    this.StateHistory.Add(state as ITelloState);
+                    if (this.StateHistory.Count > 500)
+                    {
+                        this.StateHistory.RemoveAt(0);
+                    }
+                },
+                e.State);
 
-
-            var group = _repository.NewEntity<ObservationGroup>(_session);
-            _repository.Insert(new StateObservation(group, e.State));
-            _repository.Insert(new AirSpeedObservation(group, e.State));
-            _repository.Insert(new AttitudeObservation(group, e.State));
-            _repository.Insert(new BatteryObservation(group, e.State));
-            _repository.Insert(new HobbsMeterObservation(group, e.State));
-            _repository.Insert(new PositionObservation(group, e.State));
+            var group = this.repository.NewEntity<ObservationGroup>(this.session);
+            this.repository.Insert(new StateObservation(group, e.State));
+            this.repository.Insert(new AirSpeedObservation(group, e.State));
+            this.repository.Insert(new AttitudeObservation(group, e.State));
+            this.repository.Insert(new BatteryObservation(group, e.State));
+            this.repository.Insert(new HobbsMeterObservation(group, e.State));
+            this.repository.Insert(new PositionObservation(group, e.State));
         }
 
         public ObservableCollection<ITelloState> StateHistory { get; } = new ObservableCollection<ITelloState>();
 
-        private ITelloState _state;
+        private ITelloState state;
+
         public ITelloState State
         {
-            get => _state;
-            set => SetProperty(ref _state, value);
+            get => this.state;
+            set => this.SetProperty(ref this.state, value);
         }
 
         internal void ClearDatabase()
         {
-            if (_repository != null)
+            if (this.repository != null)
             {
-                _repository.Delete<Session>();
-                _repository.Delete<ObservationGroup>();
-                _repository.Delete<StateObservation>();
-                _repository.Delete<AirSpeedObservation>();
-                _repository.Delete<AttitudeObservation>();
-                _repository.Delete<BatteryObservation>();
-                _repository.Delete<HobbsMeterObservation>();
-                _repository.Delete<PositionObservation>();
-                _repository.Delete<ResponseObservation>();
+                this.repository.Delete<Session>();
+                this.repository.Delete<ObservationGroup>();
+                this.repository.Delete<StateObservation>();
+                this.repository.Delete<AirSpeedObservation>();
+                this.repository.Delete<AttitudeObservation>();
+                this.repository.Delete<BatteryObservation>();
+                this.repository.Delete<HobbsMeterObservation>();
+                this.repository.Delete<PositionObservation>();
+                this.repository.Delete<ResponseObservation>();
             }
         }
     }

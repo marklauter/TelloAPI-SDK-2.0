@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="JoyStick.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 using System.Diagnostics;
 
 namespace Tello.Demo
@@ -12,39 +17,39 @@ namespace Tello.Demo
             Exit,
         }
 
-        private readonly int _maxInputTimeoutInMS = 100;
-        private readonly Stopwatch _xTimer = new Stopwatch();
-        private readonly Stopwatch _yTimer = new Stopwatch();
-        private readonly Stopwatch _zTimer = new Stopwatch();
-        private readonly Stopwatch _rTimer = new Stopwatch();
-        private int _xInput = 0;
-        private int _yInput = 0;
-        private int _zInput = 0;
-        private int _rInput = 0;
+        private readonly int maxInputTimeoutInMS = 100;
+        private readonly Stopwatch xTimer = new Stopwatch();
+        private readonly Stopwatch yTimer = new Stopwatch();
+        private readonly Stopwatch zTimer = new Stopwatch();
+        private readonly Stopwatch rTimer = new Stopwatch();
+        private int xInput = 0;
+        private int yInput = 0;
+        private int zInput = 0;
+        private int rInput = 0;
 
         /// <summary>
-        /// Left/Right
+        /// Left/Right.
         /// </summary>
-        public int XInput => _xInput;
+        public int XInput => this.xInput;
 
         /// <summary>
-        /// Up/Down
+        /// Up/Down.
         /// </summary>
-        public int YInput => _yInput;
+        public int YInput => this.yInput;
 
         /// <summary>
-        /// Forward/Backward
+        /// Forward/Backward.
         /// </summary>
-        public int ZInput => _zInput;
+        public int ZInput => this.zInput;
 
         /// <summary>
-        /// Yaw
+        /// Yaw.
         /// </summary>
-        public int RInput => _rInput;
+        public int RInput => this.rInput;
 
         public ScanStates Scan()
         {
-            var timerState = TimerCheck();
+            var timerState = this.TimerCheck();
             var keyboardState = ScanStates.Unchanged;
 
             if (Console.KeyAvailable)
@@ -53,28 +58,28 @@ namespace Tello.Demo
                 switch (key)
                 {
                     case ConsoleKey.W: // forward
-                        keyboardState = Forward();
+                        keyboardState = this.Forward();
                         break;
                     case ConsoleKey.S: // backward
-                        keyboardState = Backward();
+                        keyboardState = this.Backward();
                         break;
                     case ConsoleKey.D: // right
-                        keyboardState = Right();
+                        keyboardState = this.Right();
                         break;
                     case ConsoleKey.A: // left
-                        keyboardState = Left();
+                        keyboardState = this.Left();
                         break;
                     case ConsoleKey.UpArrow: // up
-                        keyboardState = Up();
+                        keyboardState = this.Up();
                         break;
                     case ConsoleKey.DownArrow: // down
-                        keyboardState = Down();
+                        keyboardState = this.Down();
                         break;
                     case ConsoleKey.LeftArrow: // turn left
-                        keyboardState = YawLeft();
+                        keyboardState = this.YawLeft();
                         break;
                     case ConsoleKey.RightArrow: // right
-                        keyboardState = YawRight();
+                        keyboardState = this.YawRight();
                         break;
                     case ConsoleKey.Escape: // exit
                         return ScanStates.Exit;
@@ -91,41 +96,42 @@ namespace Tello.Demo
         private ScanStates Center(ref int input, Stopwatch timer)
         {
             var ms = timer.IsRunning ? timer.ElapsedMilliseconds : 0;
-            if (ms > _maxInputTimeoutInMS)
+            if (ms > this.maxInputTimeoutInMS)
             {
                 timer.Reset();
                 input = 0;
                 return ScanStates.Changed;
             }
+
             return ScanStates.Unchanged;
         }
 
         private ScanStates CenterX()
         {
-            return Center(ref _xInput, _xTimer);
+            return this.Center(ref this.xInput, this.xTimer);
         }
 
         private ScanStates CenterY()
         {
-            return Center(ref _yInput, _yTimer);
+            return this.Center(ref this.yInput, this.yTimer);
         }
 
         private ScanStates CenterZ()
         {
-            return Center(ref _zInput, _zTimer);
+            return this.Center(ref this.zInput, this.zTimer);
         }
 
         private ScanStates CenterR()
         {
-            return Center(ref _rInput, _rTimer);
+            return this.Center(ref this.rInput, this.rTimer);
         }
 
         private ScanStates TimerCheck()
         {
-            var xState = CenterX();
-            var yState = CenterY();
-            var zState = CenterZ();
-            var rState = CenterR();
+            var xState = this.CenterX();
+            var yState = this.CenterY();
+            var zState = this.CenterZ();
+            var rState = this.CenterR();
 
             return xState == ScanStates.Changed || yState == ScanStates.Changed || zState == ScanStates.Changed || rState == ScanStates.Changed
                 ? ScanStates.Changed
@@ -135,64 +141,67 @@ namespace Tello.Demo
         private ScanStates Move(ref int input, int direction, Stopwatch timer)
         {
             var last = input;
-            if (Math.Abs(direction) == direction) // positive
+            if (Math.Abs(direction) == direction)
             {
+                // positive
                 input = input < 0
                     ? 0
                     : input < 100
                         ? input + 10
                         : input;
             }
-            else // negative
+            else
             {
+                // negative
                 input = input > 0
                     ? 0
                     : input > -100
                         ? input - 10
                         : input;
             }
+
             timer.Restart();
             return last == input ? ScanStates.Unchanged : ScanStates.Changed;
         }
 
         private ScanStates Right()
         {
-            return Move(ref _xInput, 1, _xTimer);
+            return this.Move(ref this.xInput, 1, this.xTimer);
         }
 
         private ScanStates Left()
         {
-            return Move(ref _xInput, -1, _xTimer);
+            return this.Move(ref this.xInput, -1, this.xTimer);
         }
 
         private ScanStates Forward()
         {
-            return Move(ref _zInput, 1, _zTimer);
+            return this.Move(ref this.zInput, 1, this.zTimer);
         }
 
         private ScanStates Backward()
         {
-            return Move(ref _zInput, -1, _zTimer);
+            return this.Move(ref this.zInput, -1, this.zTimer);
         }
 
         private ScanStates Up()
         {
-            return Move(ref _yInput, 1, _yTimer);
+            return this.Move(ref this.yInput, 1, this.yTimer);
         }
 
         private ScanStates Down()
         {
-            return Move(ref _yInput, -1, _yTimer);
+            return this.Move(ref this.yInput, -1, this.yTimer);
         }
 
         private ScanStates YawRight()
         {
-            return Move(ref _rInput, 1, _rTimer);
+            return this.Move(ref this.rInput, 1, this.rTimer);
         }
 
         private ScanStates YawLeft()
         {
-            return Move(ref _rInput, -1, _rTimer);
+            return this.Move(ref this.rInput, -1, this.rTimer);
         }
     }
 }

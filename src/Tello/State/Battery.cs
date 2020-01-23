@@ -1,4 +1,9 @@
-﻿using System;
+﻿// <copyright file="Battery.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+using System;
 
 namespace Tello.State
 {
@@ -11,10 +16,10 @@ namespace Tello.State
                 throw new ArgumentNullException(nameof(battery));
             }
 
-            TemperatureHighC = battery.TemperatureHighC;
-            TemperatureLowC = battery.TemperatureLowC;
-            PercentRemaining = battery.PercentRemaining;
-            Timestamp = battery.Timestamp;
+            this.TemperatureHighC = battery.TemperatureHighC;
+            this.TemperatureLowC = battery.TemperatureLowC;
+            this.PercentRemaining = battery.PercentRemaining;
+            this.Timestamp = battery.Timestamp;
         }
 
         public Battery(ITelloState state)
@@ -24,21 +29,23 @@ namespace Tello.State
                 throw new ArgumentNullException(nameof(state));
             }
 
-            TemperatureLowC = state.TemperatureLowC;
-            TemperatureHighC = state.TemperatureHighC;
-            PercentRemaining = state.BatteryPercent;
-            Timestamp = state.Timestamp;
+            this.TemperatureLowC = state.TemperatureLowC;
+            this.TemperatureHighC = state.TemperatureHighC;
+            this.PercentRemaining = state.BatteryPercent;
+            this.Timestamp = state.Timestamp;
         }
 
         public int TemperatureLowC { get; }
+
         public int TemperatureHighC { get; }
+
         public int PercentRemaining { get; }
 
         public DateTime Timestamp { get; }
 
         public override string ToString()
         {
-            return $"B: {PercentRemaining} %, TL: {TemperatureLowC} C, TH: {TemperatureHighC} C";
+            return $"B: {this.PercentRemaining} %, TL: {this.TemperatureLowC} C, TH: {this.TemperatureHighC} C";
         }
     }
 }

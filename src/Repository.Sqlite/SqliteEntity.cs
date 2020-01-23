@@ -1,13 +1,20 @@
-﻿namespace Repository.Sqlite
+﻿// <copyright file="SqliteEntity.cs" company="Mark Lauter">
+// Copyright (c) Mark Lauter. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace Repository.Sqlite
 {
     [System.Diagnostics.DebuggerDisplay("{Id}")]
     public class SqliteEntity : IEntity
     {
-        public SqliteEntity() { }
+        public SqliteEntity()
+        {
+        }
 
         protected SqliteEntity(IEntity entity)
         {
-            Id = entity.Id;
+            this.Id = entity.Id;
         }
 
         [SQLite.Indexed]
