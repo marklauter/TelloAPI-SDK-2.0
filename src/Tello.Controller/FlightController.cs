@@ -3,10 +3,10 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+using Messenger;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Messenger;
 using Tello.Events;
 using Tello.Messaging;
 using Tello.State;
@@ -36,6 +36,8 @@ namespace Tello.Controller
             }
         }
 
+        // todo: can  HandleOk be a method on Command class?
+        // Idea to refactor the switch with polymorphism: https://refactoring.guru/smells/switch-statements
         private void HandleOk(IResponse<string> response, Command command)
         {
             switch ((Commands)command)
@@ -47,6 +49,7 @@ namespace Tello.Controller
                 case Commands.EmergencyStop:
                     this.isFlying = false;
                     break;
+
                 case Commands.StartVideo:
                     this.isVideoStreaming = true;
                     this.VideoStreamingStateChanged?.Invoke(this, new VideoStreamingStateChangedArgs(this.isVideoStreaming));
@@ -90,28 +93,22 @@ namespace Tello.Controller
                     break;
 
                 case Commands.Stop:
-                    break;
                 case Commands.Up:
-                    break;
                 case Commands.Down:
-                    break;
                 case Commands.Curve:
-                    break;
                 case Commands.Flip:
-                    break;
-
                 case Commands.SetRemoteControl:
-                    break;
                 case Commands.SetWiFiPassword:
-                    break;
                 case Commands.SetStationMode:
-                    break;
-
                 default:
                     break;
             }
         }
 
+        /// <summary>
+        /// Implements the Observer.OnNext method. Receives the next response from the message controller.
+        /// </summary>
+        /// <param name="response">IResponse<string></string>.</param>
         public override void OnNext(IResponse<string> response)
         {
             try
@@ -121,48 +118,7 @@ namespace Tello.Controller
 
                 if (response.Success)
                 {
-                    if (response.Message != Responses.Error.ToString().ToLowerInvariant())
-                    {
-                        switch (command.Rule.Response)
-                        {
-                            case Responses.Ok:
-                                if (response.Message == Responses.Ok.ToString().ToLowerInvariant())
-                                {
-                                    this.HandleOk(response, command);
-                                }
-                                else
-                                {
-                                    throw new TelloException($"'{command}' expecting response '{Responses.Ok.ToString().ToLowerInvariant()}' returned message '{response.Message}' at {response.Timestamp.ToString("o")} after {response.TimeTaken.TotalMilliseconds}ms");
-                                }
-
-                                break;
-                            case Responses.Speed:
-                                this.InterogativeState.Speed = Int32.Parse(response.Message);
-                                break;
-                            case Responses.Battery:
-                                this.InterogativeState.Battery = Int32.Parse(response.Message);
-                                break;
-                            case Responses.Time:
-                                this.InterogativeState.Time = Int32.Parse(response.Message);
-                                break;
-                            case Responses.WIFISnr:
-                                this.InterogativeState.WIFISnr = response.Message;
-                                break;
-                            case Responses.SdkVersion:
-                                this.InterogativeState.SdkVersion = response.Message;
-                                break;
-                            case Responses.SerialNumber:
-                                this.InterogativeState.SerialNumber = response.Message;
-                                break;
-                            case Responses.None:
-                            default:
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        throw new TelloException($"{command} returned message '{response.Message}' at {response.Timestamp.ToString("o")} after {response.TimeTaken.TotalMilliseconds}ms");
-                    }
+                    this.HandleSuccessResponse(response, command);
                 }
                 else
                 {
@@ -174,6 +130,58 @@ namespace Tello.Controller
             catch (Exception ex)
             {
                 this.OnError(new TelloException(ex.Message, ex));
+            }
+        }
+
+        private bool ResponseContainsError(IResponse<string> response)
+        {
+            return response.Message == Responses.Error.ToString().ToLowerInvariant();
+        }
+
+        private bool ResponseContainsOk(IResponse<string> response)
+        {
+            return response.Message == Responses.Ok.ToString().ToLowerInvariant();
+        }
+
+        private void HandleSuccessResponse(IResponse<string> response, Command command)
+        {
+            if (this.ResponseContainsError(response))
+            {
+                throw new TelloException($"{command} returned message '{response.Message}' at {response.Timestamp.ToString("o")} after {response.TimeTaken.TotalMilliseconds}ms");
+            }
+
+            switch (command.Rule.ExpectedResponse)
+            {
+                case Responses.Ok:
+                    if (!this.ResponseContainsOk(response))
+                    {
+                        throw new TelloException($"'{command}' expecting response '{Responses.Ok.ToString().ToLowerInvariant()}' returned message '{response.Message}' at {response.Timestamp.ToString("o")} after {response.TimeTaken.TotalMilliseconds}ms");
+                    }
+
+                    this.HandleOk(response, command);
+
+                    break;
+                case Responses.Speed:
+                    this.InterogativeState.Speed = Int32.Parse(response.Message);
+                    break;
+                case Responses.Battery:
+                    this.InterogativeState.Battery = Int32.Parse(response.Message);
+                    break;
+                case Responses.Time:
+                    this.InterogativeState.Time = Int32.Parse(response.Message);
+                    break;
+                case Responses.WIFISnr:
+                    this.InterogativeState.WIFISnr = response.Message;
+                    break;
+                case Responses.SdkVersion:
+                    this.InterogativeState.SdkVersion = response.Message;
+                    break;
+                case Responses.SerialNumber:
+                    this.InterogativeState.SerialNumber = response.Message;
+                    break;
+                case Responses.None:
+                default:
+                    break;
             }
         }
         #endregion
