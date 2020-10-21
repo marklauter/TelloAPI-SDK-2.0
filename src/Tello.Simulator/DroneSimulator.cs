@@ -100,12 +100,12 @@ namespace Tello.Simulator
                 throw new TelloException("Call EnterSdkMode first.");
             }
 
-            if (!this.isFlying && command.Rule.MustBeInFlight)
+            if (!this.isFlying && command.Rule.IsInFlightRequired)
             {
                 throw new TelloException("Call Takeoff first.");
             }
 
-            switch (command.Rule.Response)
+            switch (command.Rule.ExpectedResponse)
             {
                 case Responses.Ok:
                     this.HandleOk(command);
