@@ -29,7 +29,7 @@ namespace Tello
             this.Rule = CommandRules.Rules(command);
             this.Validate(command, args);
             this.Arguments = args;
-            this.Immediate = this.Rule.Immediate;
+            this.Immediate = this.Rule.IsImmediate;
         }
         #endregion
 
@@ -127,7 +127,7 @@ namespace Tello
 
         public static explicit operator Responses(Command command)
         {
-            return command.Rule.Response;
+            return command.Rule.ExpectedResponse;
         }
 
         // todo: move command timeouts to command rules

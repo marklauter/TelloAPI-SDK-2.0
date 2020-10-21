@@ -17,31 +17,33 @@ namespace Tello
     {
         internal CommandRule(
             Commands command,
-            Responses response,
+            Responses expectedResponse,
             string token,
             ArgumentRule[] arguments,
-            bool mustBeInflight,
-            bool immediate = false)
+            bool isInFlightRequired,
+            bool isImmediate = false)
         {
             this.Command = command;
-            this.Response = response;
+            this.ExpectedResponse = expectedResponse;
             this.Token = token;
             this.Arguments = arguments;
-            this.MustBeInFlight = mustBeInflight;
-            this.Immediate = immediate;
+            this.IsInFlightRequired = isInFlightRequired;
+            this.IsImmediate = isImmediate;
         }
 
         public Commands Command { get; }
 
-        public Responses Response { get; }
+        public Responses ExpectedResponse { get; }
 
         public string Token { get; }
 
         public ArgumentRule[] Arguments { get; }
 
-        public bool MustBeInFlight { get; }
+        public bool IsInFlightRequired { get; }
 
-        public bool Immediate { get; }
+        public bool IsImmediate { get; }
+
+        public bool IsBatch => !IsImmediate;
 
         public string ToString(params object[] args)
         {
