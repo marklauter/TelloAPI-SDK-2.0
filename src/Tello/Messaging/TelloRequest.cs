@@ -15,7 +15,7 @@ namespace Tello.Messaging
             : base(
                   (string)command,
                   (TimeSpan)command,
-                  command.Rule.Response == Responses.None)
+                  command.Rule.ExpectedResponse == Responses.None)
         {
         }
 
