@@ -36,6 +36,7 @@ namespace Tello.Controller
             }
         }
 
+        // todo: this method should return a new state object, not set state variables on the flight controller class
         // todo: can  HandleOk be a method on Command class?
         // Idea to refactor the switch with polymorphism: https://refactoring.guru/smells/switch-statements
         private void HandleOk(IResponse<string> response, Command command)

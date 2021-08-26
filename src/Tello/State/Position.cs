@@ -66,7 +66,7 @@ namespace Tello.State
             }
         }
 
-        // todo: fix "this" calls to look like : (state ?? throw new ArgumentNullException(nameof(state))).HeightInCm
+        // todo: fix this() calls so they look like : (state ?? throw new ArgumentNullException(nameof(state))).HeightInCm
         public Position(ITelloState state, Vector vector)
             : this(
                  state?.HeightInCm,
@@ -130,7 +130,7 @@ namespace Tello.State
         public override string ToString()
         {
             var mslFt = this.BarometricPressueInCm / 30.48;
-            return $"X: {this.X.ToString("F2")} cm, Y: {this.Y.ToString("F2")} cm, MSL: {mslFt.ToString("F2")} ft, AGL: {this.AltitudeAGLInCm} cm, Hd: {this.Heading} deg, AD: {altitudeDelta.ToString("F2")} cm";
+            return $"X: {this.X.ToString("F2")} cm, Y: {this.Y.ToString("F2")} cm, MSL: {mslFt:F2} ft, AGL: {this.AltitudeAGLInCm} cm, Hd: {this.Heading} deg, AD: {altitudeDelta:F2} cm";
         }
     }
 }
