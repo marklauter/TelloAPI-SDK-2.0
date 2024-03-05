@@ -1,4 +1,5 @@
 Update 09 NOV 2019: I got side tracked by life events. Closed my consulting company after 18 years and started a new job. I'm settled in and should be able to start work again next weekend.
+^ well, starting work on Tello again never happened, but I've been thinking about this project now that 5 years have passed. Maybe I'll rip it up and rehash as a dotnet 8 project this year.
 
 # Tello API for SDK 2.0 in C#
 The project includes a flight controller, Tello emulator, UDP messenger, script builder, and two console samples.
