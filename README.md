@@ -1,4 +1,4 @@
-Update 13 MAY 2024: Support for V3 of the Tello API is in progress: https://github.com/marklauter/tello.io
+Update 13 MAY 2024: Support for the [Tello V3 SDK](https://github.com/marklauter/tello.io/blob/main/Tello_SDK_3.0_User_Guide_en.pdf) is in progress: https://github.com/marklauter/tello.io
 
 Update 05 MAR 2024 Well, starting work on Tello again never happened, but I've been thinking about this project now that 5 years have passed. Maybe I'll rip it up and rehash as a dotnet 8 project this year.
 
